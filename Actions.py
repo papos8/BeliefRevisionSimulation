@@ -11,17 +11,29 @@ class TurnLeft(Action):
     def __init__(self) -> None:
         super().__init__()
 
+    def turnLeft(Agent):
+        pass
 
-class TurnRight(Action):
+
+class TurnRight(Agent, Action):
     def __init__(self) -> None:
         super().__init__()
+
+    def turnRight(Agent):
+        pass
 
 
 class Reverse(Action):
     def __init__(self) -> None:
         super().__init__()
 
+    def reverse(Agent):
+        pass
+
 
 class MoveForward(Action):
     def __init__(self) -> None:
         super().__init__()
+
+    def moveForward(Agent):
+        pass
