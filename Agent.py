@@ -5,13 +5,13 @@ import kivy.uix.widget as kuix
 import kivy.properties as kpro
 import kivy.vector as kvec
 import kivy.clock as kclo
-from random import randint
+from random import randint, random
 
 
 class Agent(Widget):
     def __init__(self, SD, Resources):
-        self.SD = SD
-        self.Resources = Resources
+        SD = randint(1, 10)
+        Resources = random(0, 100)
 
 
 class Player(Agent):

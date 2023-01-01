@@ -6,10 +6,14 @@ import kivy.properties as kpro
 import kivy.vector as kvec
 import kivy.clock as kclo
 from random import randint
+import kivy.lang.builder as kbui
+import Agent
+import Ball
 
 
 class Field(kuix.Widget):
     ball = kpro.ObjectProperty(None)
+    # agent = kpro.ObjectProperty(None)
 
     # Initial values for the ball
     def start_ball(self):
@@ -30,25 +34,12 @@ class Field(kuix.Widget):
             self.ball.velocity_x *= -1
 
 
-class Agent
-
-
-class Ball(kuix.Widget):
-    velocity_x = kpro.NumericProperty(0)
-    velocity_y = kpro.NumericProperty(0)
-
-    ball_velocity = kpro.ReferenceListProperty(velocity_x, velocity_y)
-
-    def move(self):
-        self.pos = kvec.Vector(*self.ball_velocity) + self.pos
-
-
 class Simulation(App):
     def build(self):
         new_field = Field()
         new_field.start_ball()
         kclo.Clock.schedule_interval(new_field.update, 1.0/60.0)
-        return Field()
+        return kbui.Builder.load_file('simulation.kv')
 
 
 if __name__ == '__main__':
