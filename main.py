@@ -1,9 +1,9 @@
-import imp
+
 from operator import imod
 from kivy.app import App
-from kivy.uix.widget import Widget
+import kivy.uix.widget as kuix
 
-class Field(Widget):
+class Field(kuix.Widget):
     pass
 
 class Simulation(App):
@@ -11,4 +11,4 @@ class Simulation(App):
         return Field()
 
 if __name__ == '__main__':
-    Field().run()
+    Simulation().run()
