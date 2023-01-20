@@ -10,7 +10,7 @@ from random import randint
 import kivy.lang.builder as kbui
 import Agent
 import Ball
-from Formula import Literal
+from Formula import Letter
 from Obsevables import Observables
 import States
 
@@ -18,4 +18,6 @@ numberOfStates = int(input('How many possible states are there? '))
 states = States.States(numberOfStates)
 print(states.getStates())
 
-lit = Literal()
+lit = Letter()
+print(lit.getLetter)
+print(lit.getTruthValue())
