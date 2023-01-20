@@ -16,5 +16,3 @@ import States
 numberOfStates = int(input('How many possible states are there? '))
 states = States.States(numberOfStates)
 print(states.getStates())
-
-obs = Observables()
