@@ -5,19 +5,38 @@ import kivy.uix.widget as kuix
 import kivy.properties as kpro
 import kivy.vector as kvec
 import kivy.clock as kclo
-from random import randint, random
+import States
+from random import randint, random, uniform
 
 
-class Agent(Widget):
-    def __init__(self, SD, Resources):
-        SD = randint(1, 10)
-        Resources = random(0, 100)
+class Agent():
+    def __init__(self):
+        self.stubDegree = randint(1, 10)
+        self.resources = uniform(0.0, 100.0)
+
+    def conditioning():
+        pass
+
+    def lexRevision():
+        pass
+
+    def minRevision():
+        pass
+
+    def biasedConditioning():
+        pass
+
+    def biasedLexRevision():
+        pass
+
+    def biasedMinRevision():
+        pass
 
 
 class Player(Agent):
-    def __init__(self, SD, Position):
-        super().__init__(SD)
-        self.Position = Position
+    def __init__(self):
+        super().__init__()
+        self.position = (0, 0)
 
     def turnLeft(self):
         pass
