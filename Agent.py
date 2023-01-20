@@ -10,7 +10,7 @@ from random import randint, random, uniform
 
 
 class Agent():
-    def __init__(self):
+    def __init__(self) -> None:
         self.stubDegree = randint(1, 10)
         self.resources = uniform(0.0, 100.0)
 
