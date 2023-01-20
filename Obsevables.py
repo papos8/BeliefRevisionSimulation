@@ -6,6 +6,14 @@ import random
 import States
 
 
+class Literals():
+    def getLiterals():
+        literals = set()
+        for literal in string.ascii_uppercase:
+            literals.add(literal)
+            literals.add("~" + literal)
+
+
 class Observables():
     def __init__(self, states) -> None:
         observables = set()
