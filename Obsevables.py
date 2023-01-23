@@ -16,6 +16,9 @@ class Literals():
 
 class Observables():
     def __init__(self, states) -> None:
+        pass
+
+    def getObs(self):
         observables = set()
-        for i in range(2**len(states)):
+        for i in range(2**len(self.states)):
             pass

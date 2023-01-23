@@ -1,4 +1,5 @@
 
+from gettext import lgettext
 from operator import imod
 from sre_parse import State
 from kivy.app import App
@@ -10,7 +11,7 @@ from random import randint
 import kivy.lang.builder as kbui
 import Agent
 import Ball
-from Formula import Letter
+from Formula import Conjuction, Letter, Negation
 from Obsevables import Observables
 import States
 
@@ -19,5 +20,15 @@ states = States.States(numberOfStates)
 print(states.getStates())
 
 lit = Letter()
-print(lit.getLetter)
-print(lit.getTruthValue())
+neg = Negation(lit)
+
+print(lit.getString())
+print(lit.getTruthValue(list(states.getStates())[0]))
+
+print(neg.getString(lit))
+print(neg.getTruthValue(list(states.getStates())[0]))
+
+
+con = Conjuction(lit, lit)
+print(con.getString())
+print(con.getTruthValue(list(states.getStates())[0]))
