@@ -1,4 +1,5 @@
 
+from email.policy import strict
 from gettext import lgettext
 from operator import imod
 from sre_parse import State
@@ -14,8 +15,9 @@ import Ball
 from Formula import Conjuction, Letter, Negation
 from Obsevables import Observables
 import States
+import string
 
-numberOfStates = int(input('How many possible states are there? '))
+numberOfStates = int(input('How many possible worlds are there? '))
 states = States.States(numberOfStates)
 print(states.getStates())
 
@@ -32,3 +34,7 @@ print(neg.getTruthValue(list(states.getStates())[0]))
 con = Conjuction(lit, lit)
 print(con.getString())
 print(con.getTruthValue(list(states.getStates())[0]))
+
+
+obs = Observables()
+print(obs.createObservables(states))

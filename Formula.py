@@ -22,15 +22,14 @@ class Letter(Formula):
     def __init__(self) -> None:
         super().__init__()
         self.letter = str(random.choice(tuple(string.ascii_uppercase)))
+        self.truthValue = "true" if random.choice(
+            tuple({0, 1})) == 1 else "false"
 
     def getString(self):
         return self.letter
 
     def getTruthValue(self, state: States):
-        truthValues = {0, 1}
-        truthValue = "true" if random.choice(
-            tuple(truthValues)) == 1 else "false"
-        return truthValue
+        return self.truthValue
 
 
 class Negation(Formula):

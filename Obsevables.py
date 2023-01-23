@@ -6,19 +6,35 @@ import random
 import States
 
 
-class Literals():
-    def getLiterals():
-        literals = set()
-        for literal in string.ascii_uppercase:
-            literals.add(literal)
-            literals.add("~" + literal)
-
-
 class Observables():
-    def __init__(self, states) -> None:
-        pass
+    def __init__(self) -> None:
+        self.observables = dict()
+        worldSet = set()
+        for proposition in string.ascii_uppercase:
+            self.observables.update({str(proposition): worldSet})
+            self.observables.update({str("~" + proposition): worldSet})
 
-    def getObs(self):
-        observables = set()
-        for i in range(2**len(self.states)):
-            pass
+    def getObservables(self):
+        return self.observables
+
+    def getSingleObservable(self):
+        return self.observables[random.choice(tuple(string.ascii_uppercase))]
+
+    def isNegation(self, proposition):
+        return True if proposition[0] == "~" else False
+
+    def getNegation(self, proposition):
+        return str("~" + proposition)
+
+    def createObservables(self, states: States):
+        for proposition in self.observables:
+            for state in states.getStates():
+                if (not (self.isNegation(proposition))):
+                    if (not (state in self.observables[self.getNegation(proposition)])):
+                        self.observables[proposition].add(state)
+                elif (self.isNegation(proposition)):
+                    if (not (state in self.observables[proposition[1]])):
+                        self.observables[self.getNegation(
+                            proposition)].add(state)
+
+        return self.observables
