@@ -27,13 +27,40 @@ class Agent():
     def minRevision():
         pass
 
-    def biasedConditioning():
+    def confirmationBiasedConditioning():
         pass
 
-    def biasedLexRevision():
+    def confirmationBiasedLexRevision():
         pass
 
-    def biasedMinRevision():
+    def confirmationBiasedMinRevision():
+        pass
+
+    def framingBiasedConditioning():
+        pass
+
+    def framingBiasedLexRevision():
+        pass
+
+    def framingBiasedMinRevision():
+        pass
+
+    def anchoringBiasedConditioning():
+        pass
+
+    def anchoringBiasedLexRevision():
+        pass
+
+    def anchoringBiasedMinRevision():
+        pass
+
+    def inGroupFavoritismConditioning():
+        pass
+
+    def inGroupFavoritismLexRevision():
+        pass
+
+    def inGroupFavoritismMinRevision():
         pass
 
 

@@ -16,6 +16,9 @@ from Formula import Conjuction, Letter, Negation
 from Obsevables import Observables
 import States
 import string
+import random
+
+from Valuation import Valuation
 
 numberOfStates = int(input('How many possible worlds are there? '))
 states = States.States(numberOfStates)
@@ -35,6 +38,5 @@ con = Conjuction(lit, lit)
 print(con.getString())
 print(con.getTruthValue(list(states.getStates())[0]))
 
-
-obs = Observables()
-print(obs.createObservables(states))
+obs = Observables(states)
+print(obs.getObservables())

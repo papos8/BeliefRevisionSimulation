@@ -1,18 +1,30 @@
 from ast import arg
 from http.client import ImproperConnectionState
+from os import stat_result
 from tkinter import N
 import string
 import random
 import States
+import Valuation
 
 
 class Observables():
-    def __init__(self) -> None:
+    # Initiate observables based on the states
+    # Randomly create propositions and their negation
+    def __init__(self, states: States) -> None:
         self.observables = dict()
         worldSet = set()
+        val = Valuation.Valuation()
+
         for proposition in string.ascii_uppercase:
-            self.observables.update({str(proposition): worldSet})
-            self.observables.update({str("~" + proposition): worldSet})
+            setOfWorlds = random.choice(tuple(val.powerset(states)))
+            self.observables.update({str(proposition): set(setOfWorlds)})
+            self.observables.update(
+                {str("~" + proposition): states.getStates()-set(setOfWorlds)})
+
+        # exchange keys, values
+        helper = {tuple(v): k for k, v in self.observables.items()}
+        self.observables = {v: set(k) for k, v in helper.items()}
 
     def getObservables(self):
         return self.observables
@@ -25,16 +37,3 @@ class Observables():
 
     def getNegation(self, proposition):
         return str("~" + proposition)
-
-    def createObservables(self, states: States):
-        for proposition in self.observables:
-            for state in states.getStates():
-                if (not (self.isNegation(proposition))):
-                    if (not (state in self.observables[self.getNegation(proposition)])):
-                        self.observables[proposition].add(state)
-                elif (self.isNegation(proposition)):
-                    if (not (state in self.observables[proposition[1]])):
-                        self.observables[self.getNegation(
-                            proposition)].add(state)
-
-        return self.observables
