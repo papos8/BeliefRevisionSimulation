@@ -1,5 +1,6 @@
 from email.policy import strict
 import imp
+from lib2to3.pgen2.token import PLUS
 from operator import imod
 import string
 from tkinter import Widget
@@ -11,14 +12,16 @@ import kivy.vector as kvec
 import kivy.clock as kclo
 from Obsevables import Observables
 from BiasedModel import PlausibilitySpace
+from PlausibilityOrder import PlausibilityOrder
 import States
 from random import randint, random, uniform
 
 
 class Agent():
-    def __init__(self) -> None:
+    def __init__(self, states: States) -> None:
         self.resources = uniform(0.0, 100.0)
-        self.bias = ""
+        self.bias = "Unbiased"
+        self.plausibilityOrder = PlausibilityOrder(states)
 
     # Framing function to return a subset of
     # a proposition
@@ -61,49 +64,54 @@ class Agent():
                 dictOfDegress.update({proposition: 1})
         return dictOfDegress
 
-    def conditioning(self, plausibilitySpace: PlausibilitySpace, proposition: set):
+    def conditioning(self, plausibilitySpace: PlausibilitySpace, proposition: string):
+        self.bias = "Unbiased"
+        # Create new set S
+        newStates = plausibilitySpace.observables.getObservables()[proposition]
+        plausibilitySpace.states.updateStates(
+            plausibilitySpace.states.getStates().intersection(newStates))
+        # TODO: Continue implementation
+
+    def lexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         pass
 
-    def lexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: set):
+    def minRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         pass
 
-    def minRevision(self, plausibilitySpace: PlausibilitySpace, proposition: set):
+    def confirmationBiasedConditioning(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         pass
 
-    def confirmationBiasedConditioning(self, plausibilitySpace: PlausibilitySpace, proposition: set):
+    def confirmationBiasedLexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         pass
 
-    def confirmationBiasedLexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: set):
+    def confirmationBiasedMinRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         pass
 
-    def confirmationBiasedMinRevision(self, plausibilitySpace: PlausibilitySpace, proposition: set):
+    def framingBiasedConditioning(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         pass
 
-    def framingBiasedConditioning(self, plausibilitySpace: PlausibilitySpace, proposition: set):
+    def framingBiasedLexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         pass
 
-    def framingBiasedLexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: set):
+    def framingBiasedMinRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         pass
 
-    def framingBiasedMinRevision(self, plausibilitySpace: PlausibilitySpace, proposition: set):
+    def anchoringBiasedConditioning(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         pass
 
-    def anchoringBiasedConditioning(self, plausibilitySpace: PlausibilitySpace, proposition: set):
+    def anchoringBiasedLexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         pass
 
-    def anchoringBiasedLexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: set):
+    def anchoringBiasedMinRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         pass
 
-    def anchoringBiasedMinRevision(self, plausibilitySpace: PlausibilitySpace, proposition: set):
+    def inGroupFavoritismConditioning(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         pass
 
-    def inGroupFavoritismConditioning(self, plausibilitySpace: PlausibilitySpace, proposition: set):
+    def inGroupFavoritismLexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         pass
 
-    def inGroupFavoritismLexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: set):
-        pass
-
-    def inGroupFavoritismMinRevision(self, plausibilitySpace: PlausibilitySpace, proposition: set):
+    def inGroupFavoritismMinRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         pass
 
 

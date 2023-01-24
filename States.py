@@ -17,6 +17,9 @@ class States():
     def getStates(self):
         return self.states
 
+    def updateStates(self, newStates: set):
+        self.states = newStates
+
     def getRandomState(self):
         randomState = random.choice(tuple(self.states))
         return randomState

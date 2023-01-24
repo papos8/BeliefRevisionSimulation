@@ -12,7 +12,7 @@ class BiasedModel():
 
 
 class PlausibilitySpace():
-    def __init__(self, states: States, observbles: Obsevables, agents: Agent-set) -> None:
+    def __init__(self, states: States, observbles: Obsevables, agent: Agent) -> None:
         self.states = states
         self.observables = observbles
-        self.agents = agents
+        self.agent = agent
