@@ -1,4 +1,7 @@
+from email.policy import strict
+import imp
 from operator import imod
+import string
 from tkinter import Widget
 from typing import Dict
 from kivy.app import App
@@ -7,6 +10,7 @@ import kivy.properties as kpro
 import kivy.vector as kvec
 import kivy.clock as kclo
 from Obsevables import Observables
+from BiasedModel import PlausibilitySpace
 import States
 from random import randint, random, uniform
 
@@ -14,17 +18,23 @@ from random import randint, random, uniform
 class Agent():
     def __init__(self) -> None:
         self.resources = uniform(0.0, 100.0)
+        self.bias = ""
 
     # Framing function to return a subset of
     # a proposition
     def framingFunction(self, observables: dict):
-        for proposition in observables:
-            value = observables[proposition]
-            # Here the subset is taken completely random
-            # This may affect the results
-            newValue = random.sample(value, randint(
-                0, len(observables[proposition])))
-            observables[proposition] = newValue
+        ''' If agent is under framing bias we use the 
+        framing function. Otherwise, observables
+        are returned without change '''
+        if self.bias == "Framing":
+            for proposition in observables:
+                value = observables[proposition]
+                # Here the subset is taken completely random
+                # This may affect the results
+                newValue = random.sample(value, randint(
+                    0, len(observables[proposition])))
+                observables[proposition] = newValue
+
         return observables
 
     # Function that return a dictionary of a proposition and
@@ -32,59 +42,68 @@ class Agent():
     # proposition
     def stubbornnessDegree(self, observables: dict):
         dictOfDegress = dict()
-        for proposition in observables:
-            # Make agents stubborn towards positive propositions
-            # as it doesn't really matter if it's the actual
-            # proposition or its negation
-            if proposition[0] == "~":
-                if dictOfDegress[proposition[1]] > 1:
-                    dictOfDegress[proposition] = 0
-            stubbornnessDegree = randint(1, 5)
-            dictOfDegress.update({proposition: stubbornnessDegree})
+        ''' If the agent is not unbiased a random integer
+        between 1 and 5 is assigned as stubbornness degree 
+        to every observable proposition. Otherwise, the degree
+        is 1 for every observable proposition '''
+        if self.bias != "Unbiased":
+            for proposition in observables:
+                # Make agents stubborn towards positive propositions
+                # as it doesn't really matter if it's the actual
+                # proposition or its negation
+                if proposition[0] == "~":
+                    if dictOfDegress[proposition[1]] > 1:
+                        dictOfDegress[proposition] = 0
+                stubbornnessDegree = randint(1, 5)
+                dictOfDegress.update({proposition: stubbornnessDegree})
+        else:
+            for proposition in observables:
+                dictOfDegress.update({proposition: 1})
+        return dictOfDegress
 
-    def conditioning(self, states: States, observables: Observables):
+    def conditioning(self, plausibilitySpace: PlausibilitySpace, proposition: set):
         pass
 
-    def lexRevision(self, states: States, observables: Observables):
+    def lexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: set):
         pass
 
-    def minRevision(self, states: States, observables: Observables):
+    def minRevision(self, plausibilitySpace: PlausibilitySpace, proposition: set):
         pass
 
-    def confirmationBiasedConditioning(self, states: States, observables: Observables):
+    def confirmationBiasedConditioning(self, plausibilitySpace: PlausibilitySpace, proposition: set):
         pass
 
-    def confirmationBiasedLexRevision(self, states: States, observables: Observables):
+    def confirmationBiasedLexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: set):
         pass
 
-    def confirmationBiasedMinRevision(self, states: States, observables: Observables):
+    def confirmationBiasedMinRevision(self, plausibilitySpace: PlausibilitySpace, proposition: set):
         pass
 
-    def framingBiasedConditioning(self, states: States, observables: Observables):
+    def framingBiasedConditioning(self, plausibilitySpace: PlausibilitySpace, proposition: set):
         pass
 
-    def framingBiasedLexRevision(self, states: States, observables: Observables):
+    def framingBiasedLexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: set):
         pass
 
-    def framingBiasedMinRevision(self, states: States, observables: Observables):
+    def framingBiasedMinRevision(self, plausibilitySpace: PlausibilitySpace, proposition: set):
         pass
 
-    def anchoringBiasedConditioning(self, states: States, observables: Observables):
+    def anchoringBiasedConditioning(self, plausibilitySpace: PlausibilitySpace, proposition: set):
         pass
 
-    def anchoringBiasedLexRevision(self, states: States, observables: Observables):
+    def anchoringBiasedLexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: set):
         pass
 
-    def anchoringBiasedMinRevision(self, states: States, observables: Observables):
+    def anchoringBiasedMinRevision(self, plausibilitySpace: PlausibilitySpace, proposition: set):
         pass
 
-    def inGroupFavoritismConditioning(self, states: States, observables: Observables):
+    def inGroupFavoritismConditioning(self, plausibilitySpace: PlausibilitySpace, proposition: set):
         pass
 
-    def inGroupFavoritismLexRevision(self, states: States, observables: Observables):
+    def inGroupFavoritismLexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: set):
         pass
 
-    def inGroupFavoritismMinRevision(self, states: States, observables: Observables):
+    def inGroupFavoritismMinRevision(self, plausibilitySpace: PlausibilitySpace, proposition: set):
         pass
 
 
