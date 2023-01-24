@@ -13,5 +13,5 @@ class PlausibilityOrder():
     def getOrder(self):
         return self.order
 
-    def updateOrder(self):
-        pass
+    def updateOrder(self, newOrder: set):
+        self.order = newOrder

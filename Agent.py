@@ -4,6 +4,7 @@ from lib2to3.pgen2.token import PLUS
 from operator import imod
 import string
 from tkinter import Widget
+from tkinter.tix import DirTree
 from typing import Dict
 from kivy.app import App
 import kivy.uix.widget as kuix
@@ -64,13 +65,26 @@ class Agent():
                 dictOfDegress.update({proposition: 1})
         return dictOfDegress
 
+    # Implement conditioning based on the definitions
     def conditioning(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         self.bias = "Unbiased"
         # Create new set S
         newStates = plausibilitySpace.observables.getObservables()[proposition]
         plausibilitySpace.states.updateStates(
             plausibilitySpace.states.getStates().intersection(newStates))
-        # TODO: Continue implementation
+        newStates = States.States(newStates)
+        # Update the observables
+        newObservables = dict()
+        for observable in plausibilitySpace.observables.getObservables():
+            newValue = plausibilitySpace.observables.getObservables()[observable].intersection(
+                plausibilitySpace.observables.getObservables()[proposition])
+            if len(newValue) > 0:
+                newObservables.update({observable: newValue})
+        newObservables = Observables(newObservables)
+        # Agents in conditioning don't update the plausibility order
+        # S and O are the two sets that are changing
+        newPlSpace = PlausibilitySpace(newStates, newObservables, self)
+        return newPlSpace
 
     def lexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         pass

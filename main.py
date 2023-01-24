@@ -21,29 +21,16 @@ from Valuation import Valuation
 
 numberOfStates = int(input('How many possible worlds are there? '))
 states = States.States(numberOfStates)
+print("The possible worlds are: ")
 print(states.getStates())
 
-lit = Letter()
-neg = Negation(lit)
-
-print(lit.getString())
-print(lit.getTruthValue(list(states.getStates())[0]))
-
-print(neg.getString(lit))
-print(neg.getTruthValue(list(states.getStates())[0]))
-
-
-con = Conjuction(lit, lit)
-print(con.getString())
-print(con.getTruthValue(list(states.getStates())[0]))
-
-
 agent1 = Agent.Agent(states)
-print(agent1.bias)
-print(agent1.resources)
+print("Agent's plausibility order:")
 print(agent1.plausibilityOrder.getOrder())
 obs = Observables(states)
 print(obs.getObservables())
 plSpace = PlausibilitySpace(states, obs, agent1)
-agent1.conditioning(plSpace, input("What is the incoming information?"))
-print(states.getStates())
+newSpace = agent1.conditioning(
+    plSpace, input("What is the incoming information?"))
+print(newSpace.states.getStates())
+print(newSpace.observables.getObservables())

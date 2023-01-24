@@ -13,22 +13,28 @@ from itertools import chain, combinations
 class Observables():
     # Initiate observables based on the states
     # Randomly create propositions and their negation
-    def __init__(self, states: States) -> None:
-        self.observables = dict()
-        worldSet = set()
+    def __init__(self, arg) -> None:
+        if not (isinstance(arg, dict)):
+            self.observables = dict()
+            worldSet = set()
 
-        for proposition in string.ascii_uppercase:
-            setOfWorlds = random.choice(tuple(self.powerset(states)))
-            self.observables.update({str(proposition): set(setOfWorlds)})
-            self.observables.update(
-                {str("~" + proposition): states.getStates()-set(setOfWorlds)})
+            for proposition in string.ascii_uppercase:
+                setOfWorlds = random.choice(tuple(self.powerset(arg)))
+                self.observables.update({str(proposition): set(setOfWorlds)})
+                self.observables.update(
+                    {str("~" + proposition): arg.getStates()-set(setOfWorlds)})
 
-        # Exchange keys, values to make values of dict a set
-        helper = {tuple(v): k for k, v in self.observables.items()}
-        self.observables = {v: set(k) for k, v in helper.items()}
+            # Exchange keys, values to make values of dict a set
+            helper = {tuple(v): k for k, v in self.observables.items()}
+            self.observables = {v: set(k) for k, v in helper.items()}
+        elif isinstance(arg, dict):
+            self.observables = arg
 
     def getObservables(self):
         return self.observables
+
+    def updateObservables(self, newObservables: dict):
+        self.observables = newObservables
 
     def getSingleObservable(self):
         key = random.choice(tuple(self.observables.keys()))

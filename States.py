@@ -3,16 +3,18 @@ import random
 
 
 class States():
-    def __init__(self, numberOfStates=None) -> None:
-        if numberOfStates:
+    def __init__(self, arg) -> None:
+        if isinstance(arg, int):
             self.states = set()
             # Create the set of states randomly
             # ASCII lowercase letters are used
-            if numberOfStates > 26 or numberOfStates < 1:
-                print("The number of states should be between 0 and 26!")
+            if arg > 26 or arg < 1:
+                print("The number of states should be between 1 and 26!")
             else:
-                while not (len(self.states) == numberOfStates):
+                while not (len(self.states) == arg):
                     self.states.add(random.choice(string.ascii_lowercase))
+        elif isinstance(arg, set):
+            self.states = arg
 
     def getStates(self):
         return self.states
