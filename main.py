@@ -37,6 +37,6 @@ con = Conjuction(lit, lit)
 print(con.getString())
 print(con.getTruthValue(list(states.getStates())[0]))
 
-obs = Observables(states)
-for ob in obs.getObservables():
-    print(ob)
+
+data = DataSequence.createDataSequence()
+print(data)

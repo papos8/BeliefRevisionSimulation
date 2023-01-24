@@ -1,5 +1,6 @@
 from operator import imod
 from tkinter import Widget
+from typing import Dict
 from kivy.app import App
 import kivy.uix.widget as kuix
 import kivy.properties as kpro
@@ -12,55 +13,78 @@ from random import randint, random, uniform
 
 class Agent():
     def __init__(self) -> None:
-        self.stubDegree = randint(1, 10)
         self.resources = uniform(0.0, 100.0)
 
-    def framingFunction(self, proposition: Observables):
-        return
+    # Framing function to return a subset of
+    # a proposition
+    def framingFunction(self, observables: dict):
+        for proposition in observables:
+            value = observables[proposition]
+            # Here the subset is taken completely random
+            # This may affect the results
+            newValue = random.sample(value, randint(
+                0, len(observables[proposition])))
+            observables[proposition] = newValue
+        return observables
 
-    def conditioning():
+    # Function that return a dictionary of a proposition and
+    # the stubbornness degree of the agent towards this
+    # proposition
+    def stubbornnessDegree(self, observables: dict):
+        dictOfDegress = dict()
+        for proposition in observables:
+            # Make agents stubborn towards positive propositions
+            # as it doesn't really matter if it's the actual
+            # proposition or its negation
+            if proposition[0] == "~":
+                if dictOfDegress[proposition[1]] > 1:
+                    dictOfDegress[proposition] = 0
+            stubbornnessDegree = randint(1, 5)
+            dictOfDegress.update({proposition: stubbornnessDegree})
+
+    def conditioning(self, states: States, observables: Observables):
         pass
 
-    def lexRevision():
+    def lexRevision(self, states: States, observables: Observables):
         pass
 
-    def minRevision():
+    def minRevision(self, states: States, observables: Observables):
         pass
 
-    def confirmationBiasedConditioning():
+    def confirmationBiasedConditioning(self, states: States, observables: Observables):
         pass
 
-    def confirmationBiasedLexRevision():
+    def confirmationBiasedLexRevision(self, states: States, observables: Observables):
         pass
 
-    def confirmationBiasedMinRevision():
+    def confirmationBiasedMinRevision(self, states: States, observables: Observables):
         pass
 
-    def framingBiasedConditioning():
+    def framingBiasedConditioning(self, states: States, observables: Observables):
         pass
 
-    def framingBiasedLexRevision():
+    def framingBiasedLexRevision(self, states: States, observables: Observables):
         pass
 
-    def framingBiasedMinRevision():
+    def framingBiasedMinRevision(self, states: States, observables: Observables):
         pass
 
-    def anchoringBiasedConditioning():
+    def anchoringBiasedConditioning(self, states: States, observables: Observables):
         pass
 
-    def anchoringBiasedLexRevision():
+    def anchoringBiasedLexRevision(self, states: States, observables: Observables):
         pass
 
-    def anchoringBiasedMinRevision():
+    def anchoringBiasedMinRevision(self, states: States, observables: Observables):
         pass
 
-    def inGroupFavoritismConditioning():
+    def inGroupFavoritismConditioning(self, states: States, observables: Observables):
         pass
 
-    def inGroupFavoritismLexRevision():
+    def inGroupFavoritismLexRevision(self, states: States, observables: Observables):
         pass
 
-    def inGroupFavoritismMinRevision():
+    def inGroupFavoritismMinRevision(self, states: States, observables: Observables):
         pass
 
 

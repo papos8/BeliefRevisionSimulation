@@ -39,3 +39,18 @@ class DataSequence():
                 flag = False
                 break
         return flag
+
+    # Function for creating custom data sequence
+    def createDataSequence():
+        length = int(input("Provide the sequence's length: "))
+        dataSequence = dict()
+        for i in range(length):
+            key = input("Provide the name of the observable proposition: ")
+            worlds = set()
+            setLength = int(
+                input("In how many worlds is the proposition true? "))
+            for i in range(setLength):
+                world = input("Provide the name of the world: ")
+                worlds.add(world)
+            dataSequence.update({key: worlds})
+        return dataSequence
