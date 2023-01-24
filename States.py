@@ -16,3 +16,12 @@ class States():
 
     def getStates(self):
         return self.states
+
+    def getRandomState(self):
+        randomState = random.choice(tuple(self.states))
+        return randomState
+
+
+class State():
+    def __init__(self) -> None:
+        pass
