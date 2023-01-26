@@ -1,4 +1,6 @@
+from curses import init_pair
 from email.policy import strict
+from errno import EL2NSYNC
 from re import S
 from sre_parse import State
 from kivy.app import App
@@ -21,18 +23,29 @@ from Valuation import Valuation
 
 numberOfStates = int(input('How many possible worlds are there? '))
 states = States.States(numberOfStates)
-print("The possible worlds are: ")
-print(states.getStates())
 
 agent1 = Agent.Agent(states)
+obs = Observables(states)
 print("Agent's plausibility order:")
 print(agent1.plausibilityOrder.getOrder())
-obs = Observables(states)
 print(obs.getObservables())
 plSpace = PlausibilitySpace(states, obs, agent1)
+# Example for revising using condition
+'''
 newSpace = agent1.conditioning(
-    plSpace, input("What is the incoming information?"))
+    plSpace, input("What is the incoming information? "))
 print("Agent's plausibility order:")
 print(agent1.plausibilityOrder.getOrder())
 print(newSpace.states.getStates())
 print(newSpace.observables.getObservables())
+'''
+
+# Example for revising using lex revision
+'''
+newSpace = agent1.lexRevision(plSpace, input(
+    "What is the incoming information? "))
+print("Agent's plausibility order:")
+print(agent1.plausibilityOrder.getOrder())
+print(newSpace.states.getStates())
+print(newSpace.observables.getObservables())
+'''

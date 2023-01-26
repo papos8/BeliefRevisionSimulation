@@ -15,3 +15,7 @@ class PlausibilityOrder():
 
     def updateOrder(self, newOrder):
         self.order = newOrder
+
+    def swapElements(self, element1, element2):
+        self.order[self.order.index(element1)], self.order[self.order.index(
+            element2)] = self.order[self.order.index(element2)], self.order[self.order.index(element1)]
