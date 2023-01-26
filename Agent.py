@@ -74,12 +74,21 @@ class Agent():
             plausibilitySpace.states.getStates().intersection(newStates))
         newStates = States.States(newStates)
         # Update the observables
+        # Framing function is applied, but there should return
+        # observables intact
         newObservables = dict()
-        for observable in plausibilitySpace.observables.getObservables():
-            newValue = plausibilitySpace.observables.getObservables()[observable].intersection(
-                plausibilitySpace.observables.getObservables()[proposition])
-            if len(newValue) > 0:
-                newObservables.update({observable: newValue})
+        framedObservables = self.framingFunction(
+            plausibilitySpace.observables.getObservables())
+        # Stubbornnes Degree is applied as well,
+        # but should return 1 for every observable
+        stubbornnessDegrees = self.stubbornnessDegree(
+            plausibilitySpace.observables.getObservables())
+        for observable in framedObservables:
+            if stubbornnessDegrees[observable] == 1:
+                newValue = framedObservables[observable].intersection(
+                    framedObservables[proposition])
+                if len(newValue) > 0:
+                    newObservables.update({observable: newValue})
         newObservables = Observables(newObservables)
         # Agents in conditioning don't update the plausibility order
         # S and O are the two sets that are changing
