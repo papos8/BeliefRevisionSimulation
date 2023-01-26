@@ -32,5 +32,7 @@ print(obs.getObservables())
 plSpace = PlausibilitySpace(states, obs, agent1)
 newSpace = agent1.conditioning(
     plSpace, input("What is the incoming information?"))
+print("Agent's plausibility order:")
+print(agent1.plausibilityOrder.getOrder())
 print(newSpace.states.getStates())
 print(newSpace.observables.getObservables())

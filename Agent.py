@@ -90,8 +90,10 @@ class Agent():
                 if len(newValue) > 0:
                     newObservables.update({observable: newValue})
         newObservables = Observables(newObservables)
-        # Agents in conditioning don't update the plausibility order
-        # S and O are the two sets that are changing
+        # Update plaus order to have only the new states
+        helperOrder = [
+            state for state in self.plausibilityOrder.getOrder() if state in list(newStates.getStates())]
+        self.plausibilityOrder.updateOrder(helperOrder)
         newPlSpace = PlausibilitySpace(newStates, newObservables, self)
         return newPlSpace
 
