@@ -1,4 +1,6 @@
 from email.policy import strict
+from hashlib import new
+from http.client import NETWORK_AUTHENTICATION_REQUIRED
 import imp
 from lib2to3.pgen2.token import PLUS
 from operator import imod, neg
@@ -6,6 +8,7 @@ import re
 import string
 from tkinter import Widget
 from tkinter.tix import DirTree
+from turtle import pos
 from typing import Dict
 from xmlrpc.client import ProtocolError
 from kivy.app import App
@@ -71,6 +74,7 @@ class Agent():
     def conditioning(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         self.bias = "Unbiased"
         # Create new set S
+        helperStates = plausibilitySpace.states.getStates()
         newStates = plausibilitySpace.observables.getObservables()[proposition]
         plausibilitySpace.states.updateStates(
             plausibilitySpace.states.getStates().intersection(newStates))
@@ -93,12 +97,16 @@ class Agent():
                     newObservables.update({observable: newValue})
         newObservables = Observables(newObservables)
         # Update plaus order to have only the new states
-        helperOrder = [
-            state for state in self.plausibilityOrder.getOrder() if state in list(newStates.getStates())]
-        self.plausibilityOrder.updateOrder(helperOrder)
+        statesToRemove = helperStates.difference(newStates.getStates())
+        for state in statesToRemove:
+            for key in self.plausibilityOrder.getOrder().keys():
+                if state in self.plausibilityOrder.getOrder()[key]:
+                    self.plausibilityOrder.getOrder()[key].remove(state)
+        self.plausibilityOrder = PlausibilityOrder(
+            self.plausibilityOrder.getOrder())
         newPlSpace = PlausibilitySpace(newStates, newObservables, self)
         return newPlSpace
-
+    '''
     def lexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         self.bias = "Unbiased"
         # Update the observables
@@ -113,7 +121,12 @@ class Agent():
                 continue
         newObservables = Observables(framedObservables)
         # Create two helper state orders
-        positiveOrder = [state for state in self.plausibilityOrder.getOrder(
+        positiveOrder, negativeOrder = dict()
+        for key in self.plausibilityOrder.getOrder().keys():
+            positiveOrder.update({key: []})
+            negativeOrder.update({key: []})
+        for state in plausibilitySpace.states.getStates()
+        [state for state in self.plausibilityOrder.getOrder(
         ) if state in list(plausibilitySpace.observables.getObservables()[proposition])]
 
         negativeOrder = [state for state in self.plausibilityOrder.getOrder(
@@ -130,6 +143,7 @@ class Agent():
         self.plausibilityOrder.updateOrder(list(positiveOrder + negativeOrder))
 
         return PlausibilitySpace(plausibilitySpace.states, newObservables, self)
+    '''
 
     def minRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         pass
@@ -178,7 +192,7 @@ class Agent():
 
     # Function to overcome the exception thrown
     # by the built in function index()
-    def newIndex(self, list: list, element):
+    def newIndex(self, list, element):
         if element in list:
             return list.index(element)
         else:

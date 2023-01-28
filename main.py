@@ -30,8 +30,9 @@ print("Agent's plausibility order:")
 print(agent1.plausibilityOrder.getOrder())
 print(obs.getObservables())
 plSpace = PlausibilitySpace(states, obs, agent1)
-# Example for revising using condition
+
 '''
+# Example for revising using condition
 newSpace = agent1.conditioning(
     plSpace, input("What is the incoming information? "))
 print("Agent's plausibility order:")
