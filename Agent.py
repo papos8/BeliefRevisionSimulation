@@ -102,8 +102,15 @@ class Agent():
             for key in self.plausibilityOrder.getOrder().keys():
                 if state in self.plausibilityOrder.getOrder()[key]:
                     self.plausibilityOrder.getOrder()[key].remove(state)
+            for anotherState in newStates.getStates():
+                if state in self.plausibilityOrder.getWorldsRelation()[anotherState]:
+                    self.plausibilityOrder.getWorldsRelation()[
+                        anotherState].remove(state)
+            self.plausibilityOrder.getWorldsRelation().pop(state)
+            if state in self.plausibilityOrder.getMostPlausibleWorlds():
+                self.plausibilityOrder.getMostPlausibleWorlds().remove(state)
         self.plausibilityOrder = PlausibilityOrder(
-            self.plausibilityOrder.getOrder())
+            self.plausibilityOrder.getOrder(), self.plausibilityOrder.getWorldsRelation(), self.plausibilityOrder.getMostPlausibleWorlds())
         newPlSpace = PlausibilitySpace(newStates, newObservables, self)
         return newPlSpace
     '''
