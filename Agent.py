@@ -1,5 +1,6 @@
 from email.policy import strict
 from hashlib import new
+from heapq import merge
 from http.client import NETWORK_AUTHENTICATION_REQUIRED
 import imp
 from lib2to3.pgen2.token import PLUS
@@ -32,7 +33,7 @@ class Agent():
     # Framing function to return a subset of
     # a proposition
     def framingFunction(self, observables: dict):
-        ''' If agent is under framing bias we use the 
+        ''' If agent is under framing bias we use the
         framing function. Otherwise, observables
         are returned without change '''
         if self.bias == "Framing":
@@ -52,7 +53,7 @@ class Agent():
     def stubbornnessDegree(self, observables: dict):
         dictOfDegress = dict()
         ''' If the agent is not unbiased a random integer
-        between 1 and 5 is assigned as stubbornness degree 
+        between 1 and 5 is assigned as stubbornness degree
         to every observable proposition. Otherwise, the degree
         is 1 for every observable proposition '''
         if self.bias != "Unbiased":
@@ -113,7 +114,7 @@ class Agent():
             self.plausibilityOrder.getOrder(), self.plausibilityOrder.getWorldsRelation(), self.plausibilityOrder.getMostPlausibleWorlds())
         newPlSpace = PlausibilitySpace(newStates, newObservables, self)
         return newPlSpace
-    '''
+
     def lexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         self.bias = "Unbiased"
         # Update the observables
@@ -128,29 +129,46 @@ class Agent():
                 continue
         newObservables = Observables(framedObservables)
         # Create two helper state orders
-        positiveOrder, negativeOrder = dict()
-        for key in self.plausibilityOrder.getOrder().keys():
+        # Posittive and negative
+        positiveOrder = dict()
+        negativeOrder = dict()
+        for key in plausibilitySpace.states.getStates():
             positiveOrder.update({key: []})
             negativeOrder.update({key: []})
-        for state in plausibilitySpace.states.getStates()
-        [state for state in self.plausibilityOrder.getOrder(
-        ) if state in list(plausibilitySpace.observables.getObservables()[proposition])]
-
-        negativeOrder = [state for state in self.plausibilityOrder.getOrder(
-        ) if state in list(plausibilitySpace.observables.getObservables()[self.getNegation(proposition)])]
-        print("Positive order: ")
-        print(positiveOrder)
-        print("Negative order: ")
-        print(negativeOrder)
-
-        # In essence, new plausibility order is the concatenation of
-        # the positive and negative ones, as lexicographic takes the
-        # states related to the incoming world to the front of the
-        # order
-        self.plausibilityOrder.updateOrder(list(positiveOrder + negativeOrder))
-
+        for state in plausibilitySpace.states.getStates():
+            if state not in plausibilitySpace.observables.getObservables()[proposition]:
+                positiveOrder.pop(state)
+            if state in plausibilitySpace.observables.getObservables()[proposition]:
+                negativeOrder.pop(state)
+        for key in positiveOrder.keys():
+            positiveOrder[key] = self.plausibilityOrder.getWorldsRelation()[
+                key]
+            for state in plausibilitySpace.states.getStates():
+                if state not in plausibilitySpace.observables.getObservables()[proposition] and state in positiveOrder[key]:
+                    positiveOrder[key].remove(state)
+        for key in negativeOrder.keys():
+            negativeOrder[key] = self.plausibilityOrder.getWorldsRelation()[
+                key]
+            for state in plausibilitySpace.states.getStates():
+                if state in plausibilitySpace.observables.getObservables()[proposition] and state in negativeOrder[key]:
+                    negativeOrder[key].remove(state)
+        # TODO: Update the plausibility order based on the definition (?)
+        for positiveState in positiveOrder.keys():
+            for negativeState in negativeOrder.keys():
+                positiveOrder[positiveState].append(negativeState)
+        positiveOrder.update(negativeOrder)
+        self.plausibilityOrder.updateOrder(positiveOrder)
+        maxLen = 0
+        newMostPlausibleWorlds = set()
+        for key in self.plausibilityOrder.getWorldsRelation().keys():
+            maxLen = max(maxLen, len(
+                self.plausibilityOrder.getWorldsRelation()[key]))
+        for key in self.plausibilityOrder.getWorldsRelation().keys():
+            if len(self.plausibilityOrder.getWorldsRelation()[key]) == maxLen:
+                newMostPlausibleWorlds.add(key)
+        self.plausibilityOrder.updateMostPlausibleWorlds(
+            newMostPlausibleWorlds)
         return PlausibilitySpace(plausibilitySpace.states, newObservables, self)
-    '''
 
     def minRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         pass

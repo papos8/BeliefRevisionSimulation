@@ -36,7 +36,7 @@ print("Most Plausible Worlds")
 print(agent1.plausibilityOrder.getMostPlausibleWorlds())
 plSpace = PlausibilitySpace(states, obs, agent1)
 
-
+'''
 # Example for revising using condition
 newSpace = agent1.conditioning(
     plSpace, input("What is the incoming information? "))
@@ -50,14 +50,14 @@ print("States after conditioning")
 print(newSpace.states.getStates())
 print("New observables")
 print(newSpace.observables.getObservables())
-
+'''
 
 # Example for revising using lex revision
-'''
 newSpace = agent1.lexRevision(plSpace, input(
     "What is the incoming information? "))
 print("Agent's plausibility order:")
 print(agent1.plausibilityOrder.getOrder())
-print(newSpace.states.getStates())
-print(newSpace.observables.getObservables())
-'''
+print("New worlds relation")
+print(agent1.plausibilityOrder.getWorldsRelation())
+print("New most plausible worlds")
+print(agent1.plausibilityOrder.getMostPlausibleWorlds())
