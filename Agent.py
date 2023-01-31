@@ -1,4 +1,5 @@
 from asyncio.proactor_events import _ProactorBasePipeTransport
+from re import S
 import string
 from tkinter import Widget
 from tkinter.tix import DirTree
@@ -49,17 +50,15 @@ class Agent():
         between 1 and 5 is assigned as stubbornness degree
         to every observable proposition. Otherwise, the degree
         is 1 for every observable proposition '''
-        if self.bias != "Unbiased":
+        if self.bias == "Confirmation":
             for proposition in observables:
-                # Make agents stubborn towards positive propositions
-                # as it doesn't really matter if it's the actual
-                # proposition or its negation
-                if proposition[0] == "~":
-                    if dictOfDegress[proposition[1]] > 1:
-                        dictOfDegress[proposition] = 0
-                stubbornnessDegree = randint(1, 5)
-                dictOfDegress.update({proposition: stubbornnessDegree})
-        else:
+                dictOfDegress.update({proposition: 0})
+            for proposition in observables:
+                if self.getNegation(proposition) in observables and dictOfDegress[self.getNegation(proposition)] > 0:
+                    continue
+                else:
+                    dictOfDegress[proposition] = randint(1, 5)
+        elif self.bias == "Unbiased":
             for proposition in observables:
                 dictOfDegress.update({proposition: 1})
         return dictOfDegress
@@ -235,7 +234,84 @@ class Agent():
         return PlausibilitySpace(plausibilitySpace.states, newObservables)
 
     def confirmationBiasedConditioning(self, plausibilitySpace: PlausibilitySpace, proposition: string):
-        pass
+        self.bias = "Confirmation"
+        # Update the observables
+        # Framing function is applied, but there should return
+        # observables intact (For the sake of completeness)
+        stubbornnessDegrees = self.stubbornnessDegree(
+            plausibilitySpace.observables.getObservables())
+        framedObservables = self.framingFunction(
+            plausibilitySpace.observables.getObservables())
+        for observable in framedObservables:
+            if stubbornnessDegrees[observable] == 1:
+                continue
+        newObservables = Observables(framedObservables)
+        # Initialize memory for times the information has come
+        timesOfIncomingInfo = dict()
+        for obs in plausibilitySpace.observables.getObservables():
+            timesOfIncomingInfo.update({obs: 0})
+
+        if timesOfIncomingInfo[proposition] >= stubbornnessDegrees[proposition]:
+            self.conditioning(plausibilitySpace, proposition)
+        else:
+            stubbornProp = set()  # Set to store the proposition the agent is stub towards
+            for prop in stubbornnessDegrees.keys():
+                if stubbornnessDegrees[prop] > 0:
+                    stubbornProp.add(prop)
+
+            if proposition in stubbornProp:
+                helperStates = plausibilitySpace.states.getStates()
+                newStates = plausibilitySpace.states.getStates()
+                # Create a set of worls that are in the stub props
+                for observable in stubbornnessDegrees.keys():
+                    if stubbornnessDegrees[observable] > 0:
+                        for state in plausibilitySpace.states.getStates():
+                            if state in plausibilitySpace.observables.getObservables()[observable]:
+                                newStates = newStates.intersection(
+                                    plausibilitySpace.observables.getObservables()[observable])
+
+                plausibilitySpace.states.updateStates(
+                    plausibilitySpace.states.getStates().intersection(newStates))
+                newStates = States.States(newStates)
+                newObservables = dict()
+                framedObservables = self.framingFunction(
+                    plausibilitySpace.observables.getObservables())
+                for observable in framedObservables:
+                    newValue = framedObservables[observable].intersection(
+                        framedObservables[proposition])
+                    if len(newValue) > 0:
+                        newObservables.update({observable: newValue})
+                newObservables = Observables(newObservables)
+                statesToRemove = helperStates.difference(newStates.getStates())
+                for state in statesToRemove:
+                    for key in self.plausibilityOrder.getOrder().keys():
+                        if state in self.plausibilityOrder.getOrder()[key]:
+                            self.plausibilityOrder.getOrder()[
+                                key].remove(state)
+                    for anotherState in newStates.getStates():
+                        if state in self.plausibilityOrder.getWorldsRelation()[anotherState]:
+                            self.plausibilityOrder.getWorldsRelation()[
+                                anotherState].remove(state)
+                    self.plausibilityOrder.getWorldsRelation().pop(state)
+                    if state in self.plausibilityOrder.getMostPlausibleWorlds():
+                        self.plausibilityOrder.getMostPlausibleWorlds().remove(state)
+                self.plausibilityOrder = PlausibilityOrder(
+                    self.plausibilityOrder.getOrder(), self.plausibilityOrder.getWorldsRelation(), self.plausibilityOrder.getMostPlausibleWorlds())
+                newPlSpace = PlausibilitySpace(
+                    states=newStates, observbles=newObservables)
+                timesOfIncomingInfo[proposition] = timesOfIncomingInfo[proposition] + 1
+                # Update stubbornness degree
+                if timesOfIncomingInfo[proposition] == stubbornnessDegrees[self.getNegation(proposition)]:
+                    stubbornnessDegrees[proposition] = timesOfIncomingInfo[proposition]
+                    stubbornnessDegrees[self.getNegation(proposition)] = 0
+                return newPlSpace
+            else:
+                return plausibilitySpace
+                timesOfIncomingInfo[proposition] = timesOfIncomingInfo[proposition] + 1
+                # Update stubbornness degree
+                if timesOfIncomingInfo[proposition] == stubbornnessDegrees[self.getNegation(proposition)]:
+                    stubbornnessDegrees[proposition] = timesOfIncomingInfo[proposition]
+                    stubbornnessDegrees[self.getNegation(proposition)] = 0
 
     def confirmationBiasedLexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         pass
