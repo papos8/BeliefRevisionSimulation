@@ -306,12 +306,12 @@ class Agent():
                     stubbornnessDegrees[self.getNegation(proposition)] = 0
                 return newPlSpace
             else:
-                return plausibilitySpace
                 timesOfIncomingInfo[proposition] = timesOfIncomingInfo[proposition] + 1
                 # Update stubbornness degree
                 if timesOfIncomingInfo[proposition] == stubbornnessDegrees[self.getNegation(proposition)]:
                     stubbornnessDegrees[proposition] = timesOfIncomingInfo[proposition]
                     stubbornnessDegrees[self.getNegation(proposition)] = 0
+                return plausibilitySpace
 
     def confirmationBiasedLexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         pass
