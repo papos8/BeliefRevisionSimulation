@@ -34,9 +34,10 @@ print("Observables")
 print(obs.getObservables())
 print("Most Plausible Worlds")
 print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-plSpace = PlausibilitySpace(states, obs, agent1)
+plSpace = PlausibilitySpace(states, obs)
 
 '''
+
 # Example for revising using condition
 newSpace = agent1.conditioning(
     plSpace, input("What is the incoming information? "))
@@ -50,7 +51,12 @@ print("States after conditioning")
 print(newSpace.states.getStates())
 print("New observables")
 print(newSpace.observables.getObservables())
-'''
+anotherSpace = agent1.conditioning(
+    newSpace, input("What is the incoming information? "))
+print("New most plausible worlds")
+print(agent1.plausibilityOrder.getMostPlausibleWorlds())
+print("Agent's new worlds relation")
+print(agent1.plausibilityOrder.getWorldsRelation())
 
 # Example for revising using lex revision
 newSpace = agent1.lexRevision(plSpace, input(
@@ -61,3 +67,31 @@ print("New worlds relation")
 print(agent1.plausibilityOrder.getWorldsRelation())
 print("New most plausible worlds")
 print(agent1.plausibilityOrder.getMostPlausibleWorlds())
+anotherSpace = agent1.lexRevision(newSpace, input(
+    "What is the incoming information? "))
+print("Agent's plausibility order:")
+print(agent1.plausibilityOrder.getOrder())
+print("New worlds relation")
+print(agent1.plausibilityOrder.getWorldsRelation())
+print("New most plausible worlds")
+print(agent1.plausibilityOrder.getMostPlausibleWorlds())
+
+
+# Example for minimal revision
+newSpace = agent1.minRevision(plSpace, input(
+    "What is the incoming information? "))
+print("Agent's plausibility order:")
+print(agent1.plausibilityOrder.getOrder())
+print("New worlds relation")
+print(agent1.plausibilityOrder.getWorldsRelation())
+print("New most plausible worlds")
+print(agent1.plausibilityOrder.getMostPlausibleWorlds())
+anotherSpace = agent1.minRevision(newSpace, input(
+    "What is the incoming information? "))
+print("Agent's plausibility order:")
+print(agent1.plausibilityOrder.getOrder())
+print("New worlds relation")
+print(agent1.plausibilityOrder.getWorldsRelation())
+print("New most plausible worlds")
+print(agent1.plausibilityOrder.getMostPlausibleWorlds())
+'''

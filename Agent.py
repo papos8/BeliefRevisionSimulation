@@ -1,11 +1,4 @@
-from email.policy import strict
-from hashlib import new
-from heapq import merge
-from http.client import NETWORK_AUTHENTICATION_REQUIRED
-import imp
-from lib2to3.pgen2.token import PLUS
-from operator import imod, neg
-import re
+from asyncio.proactor_events import _ProactorBasePipeTransport
 import string
 from tkinter import Widget
 from tkinter.tix import DirTree
@@ -112,7 +105,8 @@ class Agent():
                 self.plausibilityOrder.getMostPlausibleWorlds().remove(state)
         self.plausibilityOrder = PlausibilityOrder(
             self.plausibilityOrder.getOrder(), self.plausibilityOrder.getWorldsRelation(), self.plausibilityOrder.getMostPlausibleWorlds())
-        newPlSpace = PlausibilitySpace(newStates, newObservables, self)
+        newPlSpace = PlausibilitySpace(
+            states=newStates, observbles=newObservables)
         return newPlSpace
 
     def lexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
@@ -132,33 +126,34 @@ class Agent():
         # Posittive and negative
         positiveOrder = dict()
         negativeOrder = dict()
-        for key in plausibilitySpace.states.getStates():
+        for key in plausibilitySpace.states.getStates():  # Initialize orders
             positiveOrder.update({key: []})
             negativeOrder.update({key: []})
-        for state in plausibilitySpace.states.getStates():
+        for state in plausibilitySpace.states.getStates():  # Create orders' keys
             if state not in plausibilitySpace.observables.getObservables()[proposition]:
                 positiveOrder.pop(state)
             if state in plausibilitySpace.observables.getObservables()[proposition]:
                 negativeOrder.pop(state)
-        for key in positiveOrder.keys():
+        for key in positiveOrder.keys():                # Create positive order values
             positiveOrder[key] = self.plausibilityOrder.getWorldsRelation()[
                 key]
             for state in plausibilitySpace.states.getStates():
                 if state not in plausibilitySpace.observables.getObservables()[proposition] and state in positiveOrder[key]:
                     positiveOrder[key].remove(state)
-        for key in negativeOrder.keys():
+        for key in negativeOrder.keys():                # Create negative order values
             negativeOrder[key] = self.plausibilityOrder.getWorldsRelation()[
                 key]
             for state in plausibilitySpace.states.getStates():
                 if state in plausibilitySpace.observables.getObservables()[proposition] and state in negativeOrder[key]:
                     negativeOrder[key].remove(state)
-        # TODO: Update the plausibility order based on the definition (?)
-        for positiveState in positiveOrder.keys():
+        # New worldsRelation
+        for positiveState in positiveOrder.keys():      # Create new worlds relation
             for negativeState in negativeOrder.keys():
                 positiveOrder[positiveState].append(negativeState)
         positiveOrder.update(negativeOrder)
-        self.plausibilityOrder.updateOrder(positiveOrder)
+
         maxLen = 0
+        # Create the set of most plaus worlds
         newMostPlausibleWorlds = set()
         for key in self.plausibilityOrder.getWorldsRelation().keys():
             maxLen = max(maxLen, len(
@@ -168,10 +163,76 @@ class Agent():
                 newMostPlausibleWorlds.add(key)
         self.plausibilityOrder.updateMostPlausibleWorlds(
             newMostPlausibleWorlds)
-        return PlausibilitySpace(plausibilitySpace.states, newObservables, self)
+        self.plausibilityOrder.updateOrder(self.wordlsRelationToOrder(
+            self.plausibilityOrder.getWorldsRelation()))
+        return PlausibilitySpace(plausibilitySpace.states, newObservables)
 
     def minRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
-        pass
+        self.bias = "Unbiased"
+        # Update the observables
+        # Framing function is applied, but there should return
+        # observables intact (For the sake of completeness)
+        framedObservables = self.framingFunction(
+            plausibilitySpace.observables.getObservables())
+        stubbornnessDegrees = self.stubbornnessDegree(
+            plausibilitySpace.observables.getObservables())
+        for observable in framedObservables:
+            if stubbornnessDegrees[observable] == 1:
+                continue
+        newObservables = Observables(framedObservables)
+        positiveOrder = dict()
+        positiveOrderHelper = dict()
+        negativeOrder = dict()
+        for key in plausibilitySpace.states.getStates():            # Initialize orders
+            positiveOrder.update({key: []})
+            negativeOrder.update({key: []})
+            positiveOrderHelper.update({key: []})
+        for state in plausibilitySpace.states.getStates():          # Create keys for orders
+            if state not in plausibilitySpace.observables.getObservables()[proposition]:
+                positiveOrder.pop(state)
+            if state in plausibilitySpace.observables.getObservables()[proposition]:
+                negativeOrder.pop(state)
+        for key in positiveOrder.keys():                             # Create pos order
+            positiveOrder[key] = self.plausibilityOrder.getWorldsRelation()[
+                key]
+            for state in plausibilitySpace.states.getStates():
+                if state not in plausibilitySpace.observables.getObservables()[proposition] and state in positiveOrder[key]:
+                    positiveOrder[key].remove(state)
+        posPlausibleInProp = set()  # Set to store the most plausible worlds in a proposition
+        maxLen = 0
+        for key in positiveOrder.keys():
+            maxLen = max(maxLen, len(positiveOrder[key]))
+        for key in positiveOrder.keys():
+            if len(positiveOrder[key]) == maxLen and key in plausibilitySpace.observables.getObservables()[proposition]:
+                posPlausibleInProp.add(key)
+
+        for key in plausibilitySpace.states.getStates():
+            if key not in posPlausibleInProp:
+                positiveOrderHelper.pop(key)
+        for key in negativeOrder.keys():                            # Create neg order
+            negativeOrder[key] = self.plausibilityOrder.getWorldsRelation()[
+                key]
+            for state in plausibilitySpace.states.getStates():
+                if state in plausibilitySpace.observables.getObservables()[proposition] and state in negativeOrder[key]:
+                    negativeOrder[key].remove(state)
+
+        for key in positiveOrderHelper.keys():                      # Create posHelper order
+            positiveOrderHelper[key] = self.plausibilityOrder.getWorldsRelation()[
+                key]
+            for state in plausibilitySpace.states.getStates():
+                if state in plausibilitySpace.observables.getObservables()[proposition] and state in positiveOrderHelper[key] and state not in posPlausibleInProp:
+                    positiveOrderHelper[key].remove(state)
+        print(positiveOrderHelper)
+        for positiveState in positiveOrderHelper.keys():            # Add the 'negative' worlds to positive
+            for negativeState in negativeOrder.keys():
+                positiveOrderHelper[positiveState].append(negativeState)
+            for anotherState in set(positiveOrder.keys()).difference(positiveOrderHelper.keys()):
+                positiveOrderHelper[positiveState].append(anotherState)
+        positiveOrderHelper.update(negativeOrder)
+        self.plausibilityOrder.updateMostPlausibleWorlds(           # The most plausible worlds are the most plaus in p
+            posPlausibleInProp)
+
+        return PlausibilitySpace(plausibilitySpace.states, newObservables)
 
     def confirmationBiasedConditioning(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         pass
@@ -222,6 +283,19 @@ class Agent():
             return list.index(element)
         else:
             return 0
+
+    def wordlsRelationToOrder(self, worldsRelation):
+        maxLen = 0
+        order = dict()
+        for key in worldsRelation.keys():
+            maxLen = max(maxLen, len(worldsRelation[key]))
+        for i in range(maxLen):
+            order.update({i: []})
+        for i in range(maxLen):
+            for state in worldsRelation:
+                if len(worldsRelation[state]) == i:
+                    order[i].append(state)
+        return order
 
 
 class Player(Agent):
