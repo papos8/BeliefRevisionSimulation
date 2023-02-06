@@ -150,7 +150,7 @@ class Agent():
             for negativeState in negativeOrder.keys():
                 positiveOrder[positiveState].append(negativeState)
         positiveOrder.update(negativeOrder)
-
+        self.plausibilityOrder.updateWorldsRelation(positiveOrder)
         maxLen = 0
         # Create the set of most plaus worlds
         newMostPlausibleWorlds = set()
@@ -256,7 +256,7 @@ class Agent():
         else:
             stubbornProp = set()  # Set to store the proposition the agent is stub towards
             for prop in stubbornnessDegrees.keys():
-                if stubbornnessDegrees[prop] > 0:
+                if stubbornnessDegrees[prop] > 1:
                     stubbornProp.add(prop)
 
             if proposition in stubbornProp:
@@ -314,7 +314,142 @@ class Agent():
                 return plausibilitySpace
 
     def confirmationBiasedLexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
-        pass
+        self.bias = "Confirmation"
+        # Update the observables
+        # Framing function is applied, but there should return
+        # observables intact (For the sake of completeness)
+        stubbornnessDegrees = self.stubbornnessDegree(
+            plausibilitySpace.observables.getObservables())
+        framedObservables = self.framingFunction(
+            plausibilitySpace.observables.getObservables())
+        for observable in framedObservables:
+            if stubbornnessDegrees[observable] == 1:
+                continue
+        newObservables = Observables(framedObservables)
+        # Initialize memory for times the information has come
+        timesOfIncomingInfo = dict()
+        for obs in plausibilitySpace.observables.getObservables():
+            timesOfIncomingInfo.update({obs: 0})
+
+        if timesOfIncomingInfo[proposition] >= stubbornnessDegrees[proposition]:
+            self.lexRevision(plausibilitySpace, proposition)
+        else:
+            stubbornProp = set()  # Set to store the proposition the agent is stub towards
+            for prop in stubbornnessDegrees.keys():
+                if stubbornnessDegrees[prop] > 1:
+                    stubbornProp.add(prop)
+
+            if proposition in stubbornProp:
+                # Orders that will help creating the new world relation
+                # A world relation is consider an order
+                positiveOrder = dict()
+                negativeOrder = dict()
+                intersectionSet = stubbornProp.intersection(
+                    plausibilitySpace.observables.getObservables()[proposition])
+                negativeIntersectionSet = stubbornProp.intersection(
+                    plausibilitySpace.observables.getObservables()[self.getNegation(proposition)])
+                for key in plausibilitySpace.states.getStates():            # Initialize orders
+                    positiveOrder.update({key: []})
+                    negativeOrder.update({key: []})
+                for state in plausibilitySpace.states.getStates():  # Create orders' keys - Delete the unwanted
+                    if state not in intersectionSet:
+                        positiveOrder.pop(state)
+                    if state not in negativeIntersectionSet:
+                        negativeOrder.pop(state)
+                for key in positiveOrder.keys():                # Create positive order values
+                    positiveOrder[key] = self.plausibilityOrder.getWorldsRelation()[
+                        key]
+                    for state in plausibilitySpace.states.getStates():
+                        if state not in intersectionSet and state in positiveOrder[key]:
+                            positiveOrder[key].remove(state)
+                for key in negativeOrder.keys():                # Create negative order values
+                    negativeOrder[key] = self.plausibilityOrder.getWorldsRelation()[
+                        key]
+                    for state in plausibilitySpace.states.getStates():
+                        if state not in plausibilitySpace.observables.getObservables()[proposition] and state in negativeOrder[key]:
+                            negativeOrder[key].remove(state)
+
+                # New worldsRelation
+                for positiveState in positiveOrder.keys():      # Create new worlds relation
+                    for negativeState in negativeOrder.keys():
+                        positiveOrder[positiveState].append(negativeState)
+                positiveOrder.update(negativeOrder)
+                print(positiveOrder)
+                print(negativeOrder)
+                self.plausibilityOrder.updateWorldsRelation(positiveOrder)
+                maxLen = 0
+                # Create the set of most plaus worlds
+                newMostPlausibleWorlds = set()
+                for key in self.plausibilityOrder.getWorldsRelation().keys():
+                    maxLen = max(maxLen, len(
+                        self.plausibilityOrder.getWorldsRelation()[key]))
+                for key in self.plausibilityOrder.getWorldsRelation().keys():
+                    if len(self.plausibilityOrder.getWorldsRelation()[key]) == maxLen:
+                        newMostPlausibleWorlds.add(key)
+                self.plausibilityOrder.updateMostPlausibleWorlds(
+                    newMostPlausibleWorlds)
+                self.plausibilityOrder.updateOrder(self.wordlsRelationToOrder(
+                    self.plausibilityOrder.getWorldsRelation()))
+                timesOfIncomingInfo[proposition] = timesOfIncomingInfo[proposition] + 1
+                # Update stubbornness degree
+                if timesOfIncomingInfo[proposition] == stubbornnessDegrees[self.getNegation(proposition)]:
+                    stubbornnessDegrees[proposition] = timesOfIncomingInfo[proposition]
+                    stubbornnessDegrees[self.getNegation(proposition)] = 0
+                return PlausibilitySpace(plausibilitySpace.states, newObservables)
+            else:
+                # Create new orders to help with the new worlds relation
+                # The new orders will hold only the stubborn prop as the incoming
+                # Information is a contradiction and the agent revise only the stubborn env
+                positiveOrder = dict()
+                negativeOrder = dict()
+                for key in plausibilitySpace.states.getStates():            # Initialize orders
+                    positiveOrder.update({key: []})
+                    negativeOrder.update({key: []})
+                for state in plausibilitySpace.states.getStates():  # Create orders' keys - Delete the unwanted
+                    if state not in stubbornProp:
+                        positiveOrder.pop(state)
+                    if state in stubbornProp:
+                        negativeOrder.pop(state)
+                for key in positiveOrder.keys():                # Create positive order values
+                    positiveOrder[key] = self.plausibilityOrder.getWorldsRelation()[
+                        key]
+                    for state in plausibilitySpace.states.getStates():
+                        if state not in stubbornProp and state in positiveOrder[key]:
+                            positiveOrder[key].remove(state)
+                for key in negativeOrder.keys():                # Create negative order values
+                    negativeOrder[key] = self.plausibilityOrder.getWorldsRelation()[
+                        key]
+                    for state in plausibilitySpace.states.getStates():
+                        if state in stubbornProp and state in negativeOrder[key]:
+                            negativeOrder[key].remove(state)
+                # New worldsRelation
+                for positiveState in positiveOrder.keys():      # Create new worlds relation
+                    for negativeState in negativeOrder.keys():
+                        positiveOrder[positiveState].append(negativeState)
+                positiveOrder.update(negativeOrder)
+                print(positiveOrder)
+                print(negativeOrder)
+                self.plausibilityOrder.updateWorldsRelation(positiveOrder)
+                maxLen = 0
+                # Create the set of most plaus worlds
+                newMostPlausibleWorlds = set()
+                for key in self.plausibilityOrder.getWorldsRelation().keys():
+                    maxLen = max(maxLen, len(
+                        self.plausibilityOrder.getWorldsRelation()[key]))
+                for key in self.plausibilityOrder.getWorldsRelation().keys():
+                    if len(self.plausibilityOrder.getWorldsRelation()[key]) == maxLen:
+                        newMostPlausibleWorlds.add(key)
+                self.plausibilityOrder.updateMostPlausibleWorlds(
+                    newMostPlausibleWorlds)
+                self.plausibilityOrder.updateOrder(self.wordlsRelationToOrder(
+                    self.plausibilityOrder.getWorldsRelation()))
+
+                timesOfIncomingInfo[proposition] = timesOfIncomingInfo[proposition] + 1
+                # Update stubbornness degree
+                if timesOfIncomingInfo[proposition] == stubbornnessDegrees[self.getNegation(proposition)]:
+                    stubbornnessDegrees[proposition] = timesOfIncomingInfo[proposition]
+                    stubbornnessDegrees[self.getNegation(proposition)] = 0
+                return PlausibilitySpace(plausibilitySpace.states, newObservables)
 
     def confirmationBiasedMinRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         pass
@@ -335,7 +470,7 @@ class Agent():
         pass
 
     def anchoringBiasedMinRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
-        pass
+        self.minRevision(plausibilitySpace, proposition)
 
     def inGroupFavoritismConditioning(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         pass
