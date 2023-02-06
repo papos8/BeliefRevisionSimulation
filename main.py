@@ -128,3 +128,14 @@ print(agent1.plausibilityOrder.getWorldsRelation())
 print("New most plausible worlds")
 print(agent1.plausibilityOrder.getMostPlausibleWorlds())
 '''
+# Example for FR conditioning- create an example for
+print("Randomness is to strict to have results! Have to create custom examples")
+newSpace = agent1.framingBiasedConditioning(plSpace, input(
+    "What is the incoming information? "))
+print(agent1.stubbornnessDegree(obs.getObservables()))
+print("Agent's plausibility order:")
+print(agent1.plausibilityOrder.getOrder())
+print("New worlds relation")
+print(agent1.plausibilityOrder.getWorldsRelation())
+print("New most plausible worlds")
+print(agent1.plausibilityOrder.getMostPlausibleWorlds())

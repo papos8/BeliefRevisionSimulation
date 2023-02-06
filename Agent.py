@@ -15,7 +15,7 @@ from Obsevables import Observables
 from BiasedModel import PlausibilitySpace
 from PlausibilityOrder import PlausibilityOrder
 import States
-from random import randint, random, uniform, choice
+from random import randint, random, uniform, choice, sample
 
 
 class Agent():
@@ -35,7 +35,7 @@ class Agent():
                 value = observables[proposition]
                 # Here the subset is taken completely random
                 # This may affect the results
-                newValue = random.sample(value, randint(
+                newValue = sample(value, randint(
                     0, len(observables[proposition])))
                 observables[proposition] = newValue
 
@@ -595,13 +595,68 @@ class Agent():
                 return PlausibilitySpace(plausibilitySpace.states, newObservables)
 
     def framingBiasedConditioning(self, plausibilitySpace: PlausibilitySpace, proposition: string):
-        pass
+        self.bias = "Framing"
+        # Update the observables
+        # Framing function is applied, but there should return
+        # observables intact (For the sake of completeness)
+
+        framedObservables = self.framingFunction(
+            plausibilitySpace.observables.getObservables())
+        stubbornnessDegrees = self.stubbornnessDegree(
+            framedObservables)
+        print(framedObservables)
+        newObservables = Observables(framedObservables)
+        # Create new set S
+        helperStates = plausibilitySpace.states.getStates()
+        newStates = set(framedObservables[proposition])
+        plausibilitySpace.states.updateStates(
+            plausibilitySpace.states.getStates().intersection(newStates))
+        newStates = States.States(newStates)
+        statesToRemove = helperStates.difference(newStates.getStates())
+        for state in statesToRemove:
+            for key in self.plausibilityOrder.getOrder().keys():
+                if state in self.plausibilityOrder.getOrder()[key]:
+                    self.plausibilityOrder.getOrder()[key].remove(state)
+            for anotherState in newStates.getStates():
+                if state in self.plausibilityOrder.getWorldsRelation()[anotherState]:
+                    self.plausibilityOrder.getWorldsRelation()[
+                        anotherState].remove(state)
+            self.plausibilityOrder.getWorldsRelation().pop(state)
+            if state in self.plausibilityOrder.getMostPlausibleWorlds():
+                self.plausibilityOrder.getMostPlausibleWorlds().remove(state)
+        self.plausibilityOrder = PlausibilityOrder(
+            self.plausibilityOrder.getOrder(), self.plausibilityOrder.getWorldsRelation(), self.plausibilityOrder.getMostPlausibleWorlds())
+        newPlSpace = PlausibilitySpace(
+            states=newStates, observbles=newObservables)
+        return newPlSpace
 
     def framingBiasedLexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
-        pass
+        self.bias = "Framing"
+        # Update the observables
+        # Framing function is applied, but there should return
+        # observables intact (For the sake of completeness)
+        stubbornnessDegrees = self.stubbornnessDegree(
+            plausibilitySpace.observables.getObservables())
+        framedObservables = self.framingFunction(
+            plausibilitySpace.observables.getObservables())
+        for observable in framedObservables:
+            if stubbornnessDegrees[observable] == 1:
+                continue
+        newObservables = Observables(framedObservables)
 
     def framingBiasedMinRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
-        pass
+        self.bias = "Framing"
+        # Update the observables
+        # Framing function is applied, but there should return
+        # observables intact (For the sake of completeness)
+        stubbornnessDegrees = self.stubbornnessDegree(
+            plausibilitySpace.observables.getObservables())
+        framedObservables = self.framingFunction(
+            plausibilitySpace.observables.getObservables())
+        for observable in framedObservables:
+            if stubbornnessDegrees[observable] == 1:
+                continue
+        newObservables = Observables(framedObservables)
 
     def anchoringBiasedConditioning(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         pass
