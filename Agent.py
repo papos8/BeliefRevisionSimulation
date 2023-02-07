@@ -38,7 +38,8 @@ class Agent():
                 newValue = sample(value, randint(
                     0, len(observables[proposition])))
                 observables[proposition] = newValue
-
+        for key in observables.keys():
+            observables[key] = set(observables[key])
         return observables
 
     # Function that return a dictionary of a proposition and
@@ -602,8 +603,6 @@ class Agent():
 
         framedObservables = self.framingFunction(
             plausibilitySpace.observables.getObservables())
-        stubbornnessDegrees = self.stubbornnessDegree(
-            framedObservables)
         print(framedObservables)
         newObservables = Observables(framedObservables)
         # Create new set S
@@ -635,28 +634,124 @@ class Agent():
         # Update the observables
         # Framing function is applied, but there should return
         # observables intact (For the sake of completeness)
+        standardObservables = Observables(
+            plausibilitySpace.observables.getObservables())
         stubbornnessDegrees = self.stubbornnessDegree(
             plausibilitySpace.observables.getObservables())
         framedObservables = self.framingFunction(
             plausibilitySpace.observables.getObservables())
-        for observable in framedObservables:
-            if stubbornnessDegrees[observable] == 1:
-                continue
         newObservables = Observables(framedObservables)
+        # Create two helper state orders
+        # Posittive and negative
+        positiveOrder = dict()
+        negativeOrder = dict()
+        for key in plausibilitySpace.states.getStates():  # Initialize orders
+            positiveOrder.update({key: []})
+            negativeOrder.update({key: []})
+        for state in plausibilitySpace.states.getStates():  # Create orders' keys
+            if state not in newObservables.getObservables()[proposition]:
+                positiveOrder.pop(state)
+            if state in newObservables.getObservables()[proposition]:
+                negativeOrder.pop(state)
+        for key in positiveOrder.keys():                # Create positive order values
+            positiveOrder[key] = self.plausibilityOrder.getWorldsRelation()[
+                key]
+            for state in plausibilitySpace.states.getStates():
+                if state not in newObservables.getObservables()[proposition] and state in positiveOrder[key]:
+                    positiveOrder[key].remove(state)
+        for key in negativeOrder.keys():                # Create negative order values
+            negativeOrder[key] = self.plausibilityOrder.getWorldsRelation()[
+                key]
+            for state in plausibilitySpace.states.getStates():
+                if state in newObservables.getObservables()[proposition] and state in negativeOrder[key]:
+                    negativeOrder[key].remove(state)
+        # New worldsRelation
+        for positiveState in positiveOrder.keys():      # Create new worlds relation
+            for negativeState in negativeOrder.keys():
+                positiveOrder[positiveState].append(negativeState)
+        positiveOrder.update(negativeOrder)
+        self.plausibilityOrder.updateWorldsRelation(positiveOrder)
+        maxLen = 0
+        # Create the set of most plaus worlds
+        newMostPlausibleWorlds = set()
+        for key in self.plausibilityOrder.getWorldsRelation().keys():
+            maxLen = max(maxLen, len(
+                self.plausibilityOrder.getWorldsRelation()[key]))
+        for key in self.plausibilityOrder.getWorldsRelation().keys():
+            if len(self.plausibilityOrder.getWorldsRelation()[key]) == maxLen:
+                newMostPlausibleWorlds.add(key)
+        self.plausibilityOrder.updateMostPlausibleWorlds(
+            newMostPlausibleWorlds)
+        self.plausibilityOrder.updateOrder(self.wordlsRelationToOrder(
+            self.plausibilityOrder.getWorldsRelation()))
+        print(standardObservables.getObservables())
+        return PlausibilitySpace(plausibilitySpace.states, standardObservables)
 
     def framingBiasedMinRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         self.bias = "Framing"
         # Update the observables
         # Framing function is applied, but there should return
         # observables intact (For the sake of completeness)
+        standardObservables = Observables(
+            plausibilitySpace.observables.getObservables())
         stubbornnessDegrees = self.stubbornnessDegree(
             plausibilitySpace.observables.getObservables())
         framedObservables = self.framingFunction(
             plausibilitySpace.observables.getObservables())
-        for observable in framedObservables:
-            if stubbornnessDegrees[observable] == 1:
-                continue
         newObservables = Observables(framedObservables)
+        positiveOrder = dict()
+        positiveOrderHelper = dict()
+        negativeOrder = dict()
+        for key in plausibilitySpace.states.getStates():            # Initialize orders
+            positiveOrder.update({key: []})
+            negativeOrder.update({key: []})
+            positiveOrderHelper.update({key: []})
+        for state in plausibilitySpace.states.getStates():          # Create keys for orders
+            if state not in framedObservables[proposition]:
+                positiveOrder.pop(state)
+            if state in plausibilitySpace.observables.getObservables()[proposition]:
+                negativeOrder.pop(state)
+        for key in positiveOrder.keys():                             # Create pos order
+            positiveOrder[key] = self.plausibilityOrder.getWorldsRelation()[
+                key]
+            for state in plausibilitySpace.states.getStates():
+                if state not in framedObservables[proposition] and state in positiveOrder[key]:
+                    positiveOrder[key].remove(state)
+        posPlausibleInProp = set()  # Set to store the most plausible worlds in a proposition
+        maxLen = 0
+        for key in positiveOrder.keys():
+            maxLen = max(maxLen, len(positiveOrder[key]))
+        for key in positiveOrder.keys():
+            if len(positiveOrder[key]) == maxLen and key in framedObservables[proposition]:
+                posPlausibleInProp.add(key)
+
+        for key in plausibilitySpace.states.getStates():
+            if key not in posPlausibleInProp:
+                positiveOrderHelper.pop(key)
+        for key in negativeOrder.keys():                            # Create neg order
+            negativeOrder[key] = self.plausibilityOrder.getWorldsRelation()[
+                key]
+            for state in plausibilitySpace.states.getStates():
+                if state in framedObservables[proposition] and state in negativeOrder[key]:
+                    negativeOrder[key].remove(state)
+
+        for key in positiveOrderHelper.keys():                      # Create posHelper order
+            positiveOrderHelper[key] = self.plausibilityOrder.getWorldsRelation()[
+                key]
+            for state in plausibilitySpace.states.getStates():
+                if state in framedObservables[proposition] and state in positiveOrderHelper[key] and state not in posPlausibleInProp:
+                    positiveOrderHelper[key].remove(state)
+        print(positiveOrderHelper)
+        for positiveState in positiveOrderHelper.keys():            # Add the 'negative' worlds to positive
+            for negativeState in negativeOrder.keys():
+                positiveOrderHelper[positiveState].append(negativeState)
+            for anotherState in set(positiveOrder.keys()).difference(positiveOrderHelper.keys()):
+                positiveOrderHelper[positiveState].append(anotherState)
+        positiveOrderHelper.update(negativeOrder)
+        self.plausibilityOrder.updateMostPlausibleWorlds(           # The most plausible worlds are the most plaus in p
+            posPlausibleInProp)
+
+        return PlausibilitySpace(plausibilitySpace.states, plausibilitySpace.observables)
 
     def anchoringBiasedConditioning(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         pass
