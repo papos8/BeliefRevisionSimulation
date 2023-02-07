@@ -807,7 +807,98 @@ class Agent():
         return newPlSpace
 
     def anchoringBiasedLexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
-        pass
+        self.bias = "Anchoring"
+        # Update the observables
+        # Framing function is applied, but there should return
+        # observables intact (For the sake of completeness)
+        helperStates = plausibilitySpace.states.getStates()
+        framedObservables = self.framingFunction(
+            plausibilitySpace.observables.getObservables())
+        stubbornnessDegrees = self.stubbornnessDegree(
+            plausibilitySpace.observables.getObservables())
+        newObservables = Observables(framedObservables)
+        positiveOrder = dict()
+        positiveOrderHelper = dict()
+        negativeOrder = dict()
+        negativeOrderHelper = dict()
+        for key in plausibilitySpace.states.getStates():            # Initialize orders
+            positiveOrder.update({key: []})
+            negativeOrder.update({key: []})
+            positiveOrderHelper.update({key: []})
+            negativeOrderHelper.update({key: []})
+        for state in plausibilitySpace.states.getStates():          # Create keys for orders
+            if state not in plausibilitySpace.observables.getObservables()[proposition]:
+                positiveOrder.pop(state)
+            if state in plausibilitySpace.observables.getObservables()[proposition]:
+                negativeOrder.pop(state)
+        for key in positiveOrder.keys():                             # Create pos order
+            positiveOrder[key] = self.plausibilityOrder.getWorldsRelation()[
+                key]
+            for state in plausibilitySpace.states.getStates():
+                if state not in plausibilitySpace.observables.getObservables()[proposition] and state in positiveOrder[key]:
+                    positiveOrder[key].remove(state)
+        for key in negativeOrder.keys():                            # Create neg order
+            negativeOrder[key] = self.plausibilityOrder.getWorldsRelation()[
+                key]
+            for state in plausibilitySpace.states.getStates():
+                if state in plausibilitySpace.observables.getObservables()[proposition] and state in negativeOrder[key]:
+                    negativeOrder[key].remove(state)
+
+        posPlausibleInProp = set()  # Set to store the most plausible worlds in a proposition
+        negPlausibleInProp = set()
+        maxLenPos = 0
+        maxLenNeg = 0
+        for key in positiveOrder.keys():  # Find most plausible worlds for both positive and negative cases
+            maxLenPos = max(maxLenPos, len(positiveOrder[key]))
+        for key in positiveOrder.keys():
+            if len(positiveOrder[key]) == maxLenPos and key in plausibilitySpace.observables.getObservables()[proposition]:
+                posPlausibleInProp.add(key)
+        for key in negativeOrder.keys():
+            maxLenNeg = max(maxLenNeg, len(negativeOrder[key]))
+        for key in negativeOrder.keys():
+            if len(negativeOrder[key]) == maxLenNeg and key in plausibilitySpace.observables.getObservables()[self.getNegation(proposition)]:
+                negPlausibleInProp.add(key)
+
+        for state in plausibilitySpace.states.getStates():          # Create keys for orders
+            if state not in posPlausibleInProp:
+                positiveOrderHelper.pop(state)
+            if state not in negPlausibleInProp:
+                negativeOrderHelper.pop(state)
+        for key in positiveOrderHelper.keys():                      # Create posHelper order
+            positiveOrderHelper[key] = self.plausibilityOrder.getWorldsRelation()[
+                key]
+            for state in plausibilitySpace.states.getStates():
+                if state in plausibilitySpace.observables.getObservables()[proposition] and state in positiveOrderHelper[key] and state not in posPlausibleInProp:
+                    positiveOrderHelper[key].remove(state)
+        for key in negativeOrderHelper.keys():                      # Create posHelper order
+            negativeOrderHelper[key] = self.plausibilityOrder.getWorldsRelation()[
+                key]
+            for state in plausibilitySpace.states.getStates():
+                if state in plausibilitySpace.observables.getObservables()[self.getNegation(proposition)] and state in negativeOrderHelper[key] and state not in negPlausibleInProp:
+                    negativeOrderHelper[key].remove(state)
+        # Add the missing states to the order
+        for positiveState in positiveOrderHelper.keys():
+            for positiveStateHelper in set(positiveOrder.keys()).difference(set(positiveOrderHelper.keys())):
+                positiveOrderHelper[positiveState].append(positiveStateHelper)
+            for negativeStateHelper in negativeOrderHelper.keys():
+                positiveOrderHelper[positiveState].append(negativeStateHelper)
+            for negativeState in negativeOrder.keys():
+                positiveOrderHelper[positiveState].append(negativeState)
+        for positiveState in positiveOrder.keys():
+            for negativeStateHelper in negativeOrderHelper.keys():
+                positiveOrder[positiveState].append(negativeStateHelper)
+            for negativeState in negativeOrder.keys():
+                positiveOrder[positiveState].append(negativeState)
+        for negativeStateHelper in negativeOrderHelper.keys():
+            for negativeState in negativeOrder.keys():
+                negativeOrderHelper[negativeStateHelper].append(negativeState)
+        positiveOrderHelper.update(positiveOrder)
+        positiveOrderHelper.update(negativeOrderHelper)
+        positiveOrderHelper.update(negativeOrder)
+        self.plausibilityOrder.updateWorldsRelation(positiveOrderHelper)
+        self.plausibilityOrder.updateMostPlausibleWorlds(posPlausibleInProp)
+
+        return PlausibilitySpace(plausibilitySpace.states, newObservables)
 
     def anchoringBiasedMinRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         self.minRevision(plausibilitySpace, proposition)
@@ -854,21 +945,3 @@ class Agent():
         for proposition in propositions:
             newSet = newSet.intersection(proposition)
         return newSet
-
-
-class Player(Agent):
-    def __init__(self):
-        super().__init__()
-        self.position = (0, 0)
-
-    def turnLeft(self):
-        pass
-
-    def turnRight(self):
-        pass
-
-    def reverse(self):
-        pass
-
-    def moveForward(self):
-        pass
