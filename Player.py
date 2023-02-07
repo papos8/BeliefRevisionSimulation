@@ -1,3 +1,6 @@
+import Agent
+
+
 class Player(Agent):
     def __init__(self):
         super().__init__()
