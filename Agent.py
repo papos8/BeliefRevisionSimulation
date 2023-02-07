@@ -754,7 +754,57 @@ class Agent():
         return PlausibilitySpace(plausibilitySpace.states, plausibilitySpace.observables)
 
     def anchoringBiasedConditioning(self, plausibilitySpace: PlausibilitySpace, proposition: string):
-        pass
+        self.bias = "Anchoring"
+        # Update the observables
+        # Framing function is applied, but there should return
+        # observables intact (For the sake of completeness)
+        helperStates = plausibilitySpace.states.getStates()
+        framedObservables = self.framingFunction(
+            plausibilitySpace.observables.getObservables())
+        stubbornnessDegrees = self.stubbornnessDegree(
+            plausibilitySpace.observables.getObservables())
+        newObservables = Observables(framedObservables)
+        positiveOrder = dict()
+        for key in plausibilitySpace.states.getStates():            # Initialize orders
+            positiveOrder.update({key: []})
+
+        for state in plausibilitySpace.states.getStates():          # Create keys for orders
+            if state not in plausibilitySpace.observables.getObservables()[proposition]:
+                positiveOrder.pop(state)
+
+        for key in positiveOrder.keys():                             # Create pos order
+            positiveOrder[key] = self.plausibilityOrder.getWorldsRelation()[
+                key]
+            for state in plausibilitySpace.states.getStates():
+                if state not in plausibilitySpace.observables.getObservables()[proposition] and state in positiveOrder[key]:
+                    positiveOrder[key].remove(state)
+        posPlausibleInProp = set()  # Set to store the most plausible worlds in a proposition
+        maxLen = 0
+        for key in positiveOrder.keys():
+            maxLen = max(maxLen, len(positiveOrder[key]))
+        for key in positiveOrder.keys():
+            if len(positiveOrder[key]) == maxLen and key in plausibilitySpace.observables.getObservables()[proposition]:
+                posPlausibleInProp.add(key)
+        newStates = plausibilitySpace.states.getStates()
+        newStates = newStates.intersection(posPlausibleInProp)
+        newStates = States.States(newStates)
+        statesToRemove = helperStates.difference(newStates.getStates())
+        print(statesToRemove)
+        for state in statesToRemove:
+            for key in self.plausibilityOrder.getOrder().keys():
+                if state in self.plausibilityOrder.getOrder()[key]:
+                    self.plausibilityOrder.getOrder()[key].remove(state)
+            for anotherState in newStates.getStates():
+                if state in self.plausibilityOrder.getWorldsRelation()[anotherState]:
+                    self.plausibilityOrder.getWorldsRelation()[
+                        anotherState].remove(state)
+            self.plausibilityOrder.getWorldsRelation().pop(state)
+        self.plausibilityOrder.updateMostPlausibleWorlds(newStates.getStates())
+        self.plausibilityOrder = PlausibilityOrder(
+            self.plausibilityOrder.getOrder(), self.plausibilityOrder.getWorldsRelation(), self.plausibilityOrder.getMostPlausibleWorlds())
+        newPlSpace = PlausibilitySpace(
+            states=newStates, observbles=newObservables)
+        return newPlSpace
 
     def anchoringBiasedLexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         pass
