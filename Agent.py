@@ -15,6 +15,7 @@ from Obsevables import Observables
 from BiasedModel import PlausibilitySpace
 from PlausibilityOrder import PlausibilityOrder
 import States
+import math
 from random import randint, random, uniform, choice, sample
 
 
@@ -52,17 +53,31 @@ class Agent():
         to every observable proposition. Otherwise, the degree
         is 1 for every observable proposition '''
         if self.bias == "Confirmation":
-            for proposition in observables:
-                dictOfDegress.update({proposition: 0})
-            for proposition in observables:
-                if self.getNegation(proposition) in observables and dictOfDegress[self.getNegation(proposition)] > 0:
-                    continue
-                else:
-                    dictOfDegress[proposition] = randint(1, 5)
+            if self.isInGroup == True:
+                for proposition in observables:
+                    dictOfDegress.update({proposition: 0})
+                for proposition in observables:
+                    if self.getNegation(proposition) in observables and dictOfDegress[self.getNegation(proposition)] > 0:
+                        continue
+                    else:
+                        dictOfDegress[proposition] = math.ceil(
+                            randint(1, 5)/self.group.adaptiveFactor)
+            else:
+                for proposition in observables:
+                    dictOfDegress.update({proposition: 1})
+                for proposition in observables:
+                    if self.getNegation(proposition) in observables and dictOfDegress[self.getNegation(proposition)] > 1:
+                        continue
+                    else:
+                        dictOfDegress[proposition] = randint(1, 5)
         elif self.bias == "Unbiased":
             for proposition in observables:
                 dictOfDegress.update({proposition: 1})
         return dictOfDegress
+
+    def addedToGroup(self, group: set):
+        self.group = group
+        self.isInGroup = True
 
     # Implement conditioning based on the definitions
     def conditioning(self, plausibilitySpace: PlausibilitySpace, proposition: string):
@@ -252,7 +267,7 @@ class Agent():
         for obs in plausibilitySpace.observables.getObservables():
             timesOfIncomingInfo.update({obs: 0})
 
-        if timesOfIncomingInfo[proposition] >= stubbornnessDegrees[proposition]:
+        if timesOfIncomingInfo[proposition] >= stubbornnessDegrees[self.getNegation(proposition)]:
             self.conditioning(plausibilitySpace, proposition)
         else:
             stubbornProp = set()  # Set to store the proposition the agent is stub towards
@@ -904,13 +919,13 @@ class Agent():
         self.minRevision(plausibilitySpace, proposition)
 
     def inGroupFavoritismConditioning(self, plausibilitySpace: PlausibilitySpace, proposition: string):
-        pass
+        self.confirmationBiasedConditioning(plausibilitySpace, proposition)
 
     def inGroupFavoritismLexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
-        pass
+        self.confirmationBiasedLexRevision(plausibilitySpace, proposition)
 
     def inGroupFavoritismMinRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
-        pass
+        self.confirmationBiasedMinRevision(plausibilitySpace, proposition)
 
     def getNegation(self, proposition: string):
         if len(proposition) == 1:
@@ -942,6 +957,7 @@ class Agent():
     def getIntersection(self, propositions):
         newSet = set()
         newSet = choice(tuple(propositions))
-        for proposition in propositions:
-            newSet = newSet.intersection(proposition)
+        if propositions is set():
+            for proposition in propositions:
+                newSet = newSet.intersection(proposition)
         return newSet

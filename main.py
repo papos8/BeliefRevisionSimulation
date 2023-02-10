@@ -20,11 +20,18 @@ import States
 import string
 import random
 from Valuation import Valuation
+import Group
 
 numberOfStates = int(input('How many possible worlds are there? '))
 states = States.States(numberOfStates)
 
 agent1 = Agent.Agent(states)
+agent2 = Agent.Agent(states)
+agent3 = Agent.Agent(states)
+setOfAgents = set()
+setOfAgents.add(agent1)
+setOfAgents.add(agent2)
+setOfAgents.add(agent3)
 obs = Observables(states)
 print("Agent's plausibility order:")
 print(agent1.plausibilityOrder.getOrder())
@@ -171,7 +178,7 @@ print("New worlds relation")
 print(agent1.plausibilityOrder.getWorldsRelation())
 print("New most plausible worlds")
 print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-'''
+
 # Example for AN lex revision - create an example for
 print("Randomness is to strict to have results! Have to create custom examples")
 newSpace = agent1.anchoringBiasedLexRevision(plSpace, input(
@@ -182,3 +189,18 @@ print("New worlds relation")
 print(agent1.plausibilityOrder.getWorldsRelation())
 print("New most plausible worlds")
 print(agent1.plausibilityOrder.getMostPlausibleWorlds())
+'''
+group = Group.Group(setOfAgents, 2)
+print(agent1.stubbornnessDegree(obs.getObservables()))
+agent1.addedToGroup(group)
+agent1.confirmationBiasedLexRevision(
+    plSpace, input("What is the incoming info"))
+agent1.inGroupFavoritismMinRevision(
+    plSpace, input("What is the incoming information?"))
+print(agent1.stubbornnessDegree(obs.getObservables()))
+print("Agent's new plausibility order:")
+print(agent1.plausibilityOrder.getOrder())
+print("New most plausible worlds")
+print(agent1.plausibilityOrder.getMostPlausibleWorlds())
+print("Agent's new worlds relation")
+print(agent1.plausibilityOrder.getWorldsRelation())
