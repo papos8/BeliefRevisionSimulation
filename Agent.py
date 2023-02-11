@@ -24,6 +24,8 @@ class Agent():
         self.resources = uniform(0.0, 100.0)
         self.bias = "Unbiased"
         self.plausibilityOrder = PlausibilityOrder(states)
+        self.isInGroup = False
+        self.timesOfIncomingInfo = dict()
 
     # Framing function to return a subset of
     # a proposition
@@ -85,11 +87,11 @@ class Agent():
         # Create new set S
         helperStates = plausibilitySpace.states.getStates()
         newStates = plausibilitySpace.observables.getObservables()[proposition]
-        print(newStates)
+
         plausibilitySpace.states.updateStates(
             plausibilitySpace.states.getStates().intersection(newStates))
         finalStates = States.States(newStates)
-        print(finalStates.getStates())
+
         # Update the observables
         # Framing function is applied, but there should return
         # observables intact
@@ -109,7 +111,7 @@ class Agent():
         newObservables = Observables(newObservables)
         # Update plaus order to have only the new states
         statesToRemove = helperStates.difference(finalStates.getStates())
-        print(statesToRemove)
+
         for state in statesToRemove:
             for key in self.plausibilityOrder.getOrder().keys():
                 if state in self.plausibilityOrder.getOrder()[key]:
@@ -252,7 +254,6 @@ class Agent():
             for state in plausibilitySpace.states.getStates():
                 if state in plausibilitySpace.observables.getObservables()[proposition] and state in positiveOrderHelper[key] and state not in posPlausibleInProp:
                     positiveOrderHelper[key].remove(state)
-        print(positiveOrderHelper)
         for positiveState in positiveOrderHelper.keys():            # Add the 'negative' worlds to positive
             for negativeState in negativeOrder.keys():
                 positiveOrderHelper[positiveState].append(negativeState)
@@ -271,6 +272,7 @@ class Agent():
         # observables intact (For the sake of completeness)
         stubbornnessDegrees = self.stubbornnessDegree(
             plausibilitySpace.observables.getObservables())
+        print(stubbornnessDegrees)
         framedObservables = self.framingFunction(
             plausibilitySpace.observables.getObservables())
         for observable in framedObservables:
@@ -278,11 +280,14 @@ class Agent():
                 continue
         newObservables = Observables(framedObservables)
         # Initialize memory for times the information has come
-        timesOfIncomingInfo = dict()
-        for obs in plausibilitySpace.observables.getObservables():
-            timesOfIncomingInfo.update({obs: 0})
 
-        if timesOfIncomingInfo[proposition] >= stubbornnessDegrees[self.getNegation(proposition)]:
+        for obs in plausibilitySpace.observables.getObservables():
+            self.timesOfIncomingInfo.update({obs: 0})
+        print("Times of incoming")
+        print(self.timesOfIncomingInfo)
+        if self.timesOfIncomingInfo[proposition] >= stubbornnessDegrees[self.getNegation(proposition)]:
+            print(1)
+            self.timesOfIncomingInfo[proposition] += 1
             self.conditioning(plausibilitySpace, proposition)
         else:
             stubbornProp = set()  # Set to store the proposition the agent is stub towards
@@ -291,6 +296,7 @@ class Agent():
                     stubbornProp.add(prop)
 
             if proposition in stubbornProp:
+                print(2)
                 helperStates = plausibilitySpace.states.getStates()
                 newStates = plausibilitySpace.states.getStates()
                 # Create a set of worls that are in the stub props
@@ -312,6 +318,8 @@ class Agent():
                         framedObservables[proposition])
                     if len(newValue) > 0:
                         newObservables.update({observable: newValue})
+                    else:
+                        newObservables.update({observable: set()})
                 newObservables = Observables(newObservables)
                 statesToRemove = helperStates.difference(newStates.getStates())
                 for state in statesToRemove:
@@ -330,17 +338,18 @@ class Agent():
                     self.plausibilityOrder.getOrder(), self.plausibilityOrder.getWorldsRelation(), self.plausibilityOrder.getMostPlausibleWorlds())
                 newPlSpace = PlausibilitySpace(
                     states=newStates, observbles=newObservables)
-                timesOfIncomingInfo[proposition] = timesOfIncomingInfo[proposition] + 1
+                self.timesOfIncomingInfo[proposition] += 1
                 # Update stubbornness degree
-                if timesOfIncomingInfo[proposition] == stubbornnessDegrees[self.getNegation(proposition)]:
-                    stubbornnessDegrees[proposition] = timesOfIncomingInfo[proposition]
+                if self.timesOfIncomingInfo[proposition] == stubbornnessDegrees[self.getNegation(proposition)]:
+                    stubbornnessDegrees[proposition] = self.timesOfIncomingInfo[proposition]
                     stubbornnessDegrees[self.getNegation(proposition)] = 0
                 return newPlSpace
             else:
-                timesOfIncomingInfo[proposition] = timesOfIncomingInfo[proposition] + 1
+                print(3)
+                self.timesOfIncomingInfo[proposition] += 1
                 # Update stubbornness degree
-                if timesOfIncomingInfo[proposition] == stubbornnessDegrees[self.getNegation(proposition)]:
-                    stubbornnessDegrees[proposition] = timesOfIncomingInfo[proposition]
+                if self.timesOfIncomingInfo[proposition] == stubbornnessDegrees[self.getNegation(proposition)]:
+                    stubbornnessDegrees[proposition] = self.timesOfIncomingInfo[proposition]
                     stubbornnessDegrees[self.getNegation(proposition)] = 0
                 return plausibilitySpace
 
@@ -934,12 +943,15 @@ class Agent():
         self.minRevision(plausibilitySpace, proposition)
 
     def inGroupFavoritismConditioning(self, plausibilitySpace: PlausibilitySpace, proposition: string):
+        self.isInGroup = True
         self.confirmationBiasedConditioning(plausibilitySpace, proposition)
 
     def inGroupFavoritismLexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
+        self.isInGroup = True
         self.confirmationBiasedLexRevision(plausibilitySpace, proposition)
 
     def inGroupFavoritismMinRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
+        self.isInGroup = True
         self.confirmationBiasedMinRevision(plausibilitySpace, proposition)
 
     def getNegation(self, proposition: string):

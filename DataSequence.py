@@ -22,6 +22,9 @@ class DataSequence():
                 worlds.add(world)
                 setOfworlds.add(world)
             self.dataSequenceDict.update({key: setOfworlds})
+        for proposition in self.dataSequence:
+            self.dataSequenceDict.update(
+                {self.getNegation(proposition): worlds.difference(self.dataSequenceDict[proposition])})
         self.states = States.States(set(worlds))
         self.observables = Obsevables.Observables(self.dataSequenceDict)
 
@@ -69,3 +72,9 @@ class DataSequence():
             self.dataSequenceDict.update(
                 {key: observables.getObservables()[key]})
         return self.dataSequenceDict
+
+    def getNegation(self, proposition: string):
+        if len(proposition) == 1:
+            return str("~" + proposition)
+        else:
+            return proposition[1]

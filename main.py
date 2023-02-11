@@ -1,4 +1,5 @@
 from asyncore import file_dispatcher
+from re import A
 from kivy.app import App
 import kivy.uix.widget as kuix
 import kivy.properties as kpro
@@ -208,12 +209,20 @@ print(agent1.plausibilityOrder.getWorldsRelation())
 data = DataSequence.DataSequence()
 agent1 = Agent.Agent(data.getStates())
 print(agent1.plausibilityOrder.getWorldsRelation())
+print(data.getObservables().getObservables())
+print(agent1.stubbornnessDegree(data.getObservables().getObservables()))
 initialPlSpace = PlausibilitySpace(
     data.getStates(), data.getObservables())
-newSpace = agent1.lexRevision(initialPlSpace, data.getDataSequence()[0])
+newSpace = agent1.confirmationBiasedConditioning(
+    initialPlSpace, data.getDataSequence()[0])
 print(agent1.plausibilityOrder.getWorldsRelation())
-anotherSpace = agent1.lexRevision(newSpace, data.getDataSequence()[1])
+print(agent1.plausibilityOrder.getMostPlausibleWorlds())
+anotherSpace = agent1.confirmationBiasedConditioning(
+    newSpace, data.getDataSequence()[1])
 print(agent1.plausibilityOrder.getWorldsRelation())
-lastSpace = agent1.lexRevision(anotherSpace, data.getDataSequence()[2])
+print(agent1.plausibilityOrder.getMostPlausibleWorlds())
+lastSpace = agent1.confirmationBiasedConditioning(
+    anotherSpace, data.getDataSequence()[2])
 print(agent1.plausibilityOrder.getWorldsRelation())
+print(agent1.plausibilityOrder.getMostPlausibleWorlds())
 print(agent1.plausibilityOrder.getMostPlausibleWorlds())
