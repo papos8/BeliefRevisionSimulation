@@ -1,3 +1,4 @@
+from asyncore import file_dispatcher
 from kivy.app import App
 import kivy.uix.widget as kuix
 import kivy.properties as kpro
@@ -11,6 +12,7 @@ from BiasedModel import PlausibilitySpace
 from DataSequence import DataSequence
 from Formula import Conjuction, Letter, Negation
 from Obsevables import Observables
+from PlausibilityOrder import PlausibilityOrder
 import States
 import string
 import DataSequence
@@ -206,13 +208,12 @@ print(agent1.plausibilityOrder.getWorldsRelation())
 data = DataSequence.DataSequence()
 agent1 = Agent.Agent(data.getStates())
 print(agent1.plausibilityOrder.getWorldsRelation())
-print(data.getStates().getStates())
-print(data.getObservables().getObservables())
 initialPlSpace = PlausibilitySpace(
     data.getStates(), data.getObservables())
-newSpace = agent1.conditioning(initialPlSpace, data.getDataSequence()[0])
-print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-anotherSpace = agent1.conditioning(newSpace, data.getDataSequence()[1])
-print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-lastSpace = agent1.conditioning(anotherSpace, data.getDataSequence()[2])
+newSpace = agent1.lexRevision(initialPlSpace, data.getDataSequence()[0])
+print(agent1.plausibilityOrder.getWorldsRelation())
+anotherSpace = agent1.lexRevision(newSpace, data.getDataSequence()[1])
+print(agent1.plausibilityOrder.getWorldsRelation())
+lastSpace = agent1.lexRevision(anotherSpace, data.getDataSequence()[2])
+print(agent1.plausibilityOrder.getWorldsRelation())
 print(agent1.plausibilityOrder.getMostPlausibleWorlds())
