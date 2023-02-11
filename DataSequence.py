@@ -5,15 +5,23 @@ import random
 
 
 class DataSequence():
-    def __init__(self, observables: Obsevables, states: States, length: int) -> None:
-        self.dataSequence = dict()
-        self.observables = observables
-        self.states = states
-        self.length = length
-        for i in range(length):
-            key = random.choice(
-                tuple(observables.getObservables()))
-            self.dataSequence.update({key: observables.getObservables()[key]})
+    def __init__(self) -> None:
+        self.length = int(input("Provide the sequence's length: "))
+        self.dataSequenceDict = dict()
+        self.dataSequence = []
+        for i in range(self.length):
+            key = input("Provide the name of the observable proposition: ")
+            self.dataSequence.append(key)
+            worlds = set()
+            setLength = int(
+                input("In how many worlds is the proposition true? "))
+            for i in range(setLength):
+                world = input("Provide the name of the world: ")
+                worlds.add(world)
+            self.dataSequenceDict.update({key: worlds})
+
+    def getDataSequenceDict(self):
+        return self.dataSequenceDict
 
     def getDataSequence(self):
         return self.dataSequence
@@ -41,16 +49,12 @@ class DataSequence():
         return flag
 
     # Function for creating custom data sequence
-    def createDataSequence():
-        length = int(input("Provide the sequence's length: "))
-        dataSequence = dict()
+    def createRanddomDataSequence(self, observables, states, length):
+        self.dataSequenceDict = dict()
+        self.length = length
         for i in range(length):
-            key = input("Provide the name of the observable proposition: ")
-            worlds = set()
-            setLength = int(
-                input("In how many worlds is the proposition true? "))
-            for i in range(setLength):
-                world = input("Provide the name of the world: ")
-                worlds.add(world)
-            dataSequence.update({key: worlds})
-        return dataSequence
+            key = random.choice(
+                tuple(observables.getObservables()))
+            self.dataSequenceDict.update(
+                {key: observables.getObservables()[key]})
+        return self.dataSequenceDict

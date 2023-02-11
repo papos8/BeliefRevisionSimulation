@@ -1,8 +1,3 @@
-from curses import init_pair
-from email.policy import strict
-from errno import EL2NSYNC
-from re import S
-from sre_parse import State
 from kivy.app import App
 import kivy.uix.widget as kuix
 import kivy.properties as kpro
@@ -18,6 +13,7 @@ from Formula import Conjuction, Letter, Negation
 from Obsevables import Observables
 import States
 import string
+import DataSequence
 import random
 from Valuation import Valuation
 import Group
@@ -189,7 +185,7 @@ print("New worlds relation")
 print(agent1.plausibilityOrder.getWorldsRelation())
 print("New most plausible worlds")
 print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-'''
+
 group = Group.Group(setOfAgents, 2)
 print(agent1.stubbornnessDegree(obs.getObservables()))
 agent1.addedToGroup(group)
@@ -204,3 +200,8 @@ print("New most plausible worlds")
 print(agent1.plausibilityOrder.getMostPlausibleWorlds())
 print("Agent's new worlds relation")
 print(agent1.plausibilityOrder.getWorldsRelation())
+'''
+
+data = DataSequence.DataSequence()
+print(data.getDataSequence())
+print(data.getDataSequenceDict())
