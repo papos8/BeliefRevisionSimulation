@@ -18,8 +18,10 @@ import random
 from Valuation import Valuation
 import Group
 
+'''
 numberOfStates = int(input('How many possible worlds are there? '))
 states = States.States(numberOfStates)
+
 
 agent1 = Agent.Agent(states)
 agent2 = Agent.Agent(states)
@@ -39,7 +41,6 @@ print("Most Plausible Worlds")
 print(agent1.plausibilityOrder.getMostPlausibleWorlds())
 plSpace = PlausibilitySpace(states, obs)
 
-'''
 # Example for revising using condition
 newSpace = agent1.conditioning(
     plSpace, input("What is the incoming information? "))
@@ -203,5 +204,15 @@ print(agent1.plausibilityOrder.getWorldsRelation())
 '''
 
 data = DataSequence.DataSequence()
-print(data.getDataSequence())
-print(data.getDataSequenceDict())
+agent1 = Agent.Agent(data.getStates())
+print(agent1.plausibilityOrder.getWorldsRelation())
+print(data.getStates().getStates())
+print(data.getObservables().getObservables())
+initialPlSpace = PlausibilitySpace(
+    data.getStates(), data.getObservables())
+newSpace = agent1.conditioning(initialPlSpace, data.getDataSequence()[0])
+print(agent1.plausibilityOrder.getMostPlausibleWorlds())
+anotherSpace = agent1.conditioning(newSpace, data.getDataSequence()[1])
+print(agent1.plausibilityOrder.getMostPlausibleWorlds())
+lastSpace = agent1.conditioning(anotherSpace, data.getDataSequence()[2])
+print(agent1.plausibilityOrder.getMostPlausibleWorlds())

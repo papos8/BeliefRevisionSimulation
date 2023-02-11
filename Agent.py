@@ -85,9 +85,11 @@ class Agent():
         # Create new set S
         helperStates = plausibilitySpace.states.getStates()
         newStates = plausibilitySpace.observables.getObservables()[proposition]
+        print(newStates)
         plausibilitySpace.states.updateStates(
             plausibilitySpace.states.getStates().intersection(newStates))
-        newStates = States.States(newStates)
+        finalStates = States.States(newStates)
+        print(finalStates.getStates())
         # Update the observables
         # Framing function is applied, but there should return
         # observables intact
@@ -106,22 +108,35 @@ class Agent():
                     newObservables.update({observable: newValue})
         newObservables = Observables(newObservables)
         # Update plaus order to have only the new states
-        statesToRemove = helperStates.difference(newStates.getStates())
+        statesToRemove = helperStates.difference(finalStates.getStates())
+        print(statesToRemove)
         for state in statesToRemove:
             for key in self.plausibilityOrder.getOrder().keys():
                 if state in self.plausibilityOrder.getOrder()[key]:
                     self.plausibilityOrder.getOrder()[key].remove(state)
-            for anotherState in newStates.getStates():
+            for anotherState in finalStates.getStates():
                 if state in self.plausibilityOrder.getWorldsRelation()[anotherState]:
                     self.plausibilityOrder.getWorldsRelation()[
                         anotherState].remove(state)
             self.plausibilityOrder.getWorldsRelation().pop(state)
             if state in self.plausibilityOrder.getMostPlausibleWorlds():
                 self.plausibilityOrder.getMostPlausibleWorlds().remove(state)
-        self.plausibilityOrder = PlausibilityOrder(
-            self.plausibilityOrder.getOrder(), self.plausibilityOrder.getWorldsRelation(), self.plausibilityOrder.getMostPlausibleWorlds())
+        if len(self.plausibilityOrder.getMostPlausibleWorlds()) == 0:
+            maxLen = 0
+            # Create the set of most plaus worlds
+            newMostPlausibleWorlds = set()
+            for key in self.plausibilityOrder.getWorldsRelation().keys():
+                maxLen = max(maxLen, len(
+                    self.plausibilityOrder.getWorldsRelation()[key]))
+            for key in self.plausibilityOrder.getWorldsRelation().keys():
+                if len(self.plausibilityOrder.getWorldsRelation()[key]) == maxLen:
+                    newMostPlausibleWorlds.add(key)
+            self.plausibilityOrder.updateMostPlausibleWorlds(
+                newMostPlausibleWorlds)
+            self.plausibilityOrder = PlausibilityOrder(
+                self.plausibilityOrder.getOrder(), self.plausibilityOrder.getWorldsRelation(), self.plausibilityOrder.getMostPlausibleWorlds())
         newPlSpace = PlausibilitySpace(
-            states=newStates, observbles=newObservables)
+            states=finalStates, observbles=newObservables)
         return newPlSpace
 
     def lexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):

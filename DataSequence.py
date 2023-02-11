@@ -1,4 +1,5 @@
 import string
+from wsgiref.util import request_uri
 import Obsevables
 import States
 import random
@@ -9,22 +10,32 @@ class DataSequence():
         self.length = int(input("Provide the sequence's length: "))
         self.dataSequenceDict = dict()
         self.dataSequence = []
+        worlds = set()
         for i in range(self.length):
             key = input("Provide the name of the observable proposition: ")
             self.dataSequence.append(key)
-            worlds = set()
             setLength = int(
                 input("In how many worlds is the proposition true? "))
+            setOfworlds = set()
             for i in range(setLength):
                 world = input("Provide the name of the world: ")
                 worlds.add(world)
-            self.dataSequenceDict.update({key: worlds})
+                setOfworlds.add(world)
+            self.dataSequenceDict.update({key: setOfworlds})
+        self.states = States.States(set(worlds))
+        self.observables = Obsevables.Observables(self.dataSequenceDict)
 
     def getDataSequenceDict(self):
         return self.dataSequenceDict
 
     def getDataSequence(self):
         return self.dataSequence
+
+    def getStates(self):
+        return self.states
+
+    def getObservables(self):
+        return self.observables
 
     # Check soundness of sequence
     def isSound(self, state: string):

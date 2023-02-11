@@ -21,7 +21,6 @@ class PlausibilityOrder():
                     [i for i in range(len(arg[0].getStates()))])
                 self.order[key].append(state)
                 self.worldsRelation.update({state: []})
-            emptyKeys = []
             # Create worlds relation
             for i in range(len(arg[0].getStates())-2, -1, -1):
                 for state in self.order[i]:
