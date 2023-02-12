@@ -142,9 +142,10 @@ class Agent():
         newSpace = PlausibilitySpace(
             plausibilitySpace.states, plausibilitySpace.observables)
         if self.calledByCBConditioning == True:
-            if self.timesOfIncomingInfo[proposition] == self.stubbornnessDegrees[self.getNegation(proposition)]:
-                self.stubbornnessDegrees[proposition] = self.timesOfIncomingInfo[proposition]
-                self.stubbornnessDegrees[self.getNegation(proposition)] = 1
+            if self.stubbornnessDegrees[proposition] == 1:
+                if self.timesOfIncomingInfo[proposition] == self.stubbornnessDegrees[self.getNegation(proposition)]:
+                    self.stubbornnessDegrees[proposition] = self.timesOfIncomingInfo[proposition]
+                    self.stubbornnessDegrees[self.getNegation(proposition)] = 1
         return newSpace
 
     def lexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
@@ -200,6 +201,11 @@ class Agent():
             newMostPlausibleWorlds)
         self.plausibilityOrder.updateOrder(self.wordlsRelationToOrder(
             self.plausibilityOrder.getWorldsRelation()))
+        if self.calledByCBCLexRevision == True:
+            if self.stubbornnessDegrees[proposition] == 1:
+                if self.timesOfIncomingInfo[proposition] > self.stubbornnessDegrees[self.getNegation(proposition)]:
+                    self.stubbornnessDegrees[proposition] = self.timesOfIncomingInfo[proposition]
+                    self.stubbornnessDegrees[self.getNegation(proposition)] = 1
         return PlausibilitySpace(plausibilitySpace.states, newObservables)
 
     def minRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
@@ -327,44 +333,45 @@ class Agent():
                 newPlSpace = PlausibilitySpace(
                     states=newStates, observbles=newObservables)
                 # Update stubbornness degree
-                if self.timesOfIncomingInfo[proposition] == self.stubbornnessDegrees[self.getNegation(proposition)]:
-                    self.stubbornnessDegrees[proposition] = self.timesOfIncomingInfo[proposition]
-                    self.stubbornnessDegrees[self.getNegation(proposition)] = 1
+                if self.stubbornnessDegrees[proposition] == 1:
+                    if self.timesOfIncomingInfo[proposition] == self.stubbornnessDegrees[self.getNegation(proposition)]:
+                        self.stubbornnessDegrees[proposition] = self.timesOfIncomingInfo[proposition]
+                        self.stubbornnessDegrees[self.getNegation(
+                            proposition)] = 1
                 return newPlSpace
             else:
                 # Update stubbornness degree
-                if self.timesOfIncomingInfo[proposition] == self.stubbornnessDegrees[self.getNegation(proposition)]:
-                    self.stubbornnessDegrees[proposition] = self.timesOfIncomingInfo[proposition]
-                    self.stubbornnessDegrees[self.getNegation(proposition)] = 1
+                if self.stubbornnessDegrees[proposition] == 1:
+                    if self.timesOfIncomingInfo[proposition] == self.stubbornnessDegrees[self.getNegation(proposition)]:
+                        self.stubbornnessDegrees[proposition] = self.timesOfIncomingInfo[proposition]
+                        self.stubbornnessDegrees[self.getNegation(
+                            proposition)] = 1
                 return plausibilitySpace
 
     def confirmationBiasedLexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
-        self.bias = "Confirmation"
         # Update the observables
         # Framing function is applied, but there should return
         # observables intact (For the sake of completeness)
-        stubbornnessDegrees = self.stubbornnessDegree(
-            plausibilitySpace.observables.getObservables())
         framedObservables = self.framingFunction(
             plausibilitySpace.observables.getObservables())
         for observable in framedObservables:
-            if stubbornnessDegrees[observable] == 1:
+            if self.stubbornnessDegrees[observable] == 1:
                 continue
         newObservables = Observables(framedObservables)
-        # Initialize memory for times the information has come
-        timesOfIncomingInfo = dict()
-        for obs in plausibilitySpace.observables.getObservables():
-            timesOfIncomingInfo.update({obs: 0})
-
-        if timesOfIncomingInfo[proposition] >= stubbornnessDegrees[proposition]:
+        print(self.stubbornnessDegrees)
+        self.timesOfIncomingInfo[proposition] += 1
+        if self.timesOfIncomingInfo[proposition] >= self.stubbornnessDegrees[self.getNegation(proposition)]:
+            print(1)
+            self.calledByCBCLexRevision = True
             return self.lexRevision(plausibilitySpace, proposition)
         else:
             stubbornProp = set()  # Set to store the proposition the agent is stub towards
-            for prop in stubbornnessDegrees.keys():
-                if stubbornnessDegrees[prop] > 1:
+            for prop in self.stubbornnessDegrees.keys():
+                if self.stubbornnessDegrees[prop] > 1:
                     stubbornProp.add(prop)
 
             if proposition in stubbornProp:
+                print(2)
                 # Orders that will help creating the new world relation
                 # A world relation is consider an order
                 positiveOrder = dict()
@@ -398,9 +405,9 @@ class Agent():
                 for positiveState in positiveOrder.keys():      # Create new worlds relation
                     for negativeState in negativeOrder.keys():
                         positiveOrder[positiveState].append(negativeState)
-                positiveOrder.update(negativeOrder)
                 print(positiveOrder)
                 print(negativeOrder)
+                positiveOrder.update(negativeOrder)
                 self.plausibilityOrder.updateWorldsRelation(positiveOrder)
                 maxLen = 0
                 # Create the set of most plaus worlds
@@ -415,13 +422,16 @@ class Agent():
                     newMostPlausibleWorlds)
                 self.plausibilityOrder.updateOrder(self.wordlsRelationToOrder(
                     self.plausibilityOrder.getWorldsRelation()))
-                timesOfIncomingInfo[proposition] = timesOfIncomingInfo[proposition] + 1
+
                 # Update stubbornness degree
-                if timesOfIncomingInfo[proposition] == stubbornnessDegrees[self.getNegation(proposition)]:
-                    stubbornnessDegrees[proposition] = timesOfIncomingInfo[proposition]
-                    stubbornnessDegrees[self.getNegation(proposition)] = 0
+                if self.stubbornnessDegrees[proposition] == 1:
+                    if self.timesOfIncomingInfo[proposition] == self.stubbornnessDegrees[self.getNegation(proposition)]:
+                        self.stubbornnessDegrees[proposition] = self.timesOfIncomingInfo[proposition]
+                        self.stubbornnessDegrees[self.getNegation(
+                            proposition)] = 1
                 return PlausibilitySpace(plausibilitySpace.states, newObservables)
             else:
+                print(3)
                 # Create new orders to help with the new worlds relation
                 # The new orders will hold only the stubborn prop as the incoming
                 # Information is a contradiction and the agent revise only the stubborn env
@@ -447,13 +457,15 @@ class Agent():
                     for state in plausibilitySpace.states.getStates():
                         if state in self.getIntersection(stubbornProp) and state in negativeOrder[key]:
                             negativeOrder[key].remove(state)
+
                 # New worldsRelation
                 for positiveState in positiveOrder.keys():      # Create new worlds relation
                     for negativeState in negativeOrder.keys():
                         positiveOrder[positiveState].append(negativeState)
-                positiveOrder.update(negativeOrder)
                 print(positiveOrder)
                 print(negativeOrder)
+                positiveOrder.update(negativeOrder)
+
                 self.plausibilityOrder.updateWorldsRelation(positiveOrder)
                 maxLen = 0
                 # Create the set of most plaus worlds
@@ -469,11 +481,12 @@ class Agent():
                 self.plausibilityOrder.updateOrder(self.wordlsRelationToOrder(
                     self.plausibilityOrder.getWorldsRelation()))
 
-                timesOfIncomingInfo[proposition] = timesOfIncomingInfo[proposition] + 1
                 # Update stubbornness degree
-                if timesOfIncomingInfo[proposition] == stubbornnessDegrees[self.getNegation(proposition)]:
-                    stubbornnessDegrees[proposition] = timesOfIncomingInfo[proposition]
-                    stubbornnessDegrees[self.getNegation(proposition)] = 0
+                if self.stubbornnessDegrees[proposition] == 1:
+                    if self.timesOfIncomingInfo[proposition] == self.stubbornnessDegrees[self.getNegation(proposition)]:
+                        self.stubbornnessDegrees[proposition] = self.timesOfIncomingInfo[proposition]
+                        self.stubbornnessDegrees[self.getNegation(
+                            proposition)] = 1
                 return PlausibilitySpace(plausibilitySpace.states, newObservables)
 
     def confirmationBiasedMinRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):

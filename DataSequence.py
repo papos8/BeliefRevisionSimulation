@@ -7,10 +7,18 @@ import random
 
 class DataSequence():
     def __init__(self) -> None:
+        worlds = set()
+        numberOfWorlds = int(input("How many possible worlds are there? "))
+        for i in range(numberOfWorlds):
+            world = input("Enter the name of the world: ")
+            worlds.add(world)
+        actualWorld = input("What is the actual world? ")
+        if actualWorld not in worlds:
+            worlds.add(actualWorld)
         self.length = int(input("Provide the sequence's length: "))
         self.dataSequenceDict = dict()
         self.dataSequence = []
-        worlds = set()
+
         for i in range(self.length):
             key = input("Provide the name of the observable proposition: ")
             self.dataSequence.append(key)
@@ -19,7 +27,6 @@ class DataSequence():
             setOfworlds = set()
             for i in range(setLength):
                 world = input("Provide the name of the world: ")
-                worlds.add(world)
                 setOfworlds.add(world)
             self.dataSequenceDict.update({key: setOfworlds})
         for proposition in self.dataSequence:
