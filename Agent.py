@@ -358,10 +358,8 @@ class Agent():
             if self.stubbornnessDegrees[observable] == 1:
                 continue
         newObservables = Observables(framedObservables)
-        print(self.stubbornnessDegrees)
         self.timesOfIncomingInfo[proposition] += 1
         if self.timesOfIncomingInfo[proposition] >= self.stubbornnessDegrees[self.getNegation(proposition)]:
-            print(1)
             self.calledByCBCLexRevision = True
             return self.lexRevision(plausibilitySpace, proposition)
         else:
@@ -371,7 +369,6 @@ class Agent():
                     stubbornProp.add(prop)
 
             if proposition in stubbornProp:
-                print(2)
                 # Orders that will help creating the new world relation
                 # A world relation is consider an order
                 positiveOrder = dict()
@@ -405,8 +402,6 @@ class Agent():
                 for positiveState in positiveOrder.keys():      # Create new worlds relation
                     for negativeState in negativeOrder.keys():
                         positiveOrder[positiveState].append(negativeState)
-                print(positiveOrder)
-                print(negativeOrder)
                 positiveOrder.update(negativeOrder)
                 self.plausibilityOrder.updateWorldsRelation(positiveOrder)
                 maxLen = 0
@@ -431,7 +426,6 @@ class Agent():
                             proposition)] = 1
                 return PlausibilitySpace(plausibilitySpace.states, newObservables)
             else:
-                print(3)
                 # Create new orders to help with the new worlds relation
                 # The new orders will hold only the stubborn prop as the incoming
                 # Information is a contradiction and the agent revise only the stubborn env
@@ -462,8 +456,6 @@ class Agent():
                 for positiveState in positiveOrder.keys():      # Create new worlds relation
                     for negativeState in negativeOrder.keys():
                         positiveOrder[positiveState].append(negativeState)
-                print(positiveOrder)
-                print(negativeOrder)
                 positiveOrder.update(negativeOrder)
 
                 self.plausibilityOrder.updateWorldsRelation(positiveOrder)
@@ -490,31 +482,25 @@ class Agent():
                 return PlausibilitySpace(plausibilitySpace.states, newObservables)
 
     def confirmationBiasedMinRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
-        self.bias = "Confirmation"
         # Update the observables
         # Framing function is applied, but there should return
         # observables intact (For the sake of completeness)
-        stubbornnessDegrees = self.stubbornnessDegree(
-            plausibilitySpace.observables.getObservables())
         framedObservables = self.framingFunction(
             plausibilitySpace.observables.getObservables())
-        for observable in framedObservables:
-            if stubbornnessDegrees[observable] == 1:
-                continue
         newObservables = Observables(framedObservables)
-        # Initialize memory for times the information has come
-        timesOfIncomingInfo = dict()
-        for obs in plausibilitySpace.observables.getObservables():
-            timesOfIncomingInfo.update({obs: 0})
 
-        if timesOfIncomingInfo[proposition] >= stubbornnessDegrees[proposition]:
-            self.minRevision(plausibilitySpace, proposition)
+        self.timesOfIncomingInfo[proposition] += 1
+        if self.timesOfIncomingInfo[proposition] >= self.stubbornnessDegrees[proposition]:
+            self.calledByCBMinRevision = True
+            return self.minRevision(plausibilitySpace, proposition)
         else:
             stubbornProp = set()  # Set to store the proposition the agent is stub towards
-            for prop in stubbornnessDegrees.keys():
-                if stubbornnessDegrees[prop] > 1:
+            for prop in self.stubbornnessDegrees.keys():
+                if self.stubbornnessDegrees[prop] > 1:
                     stubbornProp.add(prop)
-
+            print(type(stubbornProp))
+            print("Stubborn prop")
+            print(self.getIntersection(stubbornProp))
             if proposition in stubbornProp:
                 positiveOrder = dict()
                 negativeOrder = dict()
@@ -526,20 +512,20 @@ class Agent():
                 for state in plausibilitySpace.states.getStates():          # Create keys for orders
                     # For the sake of completeness,
                     # As proposition is already there
-                    if state not in self.getIntersection(stubbornProp).intersection(proposition):
+                    if state not in self.getIntersection(stubbornProp).intersection(self.observables.getObservables()[proposition]):
                         positiveOrder.pop(state)
                 for key in positiveOrder.keys():                             # Create pos order
                     positiveOrder[key] = self.plausibilityOrder.getWorldsRelation()[
                         key]
                     for state in plausibilitySpace.states.getStates():
-                        if state not in self.getIntersection(stubbornProp).interesection(proposition) and state in positiveOrder[key]:
+                        if state not in self.getIntersection(stubbornProp).interesection(self.observables.getObservables()[proposition]) and state in positiveOrder[key]:
                             positiveOrder[key].remove(state)
                 posPlausibleInProp = set()  # Set to store the most plausible worlds in a proposition
                 maxLen = 0
                 for key in positiveOrder.keys():
                     maxLen = max(maxLen, len(positiveOrder[key]))
                 for key in positiveOrder.keys():
-                    if len(positiveOrder[key]) == maxLen and key in self.getIntersection(stubbornProp).intersection(proposition):
+                    if len(positiveOrder[key]) == maxLen and key in self.getIntersection(stubbornProp).intersection(self.observables.getObservables()[proposition]):
                         posPlausibleInProp.add(key)
                 for key in plausibilitySpace.states.getStates():
                     if key not in posPlausibleInProp:
@@ -548,14 +534,14 @@ class Agent():
                     negativeOrder[key] = self.plausibilityOrder.getWorldsRelation()[
                         key]
                     for state in plausibilitySpace.states.getStates():
-                        if state in self.getIntersection(stubbornProp).intersection(proposition) and state in negativeOrder[key]:
+                        if state in self.getIntersection(stubbornProp).intersection(self.observables.getObservables()[proposition]) and state in negativeOrder[key]:
                             negativeOrder[key].remove(state)
 
                 for key in postiveHelperOrder.keys():                      # Create posHelper order
                     postiveHelperOrder[key] = self.plausibilityOrder.getWorldsRelation()[
                         key]
                     for state in plausibilitySpace.states.getStates():
-                        if state in self.getIntersection(stubbornProp).intersection(proposition) and state in postiveHelperOrder[key] and state not in posPlausibleInProp:
+                        if state in self.getIntersection(stubbornProp).intersection(self.observables.getObservables()[proposition]) and state in postiveHelperOrder[key] and state not in posPlausibleInProp:
                             postiveHelperOrder[key].remove(state)
 
                 for positiveState in postiveHelperOrder.keys():            # Add the 'negative' worlds to positive
@@ -567,11 +553,12 @@ class Agent():
                 self.plausibilityOrder.updateMostPlausibleWorlds(           # The most plausible worlds are the most plaus in p
                     posPlausibleInProp)
 
-                timesOfIncomingInfo[proposition] = timesOfIncomingInfo[proposition] + 1
                 # Update stubbornness degree
-                if timesOfIncomingInfo[proposition] == stubbornnessDegrees[self.getNegation(proposition)]:
-                    stubbornnessDegrees[proposition] = timesOfIncomingInfo[proposition]
-                    stubbornnessDegrees[self.getNegation(proposition)] = 0
+                if self.stubbornnessDegrees[proposition] == 1:
+                    if self.timesOfIncomingInfo[proposition] == self.stubbornnessDegrees[self.getNegation(proposition)]:
+                        self.stubbornnessDegrees[proposition] = self.timesOfIncomingInfo[proposition]
+                        self.stubbornnessDegrees[self.getNegation(
+                            proposition)] = 1
 
                 return PlausibilitySpace(plausibilitySpace.states, newObservables)
             else:
@@ -624,11 +611,12 @@ class Agent():
                 self.plausibilityOrder.updateMostPlausibleWorlds(           # The most plausible worlds are the most plaus in p
                     posPlausibleInProp)
 
-                timesOfIncomingInfo[proposition] = timesOfIncomingInfo[proposition] + 1
                 # Update stubbornness degree
-                if timesOfIncomingInfo[proposition] == stubbornnessDegrees[self.getNegation(proposition)]:
-                    stubbornnessDegrees[proposition] = timesOfIncomingInfo[proposition]
-                    stubbornnessDegrees[self.getNegation(proposition)] = 0
+                if self.stubbornnessDegrees[proposition] == 1:
+                    if self.timesOfIncomingInfo[proposition] == self.stubbornnessDegrees[self.getNegation(proposition)]:
+                        self.stubbornnessDegrees[proposition] = self.timesOfIncomingInfo[proposition]
+                        self.stubbornnessDegrees[self.getNegation(
+                            proposition)] = 1
 
                 return PlausibilitySpace(plausibilitySpace.states, newObservables)
 
@@ -981,8 +969,8 @@ class Agent():
 
     def getIntersection(self, propositions):
         newSet = set()
-        newSet = choice(tuple(propositions))
         if propositions is set():
             for proposition in propositions:
-                newSet = newSet.intersection(proposition)
+                for element in self.observables.getObservables()[proposition]:
+                    newSet.add(element)
         return newSet

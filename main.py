@@ -215,15 +215,15 @@ print(agent1.plausibilityOrder.getWorldsRelation())
 print(data.getObservables().getObservables())
 
 
-newSpace = agent1.confirmationBiasedLexRevision(
+newSpace = agent1.confirmationBiasedMinRevision(
     initialPlSpace, data.getDataSequence()[0])
 print(agent1.plausibilityOrder.getWorldsRelation())
 print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-anotherSpace = agent1.confirmationBiasedLexRevision(
+anotherSpace = agent1.confirmationBiasedMinRevision(
     newSpace, data.getDataSequence()[1])
 print(agent1.plausibilityOrder.getWorldsRelation())
 print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-lastSpace = agent1.confirmationBiasedLexRevision(
+lastSpace = agent1.confirmationBiasedMinRevision(
     anotherSpace, data.getDataSequence()[2])
 print(agent1.plausibilityOrder.getWorldsRelation())
 print(agent1.plausibilityOrder.getMostPlausibleWorlds())
