@@ -206,19 +206,24 @@ print("Agent's new worlds relation")
 print(agent1.plausibilityOrder.getWorldsRelation())
 '''
 
+
 data = DataSequence.DataSequence()
-agent1 = Agent.Agent(data.getStates())
+initialPlSpace = PlausibilitySpace(
+    data.getStates(), data.getObservables())
+agent1 = Agent.Agent(initialPlSpace)
 print(agent1.plausibilityOrder.getWorldsRelation())
 print(data.getObservables().getObservables())
 print(agent1.stubbornnessDegree(data.getObservables().getObservables()))
-initialPlSpace = PlausibilitySpace(
-    data.getStates(), data.getObservables())
+
+
 newSpace = agent1.confirmationBiasedConditioning(
     initialPlSpace, data.getDataSequence()[0])
 print(agent1.plausibilityOrder.getWorldsRelation())
 print(agent1.plausibilityOrder.getMostPlausibleWorlds())
 anotherSpace = agent1.confirmationBiasedConditioning(
     newSpace, data.getDataSequence()[1])
+
+print(anotherSpace.states.getStates())
 print(agent1.plausibilityOrder.getWorldsRelation())
 print(agent1.plausibilityOrder.getMostPlausibleWorlds())
 lastSpace = agent1.confirmationBiasedConditioning(

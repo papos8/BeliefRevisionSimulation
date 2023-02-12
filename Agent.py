@@ -20,15 +20,19 @@ from random import randint, random, uniform, choice, sample
 
 
 class Agent():
-    def __init__(self, states: States) -> None:
+    def __init__(self, plausibilitySpace: PlausibilitySpace) -> None:
         self.resources = uniform(0.0, 100.0)
         self.bias = "Unbiased"
-        self.plausibilityOrder = PlausibilityOrder(states)
+        self.plausibilityOrder = PlausibilityOrder(plausibilitySpace.states)
         self.isInGroup = False
+        self.observables = plausibilitySpace.observables
         self.timesOfIncomingInfo = dict()
+        for obs in self.observables.getObservables().keys():
+            self.timesOfIncomingInfo.update({obs: 0})
 
     # Framing function to return a subset of
     # a proposition
+
     def framingFunction(self, observables: dict):
         ''' If agent is under framing bias we use the
         framing function. Otherwise, observables
@@ -83,7 +87,7 @@ class Agent():
 
     # Implement conditioning based on the definitions
     def conditioning(self, plausibilitySpace: PlausibilitySpace, proposition: string):
-        self.bias = "Unbiased"
+        self.bias = "Confirmation"
         # Create new set S
         helperStates = plausibilitySpace.states.getStates()
         newStates = plausibilitySpace.observables.getObservables()[proposition]
@@ -95,20 +99,20 @@ class Agent():
         # Update the observables
         # Framing function is applied, but there should return
         # observables intact
-        newObservables = dict()
+        # newObservables = dict()
         framedObservables = self.framingFunction(
             plausibilitySpace.observables.getObservables())
         # Stubbornnes Degree is applied as well,
         # but should return 1 for every observable
-        stubbornnessDegrees = self.stubbornnessDegree(
-            plausibilitySpace.observables.getObservables())
-        for observable in framedObservables:
-            if stubbornnessDegrees[observable] == 1:
-                newValue = framedObservables[observable].intersection(
-                    framedObservables[proposition])
-                if len(newValue) > 0:
-                    newObservables.update({observable: newValue})
-        newObservables = Observables(newObservables)
+        # stubbornnessDegrees = self.stubbornnessDegree(
+        #    plausibilitySpace.observables.getObservables())
+        # for observable in framedObservables:
+        #    if stubbornnessDegrees[observable] == 1:
+        #       newValue = framedObservables[observable].intersection(
+        #            framedObservables[proposition])
+        #        if len(newValue) > 0:
+        #            newObservables.update({observable: newValue})
+        # newObservables = Observables(newObservables)
         # Update plaus order to have only the new states
         statesToRemove = helperStates.difference(finalStates.getStates())
 
@@ -137,9 +141,10 @@ class Agent():
                 newMostPlausibleWorlds)
             self.plausibilityOrder = PlausibilityOrder(
                 self.plausibilityOrder.getOrder(), self.plausibilityOrder.getWorldsRelation(), self.plausibilityOrder.getMostPlausibleWorlds())
-        newPlSpace = PlausibilitySpace(
-            states=finalStates, observbles=newObservables)
-        return newPlSpace
+        newSpace = PlausibilitySpace(
+            plausibilitySpace.states, plausibilitySpace.observables)
+        print(type(newSpace))
+        return newSpace
 
     def lexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         self.bias = "Unbiased"
@@ -271,24 +276,21 @@ class Agent():
         # Framing function is applied, but there should return
         # observables intact (For the sake of completeness)
         stubbornnessDegrees = self.stubbornnessDegree(
-            plausibilitySpace.observables.getObservables())
+            self.observables.getObservables())
         print(stubbornnessDegrees)
         framedObservables = self.framingFunction(
-            plausibilitySpace.observables.getObservables())
+            self.observables.getObservables())
         for observable in framedObservables:
             if stubbornnessDegrees[observable] == 1:
                 continue
         newObservables = Observables(framedObservables)
         # Initialize memory for times the information has come
 
-        for obs in plausibilitySpace.observables.getObservables():
-            self.timesOfIncomingInfo.update({obs: 0})
         print("Times of incoming")
         print(self.timesOfIncomingInfo)
         if self.timesOfIncomingInfo[proposition] >= stubbornnessDegrees[self.getNegation(proposition)]:
-            print(1)
             self.timesOfIncomingInfo[proposition] += 1
-            self.conditioning(plausibilitySpace, proposition)
+            return self.conditioning(plausibilitySpace, proposition)
         else:
             stubbornProp = set()  # Set to store the proposition the agent is stub towards
             for prop in stubbornnessDegrees.keys():
@@ -296,7 +298,6 @@ class Agent():
                     stubbornProp.add(prop)
 
             if proposition in stubbornProp:
-                print(2)
                 helperStates = plausibilitySpace.states.getStates()
                 newStates = plausibilitySpace.states.getStates()
                 # Create a set of worls that are in the stub props
@@ -306,7 +307,6 @@ class Agent():
                             if state in plausibilitySpace.observables.getObservables()[observable]:
                                 newStates = newStates.intersection(
                                     plausibilitySpace.observables.getObservables()[observable])
-
                 plausibilitySpace.states.updateStates(
                     plausibilitySpace.states.getStates().intersection(newStates))
                 newStates = States.States(newStates)
@@ -345,7 +345,6 @@ class Agent():
                     stubbornnessDegrees[self.getNegation(proposition)] = 0
                 return newPlSpace
             else:
-                print(3)
                 self.timesOfIncomingInfo[proposition] += 1
                 # Update stubbornness degree
                 if self.timesOfIncomingInfo[proposition] == stubbornnessDegrees[self.getNegation(proposition)]:
