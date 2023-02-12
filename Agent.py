@@ -3,6 +3,7 @@ from re import S
 import string
 from tkinter import Widget
 from tkinter.tix import DirTree
+from tokenize import String
 from turtle import pos
 from typing import Dict
 from xmlrpc.client import ProtocolError
@@ -20,16 +21,17 @@ from random import randint, random, uniform, choice, sample
 
 
 class Agent():
-    def __init__(self, plausibilitySpace: PlausibilitySpace) -> None:
+    def __init__(self, plausibilitySpace: PlausibilitySpace, typeOfBias: string) -> None:
         self.resources = uniform(0.0, 100.0)
-        self.bias = "Unbiased"
+        self.bias = typeOfBias
         self.plausibilityOrder = PlausibilityOrder(plausibilitySpace.states)
         self.isInGroup = False
         self.observables = plausibilitySpace.observables
         self.timesOfIncomingInfo = dict()
         for obs in self.observables.getObservables().keys():
             self.timesOfIncomingInfo.update({obs: 0})
-
+        self.stubbornnessDegrees = self.stubbornnessDegree(
+            plausibilitySpace.observables.getObservables())
     # Framing function to return a subset of
     # a proposition
 
@@ -87,40 +89,36 @@ class Agent():
 
     # Implement conditioning based on the definitions
     def conditioning(self, plausibilitySpace: PlausibilitySpace, proposition: string):
-        self.bias = "Confirmation"
         # Create new set S
         helperStates = plausibilitySpace.states.getStates()
         newStates = plausibilitySpace.observables.getObservables()[proposition]
 
         plausibilitySpace.states.updateStates(
             plausibilitySpace.states.getStates().intersection(newStates))
-        finalStates = States.States(newStates)
 
         # Update the observables
         # Framing function is applied, but there should return
         # observables intact
-        # newObservables = dict()
+        newObservables = dict()
         framedObservables = self.framingFunction(
             plausibilitySpace.observables.getObservables())
-        # Stubbornnes Degree is applied as well,
-        # but should return 1 for every observable
-        # stubbornnessDegrees = self.stubbornnessDegree(
-        #    plausibilitySpace.observables.getObservables())
-        # for observable in framedObservables:
-        #    if stubbornnessDegrees[observable] == 1:
-        #       newValue = framedObservables[observable].intersection(
-        #            framedObservables[proposition])
-        #        if len(newValue) > 0:
-        #            newObservables.update({observable: newValue})
-        # newObservables = Observables(newObservables)
+
+        for observable in framedObservables:
+            if self.stubbornnessDegrees[observable] == 1:
+                newValue = framedObservables[observable].intersection(
+                    framedObservables[proposition])
+                if len(newValue) > 0:
+                    newObservables.update({observable: newValue})
+        newObservables = Observables(newObservables)
         # Update plaus order to have only the new states
-        statesToRemove = helperStates.difference(finalStates.getStates())
+        statesToRemove = helperStates.difference(
+            plausibilitySpace.states.getStates())
 
         for state in statesToRemove:
             for key in self.plausibilityOrder.getOrder().keys():
                 if state in self.plausibilityOrder.getOrder()[key]:
                     self.plausibilityOrder.getOrder()[key].remove(state)
-            for anotherState in finalStates.getStates():
+            for anotherState in plausibilitySpace.states.getStates():
                 if state in self.plausibilityOrder.getWorldsRelation()[anotherState]:
                     self.plausibilityOrder.getWorldsRelation()[
                         anotherState].remove(state)
@@ -147,16 +145,13 @@ class Agent():
         return newSpace
 
     def lexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
-        self.bias = "Unbiased"
         # Update the observables
         # Framing function is applied, but there should return
         # observables intact (For the sake of completeness)
         framedObservables = self.framingFunction(
             plausibilitySpace.observables.getObservables())
-        stubbornnessDegrees = self.stubbornnessDegree(
-            plausibilitySpace.observables.getObservables())
         for observable in framedObservables:
-            if stubbornnessDegrees[observable] == 1:
+            if self.stubbornnessDegrees[observable] == 1:
                 continue
         newObservables = Observables(framedObservables)
         # Create two helper state orders
@@ -371,7 +366,7 @@ class Agent():
             timesOfIncomingInfo.update({obs: 0})
 
         if timesOfIncomingInfo[proposition] >= stubbornnessDegrees[proposition]:
-            self.lexRevision(plausibilitySpace, proposition)
+            return self.lexRevision(plausibilitySpace, proposition)
         else:
             stubbornProp = set()  # Set to store the proposition the agent is stub towards
             for prop in stubbornnessDegrees.keys():
