@@ -141,7 +141,10 @@ class Agent():
                 self.plausibilityOrder.getOrder(), self.plausibilityOrder.getWorldsRelation(), self.plausibilityOrder.getMostPlausibleWorlds())
         newSpace = PlausibilitySpace(
             plausibilitySpace.states, plausibilitySpace.observables)
-        print(type(newSpace))
+        if self.calledByCBConditioning == True:
+            if self.timesOfIncomingInfo[proposition] == self.stubbornnessDegrees[self.getNegation(proposition)]:
+                self.stubbornnessDegrees[proposition] = self.timesOfIncomingInfo[proposition]
+                self.stubbornnessDegrees[self.getNegation(proposition)] = 1
         return newSpace
 
     def lexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
@@ -200,16 +203,13 @@ class Agent():
         return PlausibilitySpace(plausibilitySpace.states, newObservables)
 
     def minRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
-        self.bias = "Unbiased"
         # Update the observables
         # Framing function is applied, but there should return
         # observables intact (For the sake of completeness)
         framedObservables = self.framingFunction(
             plausibilitySpace.observables.getObservables())
-        stubbornnessDegrees = self.stubbornnessDegree(
-            plausibilitySpace.observables.getObservables())
         for observable in framedObservables:
-            if stubbornnessDegrees[observable] == 1:
+            if self.stubbornnessDegrees[observable] == 1:
                 continue
         newObservables = Observables(framedObservables)
         positiveOrder = dict()
@@ -266,38 +266,31 @@ class Agent():
         return PlausibilitySpace(plausibilitySpace.states, newObservables)
 
     def confirmationBiasedConditioning(self, plausibilitySpace: PlausibilitySpace, proposition: string):
-        self.bias = "Confirmation"
         # Update the observables
         # Framing function is applied, but there should return
         # observables intact (For the sake of completeness)
-        stubbornnessDegrees = self.stubbornnessDegree(
-            self.observables.getObservables())
-        print(stubbornnessDegrees)
         framedObservables = self.framingFunction(
             self.observables.getObservables())
         for observable in framedObservables:
-            if stubbornnessDegrees[observable] == 1:
+            if self.stubbornnessDegrees[observable] == 1:
                 continue
         newObservables = Observables(framedObservables)
+        self.timesOfIncomingInfo[proposition] += 1
         # Initialize memory for times the information has come
-
-        print("Times of incoming")
-        print(self.timesOfIncomingInfo)
-        if self.timesOfIncomingInfo[proposition] >= stubbornnessDegrees[self.getNegation(proposition)]:
-            self.timesOfIncomingInfo[proposition] += 1
+        if self.timesOfIncomingInfo[proposition] >= self.stubbornnessDegrees[self.getNegation(proposition)]:
+            self.calledByCBConditioning = True
             return self.conditioning(plausibilitySpace, proposition)
         else:
             stubbornProp = set()  # Set to store the proposition the agent is stub towards
-            for prop in stubbornnessDegrees.keys():
-                if stubbornnessDegrees[prop] > 1:
+            for prop in self.stubbornnessDegrees.keys():
+                if self.stubbornnessDegrees[prop] > 1:
                     stubbornProp.add(prop)
-
             if proposition in stubbornProp:
                 helperStates = plausibilitySpace.states.getStates()
                 newStates = plausibilitySpace.states.getStates()
                 # Create a set of worls that are in the stub props
-                for observable in stubbornnessDegrees.keys():
-                    if stubbornnessDegrees[observable] > 0:
+                for observable in self.stubbornnessDegrees.keys():
+                    if self.stubbornnessDegrees[observable] > 0:
                         for state in plausibilitySpace.states.getStates():
                             if state in plausibilitySpace.observables.getObservables()[observable]:
                                 newStates = newStates.intersection(
@@ -333,18 +326,16 @@ class Agent():
                     self.plausibilityOrder.getOrder(), self.plausibilityOrder.getWorldsRelation(), self.plausibilityOrder.getMostPlausibleWorlds())
                 newPlSpace = PlausibilitySpace(
                     states=newStates, observbles=newObservables)
-                self.timesOfIncomingInfo[proposition] += 1
                 # Update stubbornness degree
-                if self.timesOfIncomingInfo[proposition] == stubbornnessDegrees[self.getNegation(proposition)]:
-                    stubbornnessDegrees[proposition] = self.timesOfIncomingInfo[proposition]
-                    stubbornnessDegrees[self.getNegation(proposition)] = 0
+                if self.timesOfIncomingInfo[proposition] == self.stubbornnessDegrees[self.getNegation(proposition)]:
+                    self.stubbornnessDegrees[proposition] = self.timesOfIncomingInfo[proposition]
+                    self.stubbornnessDegrees[self.getNegation(proposition)] = 1
                 return newPlSpace
             else:
-                self.timesOfIncomingInfo[proposition] += 1
                 # Update stubbornness degree
-                if self.timesOfIncomingInfo[proposition] == stubbornnessDegrees[self.getNegation(proposition)]:
-                    stubbornnessDegrees[proposition] = self.timesOfIncomingInfo[proposition]
-                    stubbornnessDegrees[self.getNegation(proposition)] = 0
+                if self.timesOfIncomingInfo[proposition] == self.stubbornnessDegrees[self.getNegation(proposition)]:
+                    self.stubbornnessDegrees[proposition] = self.timesOfIncomingInfo[proposition]
+                    self.stubbornnessDegrees[self.getNegation(proposition)] = 1
                 return plausibilitySpace
 
     def confirmationBiasedLexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
