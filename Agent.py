@@ -43,17 +43,21 @@ class Agent():
         newObservables = {}
         for key in observables.keys():
             newObservables.update({key: set()})
-        if self.bias == "Framing":
-            for proposition in observables:
-                value = observables[proposition]
-                # Here the subset is taken completely random
-                # This may affect the results
-                newValue = sample(value, randint(
-                    0, len(observables[proposition])))
-                newObservables.update({proposition: newValue})
+
+        for proposition in observables:
+            value = observables[proposition]
+            # Here the subset is taken completely random
+            # This may affect the results
+            newValue = sample(value, randint(
+                0, len(observables[proposition])))
+            newObservables.update({proposition: newValue})
+
         for key in observables.keys():
             newObservables[key] = set(newObservables[key])
-        return newObservables
+        if self.bias == "Framing":
+            return newObservables
+        else:
+            return observables
 
     # Function that return a dictionary of a proposition and
     # the stubbornness degree of the agent towards this
@@ -722,12 +726,9 @@ class Agent():
         # Update the observables
         # Framing function is applied, but there should return
         # observables intact (For the sake of completeness)
-        print("Obs:")
-        print(self.observables.getObservables())
         framedObservables = self.framingFunction(
             plausibilitySpace.observables.getObservables())
-        print("Framed obs:")
-        print(framedObservables)
+
         newObservables = Observables(framedObservables)
         positiveOrder = dict()
         positiveOrderHelper = dict()
@@ -811,8 +812,9 @@ class Agent():
         helperStates = plausibilitySpace.states.getStates()
         framedObservables = self.framingFunction(
             plausibilitySpace.observables.getObservables())
-
         newObservables = Observables(framedObservables)
+        print("newObservables")
+        print(newObservables.getObservables())
         positiveOrder = dict()
         for key in plausibilitySpace.states.getStates():            # Initialize orders
             positiveOrder.update({key: []})
@@ -827,6 +829,8 @@ class Agent():
             for state in plausibilitySpace.states.getStates():
                 if state not in plausibilitySpace.observables.getObservables()[proposition] and state in positiveOrder[key]:
                     positiveOrder[key].remove(state)
+        print("positiveOrder")
+        print(positiveOrder)
         posPlausibleInProp = set()  # Set to store the most plausible worlds in a proposition
         maxLen = 0
         for key in positiveOrder.keys():
@@ -834,10 +838,15 @@ class Agent():
         for key in positiveOrder.keys():
             if len(positiveOrder[key]) == maxLen and key in plausibilitySpace.observables.getObservables()[proposition]:
                 posPlausibleInProp.add(key)
+        print("Plausible worlds")
+        print(posPlausibleInProp)
         newStates = plausibilitySpace.states.getStates()
         newStates = newStates.intersection(posPlausibleInProp)
         newStates = States.States(newStates)
+        print("New States")
+        print(newStates.getStates())
         statesToRemove = helperStates.difference(newStates.getStates())
+        print("States to remove")
         print(statesToRemove)
         for state in statesToRemove:
             for key in self.plausibilityOrder.getOrder().keys():
@@ -848,7 +857,7 @@ class Agent():
                     self.plausibilityOrder.getWorldsRelation()[
                         anotherState].remove(state)
             self.plausibilityOrder.getWorldsRelation().pop(state)
-        self.plausibilityOrder.updateMostPlausibleWorlds(newStates.getStates())
+        self.plausibilityOrder.updateMostPlausibleWorlds(posPlausibleInProp)
         self.plausibilityOrder = PlausibilityOrder(
             self.plausibilityOrder.getOrder(), self.plausibilityOrder.getWorldsRelation(), self.plausibilityOrder.getMostPlausibleWorlds())
         newPlSpace = PlausibilitySpace(
@@ -950,7 +959,7 @@ class Agent():
         return PlausibilitySpace(plausibilitySpace.states, newObservables)
 
     def anchoringBiasedMinRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
-        self.minRevision(plausibilitySpace, proposition)
+        return self.minRevision(plausibilitySpace, proposition)
 
     def inGroupFavoritismConditioning(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         self.isInGroup = True

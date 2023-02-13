@@ -210,20 +210,20 @@ print(agent1.plausibilityOrder.getWorldsRelation())
 data = DataSequence.DataSequence()
 initialPlSpace = PlausibilitySpace(
     data.getStates(), data.getObservables())
-agent1 = Agent.Agent(initialPlSpace, "Framing")
+agent1 = Agent.Agent(initialPlSpace, "Anchoring")
 print(agent1.plausibilityOrder.getWorldsRelation())
 print(data.getObservables().getObservables())
 
 
-newSpace = agent1.framingBiasedMinRevision(
+newSpace = agent1.anchoringBiasedConditioning(
     initialPlSpace, data.getDataSequence()[0])
 print(agent1.plausibilityOrder.getWorldsRelation())
 print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-anotherSpace = agent1.framingBiasedMinRevision(
+anotherSpace = agent1.anchoringBiasedConditioning(
     newSpace, data.getDataSequence()[1])
 print(agent1.plausibilityOrder.getWorldsRelation())
 print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-lastSpace = agent1.framingBiasedMinRevision(
+lastSpace = agent1.anchoringBiasedConditioning(
     anotherSpace, data.getDataSequence()[2])
 print(agent1.plausibilityOrder.getWorldsRelation())
 print(agent1.plausibilityOrder.getMostPlausibleWorlds())
