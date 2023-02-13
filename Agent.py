@@ -1,5 +1,6 @@
 from asyncio.proactor_events import _ProactorBasePipeTransport
 from re import S
+from site import enablerlcompleter
 import string
 from tkinter import Widget
 from tkinter.tix import DirTree
@@ -269,6 +270,11 @@ class Agent():
         self.plausibilityOrder.updateMostPlausibleWorlds(           # The most plausible worlds are the most plaus in p
             posPlausibleInProp)
 
+        if self.stubbornnessDegrees[proposition] == 1:
+            if self.timesOfIncomingInfo[proposition] == self.stubbornnessDegrees[self.getNegation(proposition)]:
+                self.stubbornnessDegrees[proposition] = self.timesOfIncomingInfo[proposition]
+                self.stubbornnessDegrees[self.getNegation(
+                    proposition)] = 1
         return PlausibilitySpace(plausibilitySpace.states, newObservables)
 
     def confirmationBiasedConditioning(self, plausibilitySpace: PlausibilitySpace, proposition: string):
@@ -490,16 +496,20 @@ class Agent():
         newObservables = Observables(framedObservables)
 
         self.timesOfIncomingInfo[proposition] += 1
-        if self.timesOfIncomingInfo[proposition] >= self.stubbornnessDegrees[proposition]:
+        if self.timesOfIncomingInfo[proposition] >= self.stubbornnessDegrees[self.getNegation(proposition)]:
             self.calledByCBMinRevision = True
             return self.minRevision(plausibilitySpace, proposition)
         else:
             stubbornProp = set()  # Set to store the proposition the agent is stub towards
             for prop in self.stubbornnessDegrees.keys():
+                print(prop)
+                print(self.stubbornnessDegrees[prop])
                 if self.stubbornnessDegrees[prop] > 1:
                     stubbornProp.add(prop)
             print(type(stubbornProp))
+
             print("Stubborn prop")
+            print(stubbornProp)
             print(self.getIntersection(stubbornProp))
             if proposition in stubbornProp:
                 positiveOrder = dict()
@@ -518,7 +528,7 @@ class Agent():
                     positiveOrder[key] = self.plausibilityOrder.getWorldsRelation()[
                         key]
                     for state in plausibilitySpace.states.getStates():
-                        if state not in self.getIntersection(stubbornProp).interesection(self.observables.getObservables()[proposition]) and state in positiveOrder[key]:
+                        if state not in self.getIntersection(stubbornProp).intersection(self.observables.getObservables()[proposition]) and state in positiveOrder[key]:
                             positiveOrder[key].remove(state)
                 posPlausibleInProp = set()  # Set to store the most plausible worlds in a proposition
                 maxLen = 0
@@ -968,9 +978,14 @@ class Agent():
         return order
 
     def getIntersection(self, propositions):
+        newList = []
         newSet = set()
-        if propositions is set():
-            for proposition in propositions:
-                for element in self.observables.getObservables()[proposition]:
-                    newSet.add(element)
+        for proposition in propositions:
+            for element in self.observables.getObservables()[proposition]:
+                newList.append(element)
+
+        for element in newList:
+            if newList.count(element) > 1:
+                newSet.add(element)
+
         return newSet
