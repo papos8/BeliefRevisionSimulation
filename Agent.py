@@ -40,6 +40,9 @@ class Agent():
         ''' If agent is under framing bias we use the
         framing function. Otherwise, observables
         are returned without change '''
+        newObservables = {}
+        for key in observables.keys():
+            newObservables.update({key: set()})
         if self.bias == "Framing":
             for proposition in observables:
                 value = observables[proposition]
@@ -47,10 +50,10 @@ class Agent():
                 # This may affect the results
                 newValue = sample(value, randint(
                     0, len(observables[proposition])))
-                observables[proposition] = newValue
+                newObservables.update({proposition: newValue})
         for key in observables.keys():
-            observables[key] = set(observables[key])
-        return observables
+            newObservables[key] = set(newObservables[key])
+        return newObservables
 
     # Function that return a dictionary of a proposition and
     # the stubbornness degree of the agent towards this
@@ -502,15 +505,9 @@ class Agent():
         else:
             stubbornProp = set()  # Set to store the proposition the agent is stub towards
             for prop in self.stubbornnessDegrees.keys():
-                print(prop)
-                print(self.stubbornnessDegrees[prop])
                 if self.stubbornnessDegrees[prop] > 1:
                     stubbornProp.add(prop)
-            print(type(stubbornProp))
 
-            print("Stubborn prop")
-            print(stubbornProp)
-            print(self.getIntersection(stubbornProp))
             if proposition in stubbornProp:
                 positiveOrder = dict()
                 negativeOrder = dict()
@@ -631,13 +628,14 @@ class Agent():
                 return PlausibilitySpace(plausibilitySpace.states, newObservables)
 
     def framingBiasedConditioning(self, plausibilitySpace: PlausibilitySpace, proposition: string):
-        self.bias = "Framing"
         # Update the observables
         # Framing function is applied, but there should return
         # observables intact (For the sake of completeness)
-
+        print("Obs:")
+        print(self.observables.getObservables())
         framedObservables = self.framingFunction(
-            plausibilitySpace.observables.getObservables())
+            self.observables.getObservables())
+        print("Framed obs:")
         print(framedObservables)
         newObservables = Observables(framedObservables)
         # Create new set S
@@ -789,15 +787,13 @@ class Agent():
         return PlausibilitySpace(plausibilitySpace.states, plausibilitySpace.observables)
 
     def anchoringBiasedConditioning(self, plausibilitySpace: PlausibilitySpace, proposition: string):
-        self.bias = "Anchoring"
         # Update the observables
         # Framing function is applied, but there should return
         # observables intact (For the sake of completeness)
         helperStates = plausibilitySpace.states.getStates()
         framedObservables = self.framingFunction(
             plausibilitySpace.observables.getObservables())
-        stubbornnessDegrees = self.stubbornnessDegree(
-            plausibilitySpace.observables.getObservables())
+
         newObservables = Observables(framedObservables)
         positiveOrder = dict()
         for key in plausibilitySpace.states.getStates():            # Initialize orders
