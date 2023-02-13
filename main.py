@@ -215,15 +215,15 @@ print(agent1.plausibilityOrder.getWorldsRelation())
 print(data.getObservables().getObservables())
 
 
-newSpace = agent1.anchoringBiasedConditioning(
+newSpace = agent1.anchoringBiasedLexRevision(
     initialPlSpace, data.getDataSequence()[0])
 print(agent1.plausibilityOrder.getWorldsRelation())
 print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-anotherSpace = agent1.anchoringBiasedConditioning(
+anotherSpace = agent1.anchoringBiasedLexRevision(
     newSpace, data.getDataSequence()[1])
 print(agent1.plausibilityOrder.getWorldsRelation())
 print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-lastSpace = agent1.anchoringBiasedConditioning(
+lastSpace = agent1.anchoringBiasedLexRevision(
     anotherSpace, data.getDataSequence()[2])
 print(agent1.plausibilityOrder.getWorldsRelation())
 print(agent1.plausibilityOrder.getMostPlausibleWorlds())

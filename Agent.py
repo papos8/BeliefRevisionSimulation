@@ -813,8 +813,6 @@ class Agent():
         framedObservables = self.framingFunction(
             plausibilitySpace.observables.getObservables())
         newObservables = Observables(framedObservables)
-        print("newObservables")
-        print(newObservables.getObservables())
         positiveOrder = dict()
         for key in plausibilitySpace.states.getStates():            # Initialize orders
             positiveOrder.update({key: []})
@@ -829,8 +827,6 @@ class Agent():
             for state in plausibilitySpace.states.getStates():
                 if state not in plausibilitySpace.observables.getObservables()[proposition] and state in positiveOrder[key]:
                     positiveOrder[key].remove(state)
-        print("positiveOrder")
-        print(positiveOrder)
         posPlausibleInProp = set()  # Set to store the most plausible worlds in a proposition
         maxLen = 0
         for key in positiveOrder.keys():
@@ -838,16 +834,10 @@ class Agent():
         for key in positiveOrder.keys():
             if len(positiveOrder[key]) == maxLen and key in plausibilitySpace.observables.getObservables()[proposition]:
                 posPlausibleInProp.add(key)
-        print("Plausible worlds")
-        print(posPlausibleInProp)
         newStates = plausibilitySpace.states.getStates()
         newStates = newStates.intersection(posPlausibleInProp)
         newStates = States.States(newStates)
-        print("New States")
-        print(newStates.getStates())
         statesToRemove = helperStates.difference(newStates.getStates())
-        print("States to remove")
-        print(statesToRemove)
         for state in statesToRemove:
             for key in self.plausibilityOrder.getOrder().keys():
                 if state in self.plausibilityOrder.getOrder()[key]:
@@ -865,36 +855,38 @@ class Agent():
         return newPlSpace
 
     def anchoringBiasedLexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
-        self.bias = "Anchoring"
         # Update the observables
         # Framing function is applied, but there should return
         # observables intact (For the sake of completeness)
+        helperOrder = self.plausibilityOrder.getWorldsRelation().copy()
+        print("Helper order")
+        print(helperOrder)
         helperStates = plausibilitySpace.states.getStates()
         framedObservables = self.framingFunction(
-            plausibilitySpace.observables.getObservables())
-        stubbornnessDegrees = self.stubbornnessDegree(
             plausibilitySpace.observables.getObservables())
         newObservables = Observables(framedObservables)
         positiveOrder = dict()
         positiveOrderHelper = dict()
         negativeOrder = dict()
         negativeOrderHelper = dict()
-        for key in plausibilitySpace.states.getStates():            # Initialize orders
+
+        for key in helperStates:            # Initialize orders
             positiveOrder.update({key: []})
             negativeOrder.update({key: []})
-            positiveOrderHelper.update({key: []})
-            negativeOrderHelper.update({key: []})
+
         for state in plausibilitySpace.states.getStates():          # Create keys for orders
             if state not in plausibilitySpace.observables.getObservables()[proposition]:
                 positiveOrder.pop(state)
             if state in plausibilitySpace.observables.getObservables()[proposition]:
                 negativeOrder.pop(state)
+
         for key in positiveOrder.keys():                             # Create pos order
             positiveOrder[key] = self.plausibilityOrder.getWorldsRelation()[
                 key]
             for state in plausibilitySpace.states.getStates():
                 if state not in plausibilitySpace.observables.getObservables()[proposition] and state in positiveOrder[key]:
                     positiveOrder[key].remove(state)
+        print(helperOrder)
         for key in negativeOrder.keys():                            # Create neg order
             negativeOrder[key] = self.plausibilityOrder.getWorldsRelation()[
                 key]
@@ -917,11 +909,20 @@ class Agent():
             if len(negativeOrder[key]) == maxLenNeg and key in plausibilitySpace.observables.getObservables()[self.getNegation(proposition)]:
                 negPlausibleInProp.add(key)
 
+        print("Pos pl worlds")
+        print(posPlausibleInProp)
+        print("Neg pl worlds")
+        print(negPlausibleInProp)
+        for key in posPlausibleInProp:
+            positiveOrderHelper.update({key: set()})
+        for key in negPlausibleInProp:
+            negativeOrderHelper.update({key: set()})
+
         for state in plausibilitySpace.states.getStates():          # Create keys for orders
-            if state not in posPlausibleInProp:
-                positiveOrderHelper.pop(state)
-            if state not in negPlausibleInProp:
-                negativeOrderHelper.pop(state)
+            if state in posPlausibleInProp and state in positiveOrder:
+                positiveOrder.pop(state)
+            if state in negPlausibleInProp and state in negativeOrder:
+                negativeOrder.pop(state)
         for key in positiveOrderHelper.keys():                      # Create posHelper order
             positiveOrderHelper[key] = self.plausibilityOrder.getWorldsRelation()[
                 key]
@@ -934,15 +935,16 @@ class Agent():
             for state in plausibilitySpace.states.getStates():
                 if state in plausibilitySpace.observables.getObservables()[self.getNegation(proposition)] and state in negativeOrderHelper[key] and state not in negPlausibleInProp:
                     negativeOrderHelper[key].remove(state)
+
         # Add the missing states to the order
         for positiveState in positiveOrderHelper.keys():
-            for positiveStateHelper in set(positiveOrder.keys()).difference(set(positiveOrderHelper.keys())):
+            for positiveStateHelper in positiveOrder.keys():
                 positiveOrderHelper[positiveState].append(positiveStateHelper)
             for negativeStateHelper in negativeOrderHelper.keys():
                 positiveOrderHelper[positiveState].append(negativeStateHelper)
             for negativeState in negativeOrder.keys():
                 positiveOrderHelper[positiveState].append(negativeState)
-        for positiveState in positiveOrder.keys():
+        '''for positiveState in positiveOrder.keys():
             for negativeStateHelper in negativeOrderHelper.keys():
                 positiveOrder[positiveState].append(negativeStateHelper)
             for negativeState in negativeOrder.keys():
@@ -950,9 +952,38 @@ class Agent():
         for negativeStateHelper in negativeOrderHelper.keys():
             for negativeState in negativeOrder.keys():
                 negativeOrderHelper[negativeStateHelper].append(negativeState)
+        '''
+        for element in posPlausibleInProp:
+            helperOrder.pop(element)
+        '''for key in helperOrder.keys():
+            for element in helperOrder[key]:
+                if element in posPlausibleInProp:
+                    helperOrder[key].remove(element)'''
+        print("Helper Order")
+        print(helperOrder)
+        for positiveState in positiveOrderHelper.keys():
+            positiveOrderHelper[positiveState] = list(
+                dict.fromkeys(positiveOrderHelper[positiveState]))
+        for positiveState in positiveOrder.keys():
+            positiveOrder[positiveState] = list(
+                dict.fromkeys(positiveOrder[positiveState]))
+        for negativeState in negativeOrderHelper.keys():
+            negativeOrderHelper[negativeState] = list(
+                dict.fromkeys(negativeOrderHelper[negativeState]))
+        for negativeState in negativeOrder.keys():
+            negativeOrder[negativeState] = list(
+                dict.fromkeys(negativeOrder[negativeState]))
+
         positiveOrderHelper.update(positiveOrder)
         positiveOrderHelper.update(negativeOrderHelper)
         positiveOrderHelper.update(negativeOrder)
+
+        if len(helperStates.difference(set(positiveOrderHelper.keys()))) > 0:
+            for key in positiveOrderHelper.keys():
+                for element in helperStates.difference(set(positiveOrderHelper.keys())):
+                    positiveOrderHelper[key].append(element)
+            positiveOrderHelper.update({element: set()})
+
         self.plausibilityOrder.updateWorldsRelation(positiveOrderHelper)
         self.plausibilityOrder.updateMostPlausibleWorlds(posPlausibleInProp)
 
@@ -963,15 +994,15 @@ class Agent():
 
     def inGroupFavoritismConditioning(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         self.isInGroup = True
-        self.confirmationBiasedConditioning(plausibilitySpace, proposition)
+        return self.confirmationBiasedConditioning(plausibilitySpace, proposition)
 
     def inGroupFavoritismLexRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         self.isInGroup = True
-        self.confirmationBiasedLexRevision(plausibilitySpace, proposition)
+        return self.confirmationBiasedLexRevision(plausibilitySpace, proposition)
 
     def inGroupFavoritismMinRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         self.isInGroup = True
-        self.confirmationBiasedMinRevision(plausibilitySpace, proposition)
+        return self.confirmationBiasedMinRevision(plausibilitySpace, proposition)
 
     def getNegation(self, proposition: string):
         if len(proposition) == 1:
