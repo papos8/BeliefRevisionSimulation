@@ -631,12 +631,9 @@ class Agent():
         # Update the observables
         # Framing function is applied, but there should return
         # observables intact (For the sake of completeness)
-        print("Obs:")
-        print(self.observables.getObservables())
+
         framedObservables = self.framingFunction(
             self.observables.getObservables())
-        print("Framed obs:")
-        print(framedObservables)
         newObservables = Observables(framedObservables)
         # Create new set S
         helperStates = plausibilitySpace.states.getStates()
@@ -669,10 +666,12 @@ class Agent():
         # observables intact (For the sake of completeness)
         standardObservables = Observables(
             plausibilitySpace.observables.getObservables())
-        stubbornnessDegrees = self.stubbornnessDegree(
-            plausibilitySpace.observables.getObservables())
+        print("Obs:")
+        print(self.observables.getObservables())
         framedObservables = self.framingFunction(
             plausibilitySpace.observables.getObservables())
+        print("Framed obs:")
+        print(framedObservables)
         newObservables = Observables(framedObservables)
         # Create two helper state orders
         # Posittive and negative
@@ -717,8 +716,8 @@ class Agent():
             newMostPlausibleWorlds)
         self.plausibilityOrder.updateOrder(self.wordlsRelationToOrder(
             self.plausibilityOrder.getWorldsRelation()))
-        print(standardObservables.getObservables())
-        return PlausibilitySpace(plausibilitySpace.states, standardObservables)
+        
+        return PlausibilitySpace(plausibilitySpace.states, newObservables)
 
     def framingBiasedMinRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         self.bias = "Framing"
