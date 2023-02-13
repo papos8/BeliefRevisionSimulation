@@ -666,12 +666,10 @@ class Agent():
         # observables intact (For the sake of completeness)
         standardObservables = Observables(
             plausibilitySpace.observables.getObservables())
-        print("Obs:")
-        print(self.observables.getObservables())
+
         framedObservables = self.framingFunction(
             plausibilitySpace.observables.getObservables())
-        print("Framed obs:")
-        print(framedObservables)
+
         newObservables = Observables(framedObservables)
         # Create two helper state orders
         # Posittive and negative
@@ -716,7 +714,7 @@ class Agent():
             newMostPlausibleWorlds)
         self.plausibilityOrder.updateOrder(self.wordlsRelationToOrder(
             self.plausibilityOrder.getWorldsRelation()))
-        
+
         return PlausibilitySpace(plausibilitySpace.states, newObservables)
 
     def framingBiasedMinRevision(self, plausibilitySpace: PlausibilitySpace, proposition: string):
@@ -724,12 +722,12 @@ class Agent():
         # Update the observables
         # Framing function is applied, but there should return
         # observables intact (For the sake of completeness)
-        standardObservables = Observables(
-            plausibilitySpace.observables.getObservables())
-        stubbornnessDegrees = self.stubbornnessDegree(
-            plausibilitySpace.observables.getObservables())
+        print("Obs:")
+        print(self.observables.getObservables())
         framedObservables = self.framingFunction(
             plausibilitySpace.observables.getObservables())
+        print("Framed obs:")
+        print(framedObservables)
         newObservables = Observables(framedObservables)
         positiveOrder = dict()
         positiveOrderHelper = dict()
@@ -773,17 +771,38 @@ class Agent():
             for state in plausibilitySpace.states.getStates():
                 if state in framedObservables[proposition] and state in positiveOrderHelper[key] and state not in posPlausibleInProp:
                     positiveOrderHelper[key].remove(state)
-        print(positiveOrderHelper)
         for positiveState in positiveOrderHelper.keys():            # Add the 'negative' worlds to positive
             for negativeState in negativeOrder.keys():
                 positiveOrderHelper[positiveState].append(negativeState)
             for anotherState in set(positiveOrder.keys()).difference(positiveOrderHelper.keys()):
                 positiveOrderHelper[positiveState].append(anotherState)
         positiveOrderHelper.update(negativeOrder)
-        self.plausibilityOrder.updateMostPlausibleWorlds(           # The most plausible worlds are the most plaus in p
-            posPlausibleInProp)
-
-        return PlausibilitySpace(plausibilitySpace.states, plausibilitySpace.observables)
+        if len(posPlausibleInProp) > 0:
+            self.plausibilityOrder.updateMostPlausibleWorlds(           # The most plausible worlds are the most plaus in p
+                posPlausibleInProp)
+        else:
+            maxLen = 0
+            newPlausibleWordls = set()
+            for key in positiveOrder.keys():
+                maxLen = max(maxLen, len(positiveOrderHelper[key]))
+            for key in positiveOrderHelper.keys():
+                if len(positiveOrderHelper[key]) == maxLen and key in framedObservables[proposition]:
+                    newPlausibleWordls.add(key)
+            if len(newPlausibleWordls) > 0:
+                self.plausibilityOrder.updateMostPlausibleWorlds(
+                    newPlausibleWordls)
+            else:
+                maxLen = 0
+                newPlausibleWordls = set()
+                for key in positiveOrder.keys():
+                    maxLen = max(maxLen, len(positiveOrderHelper[key]))
+                for key in positiveOrderHelper.keys():
+                    if len(positiveOrderHelper[key]) == maxLen and key in framedObservables[proposition]:
+                        newPlausibleWordls.add(key)
+                if len(newPlausibleWordls) > 0:
+                    self.plausibilityOrder.updateMostPlausibleWorlds(
+                        newPlausibleWordls)
+        return PlausibilitySpace(plausibilitySpace.states, newObservables)
 
     def anchoringBiasedConditioning(self, plausibilitySpace: PlausibilitySpace, proposition: string):
         # Update the observables
