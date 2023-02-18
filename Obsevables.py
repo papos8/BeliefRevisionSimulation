@@ -1,5 +1,6 @@
 from ast import arg
 from http.client import ImproperConnectionState
+import numbers
 from os import stat_result
 from tkinter import N
 import string
@@ -14,7 +15,23 @@ class Observables():
     # Initiate observables based on the states
     # Randomly create propositions and their negation
     def __init__(self, arg) -> None:
-        if not (isinstance(arg, dict)):
+        if isinstance(arg, dict):
+            self.observables = arg
+        elif arg == "Create":
+            numberOfObservables = int(
+                input("What is the number of observables? "))
+            observables = dict()
+            for i in range(numberOfObservables):
+                obs = input("Enter the name of the proposition: ")
+                observables.update({obs: set()})
+            for key in set(observables.keys()):
+                numberOfWorlds = int(
+                    input("In how many worlds is proposition " + str(key) + " true? "))
+                for i in range(numberOfWorlds):
+                    world = input("Enter the world: ")
+                    observables[key].add(world)
+            self.observables = observables
+        elif not (isinstance(arg, dict)):
             self.observables = dict()
             worldSet = set()
 
@@ -27,8 +44,6 @@ class Observables():
             # Exchange keys, values to make values of dict a set
             helper = {tuple(v): k for k, v in self.observables.items()}
             self.observables = {v: set(k) for k, v in helper.items()}
-        elif isinstance(arg, dict):
-            self.observables = arg
 
     def getObservables(self):
         return self.observables

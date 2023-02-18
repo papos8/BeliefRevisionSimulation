@@ -23,10 +23,14 @@ import copy
 
 
 class Agent():
-    def __init__(self, epistemicSpace: EpistemicSpace, typeOfBias: string) -> None:
+    def __init__(self, epistemicSpace: EpistemicSpace, typeOfBias: string, typeOfAgent: string) -> None:
         self.resources = uniform(0.0, 100.0)
         self.bias = typeOfBias
-        self.plausibilityOrder = PlausibilityOrder(epistemicSpace.states)
+        if typeOfAgent == "Custom":
+            self.plausibilityOrder = PlausibilityOrder(
+                "Create", epistemicSpace.states)
+        else:
+            self.plausibilityOrder = PlausibilityOrder(epistemicSpace.states)
         self.isInGroup = False
         self.observables = epistemicSpace.observables
         self.timesOfIncomingInfo = dict()

@@ -1,3 +1,4 @@
+from os import stat
 import string
 import random
 
@@ -13,8 +14,18 @@ class States():
             else:
                 while not (len(self.states) == arg):
                     self.states.add(random.choice(string.ascii_lowercase))
+            self.actualWorld = random.sample(self.states, 1)[0]
         elif isinstance(arg, set):
             self.states = arg
+            self.actualWorld = random.sample(self.states, 1)[0]
+        elif arg == "Create":
+            states = set()
+            numberOfStates = int(input("How many possible worlds are there? "))
+            for i in range(numberOfStates):
+                state = input("Enter the name of the world: ")
+                states.add(state)
+            self.actualWorld = input("What is the actual world? ")
+            self.states = states
 
     def getStates(self):
         return self.states
@@ -25,6 +36,9 @@ class States():
     def getRandomState(self):
         randomState = random.choice(tuple(self.states))
         return randomState
+
+    def getActualWorld(self):
+        return self.actualWorld
 
 
 class State():

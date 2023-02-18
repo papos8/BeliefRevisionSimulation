@@ -6,34 +6,46 @@ import random
 
 
 class DataSequence():
-    def __init__(self) -> None:
-        worlds = set()
-        numberOfWorlds = int(input("How many possible worlds are there? "))
-        for i in range(numberOfWorlds):
-            world = input("Enter the name of the world: ")
-            worlds.add(world)
-        actualWorld = input("What is the actual world? ")
-        if actualWorld not in worlds:
-            worlds.add(actualWorld)
-        self.length = int(input("Provide the sequence's length: "))
-        self.dataSequenceDict = dict()
-        self.dataSequence = []
+    def __init__(self, *arg) -> None:
+        if len(arg) == 1 and arg == "Create":
+            worlds = set()
+            numberOfWorlds = int(input("How many possible worlds are there? "))
+            for i in range(numberOfWorlds):
+                world = input("Enter the name of the world: ")
+                worlds.add(world)
+            actualWorld = input("What is the actual world? ")
+            if actualWorld not in worlds:
+                worlds.add(actualWorld)
+            self.length = int(input("Provide the sequence's length: "))
+            self.dataSequenceDict = dict()
+            self.dataSequence = []
 
-        for i in range(self.length):
-            key = input("Provide the name of the observable proposition: ")
-            self.dataSequence.append(key)
-            setLength = int(
-                input("In how many worlds is the proposition true? "))
-            setOfworlds = set()
-            for i in range(setLength):
-                world = input("Provide the name of the world: ")
-                setOfworlds.add(world)
-            self.dataSequenceDict.update({key: setOfworlds})
-        for proposition in self.dataSequence:
-            self.dataSequenceDict.update(
-                {self.getNegation(proposition): worlds.difference(self.dataSequenceDict[proposition])})
-        self.states = States.States(set(worlds))
-        self.observables = Obsevables.Observables(self.dataSequenceDict)
+            for i in range(self.length):
+                key = input("Provide the name of the observable proposition: ")
+                self.dataSequence.append(key)
+                setLength = int(
+                    input("In how many worlds is the proposition true? "))
+                setOfworlds = set()
+                for i in range(setLength):
+                    world = input("Provide the name of the world: ")
+                    setOfworlds.add(world)
+                self.dataSequenceDict.update({key: setOfworlds})
+            for proposition in self.dataSequence:
+                self.dataSequenceDict.update(
+                    {self.getNegation(proposition): worlds.difference(self.dataSequenceDict[proposition])})
+            self.states = States.States(set(worlds))
+            self.observables = Obsevables.Observables(self.dataSequenceDict)
+        else:
+            # Pass states as first argument and obs as second
+            self.states = arg[0]
+            self.observables = arg[1]
+            self.dataSequence = []
+            lengthOfSequence = int(
+                input("What is the length of the data sequence? "))
+            for i in range(lengthOfSequence):
+                prop = input(
+                    "Select a proposition from the observables you have provided: ")
+                self.dataSequence.append(prop)
 
     def getDataSequenceDict(self):
         return self.dataSequenceDict
