@@ -209,7 +209,7 @@ class Agent():
         # New worldsRelation
         for positiveState in positiveOrder.keys():      # Create new worlds relation
             for negativeState in negativeOrder.keys():
-                positiveOrder[positiveState].append(negativeState)
+                positiveOrder[positiveState].add(negativeState)
         positiveOrder.update(negativeOrder)
         self.plausibilityOrder.updateWorldsRelation(positiveOrder)
         maxLen = 0
@@ -286,9 +286,9 @@ class Agent():
                     positiveOrderHelper[key].remove(state)
         for positiveState in positiveOrderHelper.keys():            # Add the 'negative' worlds to positive
             for negativeState in negativeOrder.keys():
-                positiveOrderHelper[positiveState].append(negativeState)
+                positiveOrderHelper[positiveState].add(negativeState)
             for anotherState in set(positiveOrder.keys()).difference(positiveOrderHelper.keys()):
-                positiveOrderHelper[positiveState].append(anotherState)
+                positiveOrderHelper[positiveState].add(anotherState)
         positiveOrderHelper.update(negativeOrder)
         self.plausibilityOrder.updateMostPlausibleWorlds(           # The most plausible worlds are the most plaus in p
             posPlausibleInProp)
@@ -312,6 +312,7 @@ class Agent():
         newObservables = Observables(framedObservables)
         self.timesOfIncomingInfo[proposition] += 1
         if self.timesOfIncomingInfo[proposition] >= self.stubbornnessDegrees[self.getNegation(proposition)]:
+            print(1)
             self.calledByCBConditioning = True
             return self.conditioning(epistemicSpace, proposition)
         else:
@@ -320,7 +321,7 @@ class Agent():
                 if self.stubbornnessDegrees[prop] > 1:
                     stubbornProp.add(prop)
             if proposition in stubbornProp:
-
+                print(2)
                 helperStates = set(epistemicSpace.states.getStates())
                 newStates = set()
                 newStates = epistemicSpace.states.getStates()
@@ -371,6 +372,7 @@ class Agent():
                             proposition)] = 1
                 return newPlSpace
             else:
+                print(3)
                 # Update stubbornness degree
                 if self.stubbornnessDegrees[proposition] == 1:
                     if self.timesOfIncomingInfo[proposition] == self.stubbornnessDegrees[self.getNegation(proposition)]:
