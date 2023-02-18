@@ -50,23 +50,35 @@ class Agent():
         framing function. Otherwise, observables
         are returned without change '''
         newObservables = {}
-        for key in observables.keys():
-            newObservables.update({key: set()})
-
-        for proposition in observables:
-            value = observables[proposition]
-            # Here the subset is taken completely random
-            # This may affect the results
-            newValue = sample(value, randint(
-                0, len(observables[proposition])))
-            newObservables.update({proposition: newValue})
-
-        for key in observables.keys():
-            newObservables[key] = set(newObservables[key])
-        if self.bias == "Framing":
+        if self.typeOfAgent == "Custom":
+            # Create custom framed observables
+            for key in observables.keys():
+                newObservables.update({key: set()})
+            for proposition in observables:
+                numberOfFramedWorlds = int(
+                    input("How many worlds where " + str(key) + " will the agent receive? "))
+                for i in range(numberOfFramedWorlds):
+                    world = input("Enter the name of the world: ")
+                    observables[proposition].add(world)
             return newObservables
         else:
-            return observables
+            for key in observables.keys():
+                newObservables.update({key: set()})
+
+            for proposition in observables:
+                value = observables[proposition]
+                # Here the subset is taken completely random
+                # This may affect the results
+                newValue = sample(value, randint(
+                    0, len(observables[proposition])))
+                newObservables.update({proposition: newValue})
+
+            for key in observables.keys():
+                newObservables[key] = set(newObservables[key])
+            if self.bias == "Framing":
+                return newObservables
+            else:
+                return observables
 
     # Function that return a dictionary of a proposition and
     # the stubbornness degree of the agent towards this
