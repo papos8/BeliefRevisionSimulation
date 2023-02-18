@@ -9,7 +9,7 @@ from random import randint
 import kivy.lang.builder as kbui
 import Agent
 import Ball
-from BiasedModel import PlausibilitySpace
+from BiasedModel import EpistemicSpace
 from DataSequence import DataSequence
 from Formula import Conjuction, Letter, Negation
 from Obsevables import Observables
@@ -42,7 +42,7 @@ print("Observables")
 print(obs.getObservables())
 print("Most Plausible Worlds")
 print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-plSpace = PlausibilitySpace(states, obs)
+plSpace = EpistemicSpace(states, obs)
 
 # Example for revising using condition
 newSpace = agent1.conditioning(
@@ -208,7 +208,7 @@ print(agent1.plausibilityOrder.getWorldsRelation())
 
 
 data = DataSequence.DataSequence()
-initialPlSpace = PlausibilitySpace(
+initialPlSpace = EpistemicSpace(
     data.getStates(), data.getObservables())
 agent1 = Agent.Agent(initialPlSpace, "Anchoring")
 print(agent1.plausibilityOrder.getWorldsRelation())

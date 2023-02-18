@@ -11,7 +11,7 @@ class BiasedModel():
         self.valuation = valuation
 
 
-class PlausibilitySpace():
+class EpistemicSpace():
     def __init__(self, states: States, observbles: Obsevables) -> None:
         self.states = states
         self.observables = observbles
