@@ -165,11 +165,11 @@ class Agent():
                 self.plausibilityOrder.getOrder(), self.plausibilityOrder.getWorldsRelation(), self.plausibilityOrder.getMostPlausibleWorlds())
         newSpace = EpistemicSpace(
             epistemicSpace.states, epistemicSpace.observables)
-        if self.calledByCBConditioning == True:
+        '''if self.calledByCBConditioning == True:
             if self.stubbornnessDegrees[proposition] == 1:
                 if self.timesOfIncomingInfo[proposition] == self.stubbornnessDegrees[self.getNegation(proposition)]:
                     self.stubbornnessDegrees[proposition] = self.timesOfIncomingInfo[proposition]
-                    self.stubbornnessDegrees[self.getNegation(proposition)] = 1
+                    self.stubbornnessDegrees[self.getNegation(proposition)] = 1'''
         return newSpace
 
     def lexRevision(self, epistemicSpace: EpistemicSpace, proposition: string):
@@ -311,7 +311,6 @@ class Agent():
                 continue
         newObservables = Observables(framedObservables)
         self.timesOfIncomingInfo[proposition] += 1
-        # Initialize memory for times the information has come
         if self.timesOfIncomingInfo[proposition] >= self.stubbornnessDegrees[self.getNegation(proposition)]:
             self.calledByCBConditioning = True
             return self.conditioning(epistemicSpace, proposition)
@@ -321,11 +320,14 @@ class Agent():
                 if self.stubbornnessDegrees[prop] > 1:
                     stubbornProp.add(prop)
             if proposition in stubbornProp:
-                helperStates = epistemicSpace.states.getStates()
+
+                helperStates = set(epistemicSpace.states.getStates())
+                newStates = set()
                 newStates = epistemicSpace.states.getStates()
+
                 # Create a set of worls that are in the stub props
                 for observable in self.stubbornnessDegrees.keys():
-                    if self.stubbornnessDegrees[observable] > 0:
+                    if self.stubbornnessDegrees[observable] > 1:
                         for state in epistemicSpace.states.getStates():
                             if state in epistemicSpace.observables.getObservables()[observable]:
                                 newStates = newStates.intersection(

@@ -1,4 +1,5 @@
 from asyncore import file_dispatcher
+from audioop import bias
 from os import stat
 from re import A
 from kivy.app import App
@@ -21,49 +22,103 @@ import DataSequence
 import random
 from Valuation import Valuation
 import Group
+import json
+
+
+# Custom test for Confirmation Biased Conditioning
+file = open("Custom_Tests/ConfirmationBiasConditioning.txt", "w")
+file.write("Compare unbiased conditioning and confirmation biased condition.\n")
+file.write("""First states and observables are created and then the plausibility orders of the agents.\nThe two agents have the same plausibility orders, but different stubbornness degrees. \n\n""")
+states = States.States("Create")
+obs = Observables("Create")
+file.write("The given states are: " + (', '.join(str(state)
+           for state in states.getStates())) + "\n")
+file.write("The actual world is: " + states.getActualWorld() + "\n")
+file.write("The given observables are: ")
+for prop in obs.getObservables():
+    file.write(prop + ":" + str(obs.getObservables()[prop]) + ", ")
+file.write("\n\n")
+epistemicSpace = EpistemicSpace(
+    states, obs)
+
+# Create unbiased agent
+print("Create unbiased agent")
+unbiasedAgent = Agent.Agent(epistemicSpace, "Unbiased", "Custom")
+# Create biased agent
+print("Create biased agent")
+biasedAgent = Agent.Agent(epistemicSpace, "Confirmation", "Custom")
+data = DataSequence.DataSequence(states, obs)
+
+file.write("The data sequence the agents received is: ")
+for prop in data.getDataSequence():
+    file.write(prop + ", ")
+file.write("\n\n")
+
+file.write("Unbiased agent's initial plausibility order: ")
+for key in unbiasedAgent.plausibilityOrder.getWorldsRelation():
+    file.write(
+        key + ":" + str(unbiasedAgent.plausibilityOrder.getWorldsRelation()[key]) + ", ")
+file.write("\n")
+file.write("Unbiased agent's stubbornness degrees: ")
+for key in unbiasedAgent.stubbornnessDegrees:
+    file.write(key + ":" + str(unbiasedAgent.stubbornnessDegrees[key]) + ", ")
+file.write("\n")
+for i in range(len(data.getDataSequence())):
+    epistemicSpace = unbiasedAgent.conditioning(
+        epistemicSpace, data.getDataSequence()[i])
+    file.write("Unbiased agent's plausibility order after receiving " +
+               data.getDataSequence()[i] + ": ")
+    for key in unbiasedAgent.plausibilityOrder.getWorldsRelation():
+        file.write(
+            key + ":" + str(unbiasedAgent.plausibilityOrder.getWorldsRelation()[key]) + ", ")
+    file.write("\n")
+if len(unbiasedAgent.plausibilityOrder.getMostPlausibleWorlds()) == 1:
+    file.write("Unbiased agent's most plausible world: " +
+               list(unbiasedAgent.plausibilityOrder.getMostPlausibleWorlds())[0] + "\n")
+    if len(unbiasedAgent.plausibilityOrder.getMostPlausibleWorlds()) == 1 and list(unbiasedAgent.plausibilityOrder.getMostPlausibleWorlds())[0] == states.getActualWorld():
+        file.write("Unbiased agent identified the actual world!\n\n")
+    else:
+        file.write("Unbiased agent failed to identify the actual world!\n\n")
+else:
+    file.write("Unbiased agent's most plausible worlds: " + ('-').join(str(world)
+               for world in unbiasedAgent.plausibilityOrder.getMostPlausibleWorlds()) + "\n")
+    file.write("Unbiased agent failed to identify the actual world!\n\n")
+
+
+file.write("Biased agent's initial plausibility order: ")
+for key in biasedAgent.plausibilityOrder.getWorldsRelation():
+    file.write(
+        key + ":" + str(biasedAgent.plausibilityOrder.getWorldsRelation()[key]) + ", ")
+file.write("\n")
+file.write("Biased agent's stubbornness degrees: ")
+for key in biasedAgent.stubbornnessDegrees:
+    file.write(key + ":" + str(biasedAgent.stubbornnessDegrees[key]) + ", ")
+file.write("\n")
+for i in range(len(data.getDataSequence())):
+    epistemicSpace = biasedAgent.confirmationBiasedConditioning(
+        epistemicSpace, data.getDataSequence()[i])
+    file.write("Biased agent's plausibility order after receiving " +
+               data.getDataSequence()[i] + ": ")
+    for key in biasedAgent.plausibilityOrder.getWorldsRelation():
+        file.write(
+            key + ":" + str(biasedAgent.plausibilityOrder.getWorldsRelation()[key]) + ", ")
+    file.write("\n")
+file.write("\n")
+if len(biasedAgent.plausibilityOrder.getMostPlausibleWorlds()) == 1:
+    file.write("Biased agent's most plausible world: " +
+               list(biasedAgent.plausibilityOrder.getMostPlausibleWorlds())[0] + "\n")
+    if len(biasedAgent.plausibilityOrder.getMostPlausibleWorlds()) == 1 and list(biasedAgent.plausibilityOrder.getMostPlausibleWorlds())[0] == states.getActualWorld():
+        file.write("Biased agent identified the actual world!\n\n")
+    else:
+        file.write("Biased agent failed to identifiy the actual world!\n\n")
+else:
+    file.write("Biased agent's most plausible worlds: " + ('-').join(str(world)
+               for world in biasedAgent.plausibilityOrder.getMostPlausibleWorlds()) + "\n")
+    file.write("Biased agent failed to identifiy the actual world!\n\n")
+file.close()
+
 
 '''
-numberOfStates = int(input('How many possible worlds are there? '))
-states = States.States(numberOfStates)
-
-
-agent1 = Agent.Agent(states)
-agent2 = Agent.Agent(states)
-agent3 = Agent.Agent(states)
-setOfAgents = set()
-setOfAgents.add(agent1)
-setOfAgents.add(agent2)
-setOfAgents.add(agent3)
-obs = Observables(states)
-print("Agent's plausibility order:")
-print(agent1.plausibilityOrder.getOrder())
-print("Worlds relation for agent 1")
-print(agent1.plausibilityOrder.getWorldsRelation())
-print("Observables")
-print(obs.getObservables())
-print("Most Plausible Worlds")
-print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-plSpace = EpistemicSpace(states, obs)
-
-# Example for revising using condition
-newSpace = agent1.conditioning(
-    plSpace, input("What is the incoming information? "))
-print("Agent's new plausibility order:")
-print(agent1.plausibilityOrder.getOrder())
-print("New most plausible worlds")
-print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-print("Agent's new worlds relation")
-print(agent1.plausibilityOrder.getWorldsRelation())
-print("States after conditioning")
-print(newSpace.states.getStates())
-print("New observables")
-print(newSpace.observables.getObservables())
-anotherSpace = agent1.conditioning(
-    newSpace, input("What is the incoming information? "))
-print("New most plausible worlds")
-print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-print("Agent's new worlds relation")
-print(agent1.plausibilityOrder.getWorldsRelation())
 
 # Example for revising using lex revision
 newSpace = agent1.lexRevision(plSpace, input(
@@ -206,19 +261,3 @@ print(agent1.plausibilityOrder.getMostPlausibleWorlds())
 print("Agent's new worlds relation")
 print(agent1.plausibilityOrder.getWorldsRelation())
 '''
-
-states = States.States("Create")
-obs = Observables("Create")
-
-epistemicSpace = EpistemicSpace(
-    states, obs)
-agent1 = Agent.Agent(epistemicSpace, "Unbiased", "Custom")
-data = DataSequence.DataSequence(states, obs)
-for i in range(len(data.getDataSequence())):
-    epistemicSpace = agent1.conditioning(
-        epistemicSpace, data.getDataSequence()[i])
-    print(agent1.plausibilityOrder.getWorldsRelation())
-    print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-
-if len(agent1.plausibilityOrder.getMostPlausibleWorlds()) == 1 and list(agent1.plausibilityOrder.getMostPlausibleWorlds())[0] == states.getActualWorld():
-    print("Agent identified the world!")
