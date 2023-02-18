@@ -216,12 +216,3 @@ agent1 = Agent.Agent(epistemicSpace, "Anchoring", "Custom")
 
 print(agent1.plausibilityOrder.getWorldsRelation())
 print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-
-'''
-spaces = []
-for i in range(len(data.getDataSequence())):
-    plausibilitySpace = agent1.anchoringBiasedLexRevision(
-        epistemicSpace, data.getDataSequence()[i])
-    print(agent1.plausibilityOrder.getWorldsRelation())
-    print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-'''

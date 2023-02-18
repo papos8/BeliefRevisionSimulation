@@ -26,6 +26,7 @@ class Agent():
     def __init__(self, epistemicSpace: EpistemicSpace, typeOfBias: string, typeOfAgent: string) -> None:
         self.resources = uniform(0.0, 100.0)
         self.bias = typeOfBias
+        self.typeOfAgent = typeOfAgent
         if typeOfAgent == "Custom":
             self.plausibilityOrder = PlausibilityOrder(
                 "Create", epistemicSpace.states)
@@ -69,32 +70,40 @@ class Agent():
     # proposition
     def stubbornnessDegree(self, observables: dict):
         dictOfDegress = dict()
-        ''' If the agent is not unbiased a random integer
-        between 1 and 5 is assigned as stubbornness degree
-        to every observable proposition. Otherwise, the degree
-        is 1 for every observable proposition '''
-        if self.bias == "Confirmation":
-            if self.isInGroup == True:
-                for proposition in observables:
-                    dictOfDegress.update({proposition: 0})
-                for proposition in observables:
-                    if self.getNegation(proposition) in observables and dictOfDegress[self.getNegation(proposition)] > 0:
-                        continue
-                    else:
-                        dictOfDegress[proposition] = math.ceil(
-                            randint(1, 5)/self.group.adaptiveFactor)
-            else:
+        if self.typeOfAgent == "Custom":
+            numberOfProps = int(input("How many propositions are there? "))
+            for i in range(numberOfProps):
+                prop = input("Enter the name of the proposition: ")
+                stub = int(
+                    input("What is the stubbornness degree of " + prop + ": "))
+                dictOfDegress.update({prop: stub})
+        else:
+            ''' If the agent is not unbiased a random integer
+            between 1 and 5 is assigned as stubbornness degree
+            to every observable proposition. Otherwise, the degree
+            is 1 for every observable proposition '''
+            if self.bias == "Confirmation":
+                if self.isInGroup == True:
+                    for proposition in observables:
+                        dictOfDegress.update({proposition: 0})
+                    for proposition in observables:
+                        if self.getNegation(proposition) in observables and dictOfDegress[self.getNegation(proposition)] > 0:
+                            continue
+                        else:
+                            dictOfDegress[proposition] = math.ceil(
+                                randint(1, 5)/self.group.adaptiveFactor)
+                else:
+                    for proposition in observables:
+                        dictOfDegress.update({proposition: 1})
+                    for proposition in observables:
+                        if self.getNegation(proposition) in observables and dictOfDegress[self.getNegation(proposition)] > 1:
+                            continue
+                        else:
+                            dictOfDegress[proposition] = randint(1, 5)
+            elif self.bias == "Unbiased":
                 for proposition in observables:
                     dictOfDegress.update({proposition: 1})
-                for proposition in observables:
-                    if self.getNegation(proposition) in observables and dictOfDegress[self.getNegation(proposition)] > 1:
-                        continue
-                    else:
-                        dictOfDegress[proposition] = randint(1, 5)
-        elif self.bias == "Unbiased":
-            for proposition in observables:
-                dictOfDegress.update({proposition: 1})
-        return dictOfDegress
+            return dictOfDegress
 
     def addedToGroup(self, group: set):
         self.group = group
