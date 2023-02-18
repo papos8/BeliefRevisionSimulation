@@ -39,9 +39,12 @@ class Agent():
             self.timesOfIncomingInfo.update({obs: 0})
         self.stubbornnessDegrees = self.stubbornnessDegree(
             epistemicSpace.observables.getObservables())
+        self.calledByCBConditioning = False
+        self.calledByCBCLexRevision = False
+        self.calledByCBMinRevision = False
+
     # Framing function to return a subset of
     # a proposition
-
     def framingFunction(self, observables: dict):
         ''' If agent is under framing bias we use the
         framing function. Otherwise, observables
@@ -71,12 +74,11 @@ class Agent():
     def stubbornnessDegree(self, observables: dict):
         dictOfDegress = dict()
         if self.typeOfAgent == "Custom":
-            numberOfProps = int(input("How many propositions are there? "))
-            for i in range(numberOfProps):
-                prop = input("Enter the name of the proposition: ")
+            for prop in set(self.observables.getObservables().keys()):
                 stub = int(
                     input("What is the stubbornness degree of " + prop + ": "))
                 dictOfDegress.update({prop: stub})
+            return dictOfDegress
         else:
             ''' If the agent is not unbiased a random integer
             between 1 and 5 is assigned as stubbornness degree

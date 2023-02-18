@@ -51,12 +51,13 @@ class PlausibilityOrder():
                     world = input("Enter the name of the wolrd: ")
                     self.worldsRelation[key].add(world)
 
-            numberOfMostPlausibleWorlds = int(
-                input("What is the number of most plausible worlds? "))
-            for k in range(numberOfMostPlausibleWorlds):
-                world = input("Enter the name of the world: ")
-                self.mostPlausibleWorlds.add(world)
-
+            maxLen = 0
+            for key in self.worldsRelation.keys():  # Find most plausible worlds for both positive and negative cases
+                maxLen = max(maxLen, len(self.worldsRelation[key]))
+            for key in self.worldsRelation.keys():
+                if len(self.worldsRelation[key]) == maxLen:
+                    self.mostPlausibleWorlds.add(key)
+            self.order = self.worldsRelation
         elif len(arg) == 3:
             self.order = arg[0]
             self.worldsRelation = arg[1]

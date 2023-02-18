@@ -1,4 +1,5 @@
 from asyncore import file_dispatcher
+from os import stat
 from re import A
 from kivy.app import App
 import kivy.uix.widget as kuix
@@ -208,11 +209,16 @@ print(agent1.plausibilityOrder.getWorldsRelation())
 
 states = States.States("Create")
 obs = Observables("Create")
-data = DataSequence.DataSequence(states, obs)
+
 epistemicSpace = EpistemicSpace(
-    data.getStates(), data.getObservables())
-agent1 = Agent.Agent(epistemicSpace, "Anchoring", "Custom")
+    states, obs)
+agent1 = Agent.Agent(epistemicSpace, "Unbiased", "Custom")
+data = DataSequence.DataSequence(states, obs)
+for i in range(len(data.getDataSequence())):
+    epistemicSpace = agent1.conditioning(
+        epistemicSpace, data.getDataSequence()[i])
+    print(agent1.plausibilityOrder.getWorldsRelation())
+    print(agent1.plausibilityOrder.getMostPlausibleWorlds())
 
-
-print(agent1.plausibilityOrder.getWorldsRelation())
-print(agent1.plausibilityOrder.getMostPlausibleWorlds())
+if len(agent1.plausibilityOrder.getMostPlausibleWorlds()) == 1 and list(agent1.plausibilityOrder.getMostPlausibleWorlds())[0] == states.getActualWorld():
+    print("Agent identified the world!")
