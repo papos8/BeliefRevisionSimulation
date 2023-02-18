@@ -351,7 +351,7 @@ for key in unbiasedAgent.stubbornnessDegrees:
     file.write(key + ":" + str(unbiasedAgent.stubbornnessDegrees[key]) + ", ")
 file.write("\n")
 for i in range(len(data.getDataSequence())):
-    epistemicSpaceForUnbiased = unbiasedAgent.minRevision(
+    epistemicSpaceForUnbiased = unbiasedAgent.conditioning(
         epistemicSpaceForUnbiased, data.getDataSequence()[i])
     file.write("Unbiased agent's plausibility order after receiving " +
                data.getDataSequence()[i] + ": ")
@@ -382,7 +382,7 @@ for key in biasedAgent.stubbornnessDegrees:
     file.write(key + ":" + str(biasedAgent.stubbornnessDegrees[key]) + ", ")
 file.write("\n")
 for i in range(len(data.getDataSequence())):
-    epistemicSpaceForBiased = biasedAgent.confirmationBiasedMinRevision(
+    epistemicSpaceForBiased = biasedAgent.framingBiasedConditioning(
         epistemicSpaceForBiased, data.getDataSequence()[i])
     file.write("Biased agent's plausibility order after receiving " +
                data.getDataSequence()[i] + ": ")

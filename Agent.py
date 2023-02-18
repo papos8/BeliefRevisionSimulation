@@ -32,7 +32,6 @@ class Agent():
                 "Create", epistemicSpace.states)
         else:
             self.plausibilityOrder = PlausibilityOrder(epistemicSpace.states)
-        self.isInGroup = False
         self.observables = epistemicSpace.observables
         self.timesOfIncomingInfo = dict()
         for obs in self.observables.getObservables().keys():
@@ -42,9 +41,10 @@ class Agent():
         self.calledByCBConditioning = False
         self.calledByCBCLexRevision = False
         self.calledByCBMinRevision = False
-
+        self.isInGroup = False
     # Framing function to return a subset of
     # a proposition
+
     def framingFunction(self, observables: dict):
         ''' If agent is under framing bias we use the
         framing function. Otherwise, observables
@@ -54,12 +54,12 @@ class Agent():
             # Create custom framed observables
             for key in observables.keys():
                 newObservables.update({key: set()})
-            for proposition in observables:
+            for proposition in observables.keys():
                 numberOfFramedWorlds = int(
-                    input("How many worlds where " + str(key) + " will the agent receive? "))
+                    input("How many worlds where " + str(proposition) + " will the agent receive? "))
                 for i in range(numberOfFramedWorlds):
                     world = input("Enter the name of the world: ")
-                    observables[proposition].add(world)
+                    newObservables[proposition].add(world)
             return newObservables
         else:
             for key in observables.keys():
@@ -132,20 +132,8 @@ class Agent():
         epistemicSpace.states.updateStates(
             epistemicSpace.states.getStates().intersection(newStates))
 
-        # Update the observables
-        # Framing function is applied, but there should return
-        # observables intact
-        newObservables = dict()
-        framedObservables = self.framingFunction(
+        newObservables = Observables(
             epistemicSpace.observables.getObservables())
-
-        for observable in framedObservables:
-            if self.stubbornnessDegrees[observable] == 1:
-                newValue = framedObservables[observable].intersection(
-                    framedObservables[proposition])
-                if len(newValue) > 0:
-                    newObservables.update({observable: newValue})
-        newObservables = Observables(newObservables)
         # Update plaus order to have only the new states
         statesToRemove = helperStates.difference(
             epistemicSpace.states.getStates())
@@ -185,15 +173,8 @@ class Agent():
         return newSpace
 
     def lexRevision(self, epistemicSpace: EpistemicSpace, proposition: string):
-        # Update the observables
-        # Framing function is applied, but there should return
-        # observables intact (For the sake of completeness)
-        framedObservables = self.framingFunction(
+        newObservables = Observables(
             epistemicSpace.observables.getObservables())
-        for observable in framedObservables:
-            if self.stubbornnessDegrees[observable] == 1:
-                continue
-        newObservables = Observables(framedObservables)
         # Create two helper state orders
         # Posittive and negative
         positiveOrder = dict()
@@ -245,15 +226,8 @@ class Agent():
         return EpistemicSpace(epistemicSpace.states, newObservables)
 
     def minRevision(self, epistemicSpace: EpistemicSpace, proposition: string):
-        # Update the observables
-        # Framing function is applied, but there should return
-        # observables intact (For the sake of completeness)
-        framedObservables = self.framingFunction(
+        newObservables = Observables(
             epistemicSpace.observables.getObservables())
-        for observable in framedObservables:
-            if self.stubbornnessDegrees[observable] == 1:
-                continue
-        newObservables = Observables(framedObservables)
         positiveOrder = dict()
         positiveOrderHelper = dict()
         negativeOrder = dict()
@@ -667,13 +641,17 @@ class Agent():
         # Update the observables
         # Framing function is applied, but there should return
         # observables intact (For the sake of completeness)
-
+        print("Incoming proposition " + proposition)
         framedObservables = self.framingFunction(
             self.observables.getObservables())
+        print("Framed obs")
+        print(framedObservables)
         newObservables = Observables(framedObservables)
         # Create new set S
         helperStates = epistemicSpace.states.getStates()
-        newStates = set(framedObservables[proposition])
+        newStates = framedObservables[proposition]
+        print("New States")
+        print(newStates)
         epistemicSpace.states.updateStates(
             epistemicSpace.states.getStates().intersection(newStates))
         newStates = States.States(newStates)
@@ -686,7 +664,8 @@ class Agent():
                 if state in self.plausibilityOrder.getWorldsRelation()[anotherState]:
                     self.plausibilityOrder.getWorldsRelation()[
                         anotherState].remove(state)
-            self.plausibilityOrder.getWorldsRelation().pop(state)
+            if state in self.plausibilityOrder.getWorldsRelation():
+                self.plausibilityOrder.getWorldsRelation().pop(state)
             if state in self.plausibilityOrder.getMostPlausibleWorlds():
                 self.plausibilityOrder.getMostPlausibleWorlds().remove(state)
         self.plausibilityOrder = PlausibilityOrder(

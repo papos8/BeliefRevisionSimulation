@@ -17,7 +17,7 @@ class States():
             self.actualWorld = random.sample(self.states, 1)[0]
         elif isinstance(arg, set):
             self.states = arg
-            self.actualWorld = random.sample(self.states, 1)[0]
+            self.actualWorld = random.choice(tuple(arg))
         elif arg == "Create":
             states = set()
             numberOfStates = int(input("How many possible worlds are there? "))
