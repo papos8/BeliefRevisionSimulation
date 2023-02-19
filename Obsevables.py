@@ -34,13 +34,20 @@ class Observables():
         elif not (isinstance(arg, dict)):
             self.observables = dict()
             worldSet = set()
+            counter = 0
 
-            for proposition in string.ascii_uppercase:
-                setOfWorlds = random.choice(tuple(self.powerset(arg)))
-                self.observables.update({str(proposition): set(setOfWorlds)})
-                self.observables.update(
-                    {str("~" + proposition): arg.getStates()-set(setOfWorlds)})
-
+            while True:
+                for proposition in string.ascii_uppercase:
+                    setOfWorlds = random.choice(tuple(self.powerset(arg)))
+                    self.observables.update(
+                        {str(proposition): set(setOfWorlds)})
+                    self.observables.update(
+                        {str("~" + proposition): arg.getStates()-set(setOfWorlds)})
+                    counter += 2
+                    if counter > 10:
+                        break
+                if counter > 10:
+                    break
             # Exchange keys, values to make values of dict a set
             helper = {tuple(v): k for k, v in self.observables.items()}
             self.observables = {v: set(k) for k, v in helper.items()}

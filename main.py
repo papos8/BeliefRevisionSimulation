@@ -881,3 +881,14 @@ else:
     file.write("Biased agent failed to identifiy the actual world!\n\n")
 file.close()
 '''
+
+
+states = States.States(5)
+obs = Observables(states)
+
+print(states.getStates())
+print(states.getActualWorld())
+print(obs.getObservables())
+
+data = DataSequence.DataSequence(states, obs)
+print(data.getDataSequence())

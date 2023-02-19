@@ -1,3 +1,5 @@
+from itertools import permutations
+import itertools
 import string
 from wsgiref.util import request_uri
 import Obsevables
@@ -40,12 +42,32 @@ class DataSequence():
             self.states = arg[0]
             self.observables = arg[1]
             self.dataSequence = []
+            positiveProps = []
+            for key in self.observables.getObservables().keys():
+                if self.states.getActualWorld() in self.observables.getObservables()[key]:
+                    positiveProps.append(key)
             lengthOfSequence = int(
-                input("What is the length of the data sequence? "))
-            for i in range(lengthOfSequence):
-                prop = input(
-                    "Select a proposition from the observables you have provided: ")
-                self.dataSequence.append(prop)
+                input("Provide the length of the data sequence. It should be greater or equal than " +
+                      str(len(positiveProps)) + ": "))
+
+            if lengthOfSequence == len(positiveProps):
+                permutations = list(itertools.permutations(
+                    positiveProps, lengthOfSequence))
+                index = random.randint(1, len(permutations))
+                self.dataSequence = permutations[index]
+            elif lengthOfSequence > len(positiveProps):
+                permutations = list(itertools.permutations(
+                    positiveProps, len(positiveProps)))
+                index = random.randint(1, len(permutations))
+                helperData = permutations[index]
+                for element in helperData:
+                    self.dataSequence.append(element)
+                for i in range(len(helperData), lengthOfSequence):
+                    randomElement = random.choice(positiveProps)
+                    self.dataSequence.append(randomElement)
+            else:
+                raise Exception(
+                    "The length of the data sequence should be greater or equal than the number of observables true in the actual world!")
 
     def getDataSequenceDict(self):
         return self.dataSequenceDict
@@ -75,7 +97,7 @@ class DataSequence():
         flag = True
         # Check that if the state is in a observable,
         # then the observable is in the data sequence
-        for observable in self.observables.getObservables():
+        for observable in self.observables.getObservables().keys():
             if state in self.observables.getObservables()[observable] and observable not in self.dataSequence:
                 flag = False
                 break
