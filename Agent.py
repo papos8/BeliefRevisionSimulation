@@ -165,11 +165,11 @@ class Agent():
                 self.plausibilityOrder.getOrder(), self.plausibilityOrder.getWorldsRelation(), self.plausibilityOrder.getMostPlausibleWorlds())
         newSpace = EpistemicSpace(
             epistemicSpace.states, epistemicSpace.observables)
-        '''if self.calledByCBConditioning == True:
+        if self.calledByCBConditioning == True:
             if self.stubbornnessDegrees[proposition] == 1:
                 if self.timesOfIncomingInfo[proposition] == self.stubbornnessDegrees[self.getNegation(proposition)]:
                     self.stubbornnessDegrees[proposition] = self.timesOfIncomingInfo[proposition]
-                    self.stubbornnessDegrees[self.getNegation(proposition)] = 1'''
+                    self.stubbornnessDegrees[self.getNegation(proposition)] = 1
         return newSpace
 
     def lexRevision(self, epistemicSpace: EpistemicSpace, proposition: string):
@@ -641,21 +641,20 @@ class Agent():
         # Update the observables
         # Framing function is applied, but there should return
         # observables intact (For the sake of completeness)
-        print("Incoming proposition " + proposition)
+        realObs = copy.deepcopy(self.observables.getObservables())
         framedObservables = self.framingFunction(
             self.observables.getObservables())
-        print("Framed obs")
-        print(framedObservables)
-        newObservables = Observables(framedObservables)
         # Create new set S
-        helperStates = epistemicSpace.states.getStates()
+        helperStates = set()
+        for state in epistemicSpace.states.getStates():
+            helperStates.add(state)
+
         newStates = framedObservables[proposition]
-        print("New States")
-        print(newStates)
         epistemicSpace.states.updateStates(
             epistemicSpace.states.getStates().intersection(newStates))
-        newStates = States.States(newStates)
-        statesToRemove = helperStates.difference(newStates.getStates())
+        statesToRemove = helperStates.difference(
+            epistemicSpace.states.getStates())
+        newStates = States.States(epistemicSpace.states.getStates())
         for state in statesToRemove:
             for key in self.plausibilityOrder.getOrder().keys():
                 if state in self.plausibilityOrder.getOrder()[key]:
@@ -671,7 +670,7 @@ class Agent():
         self.plausibilityOrder = PlausibilityOrder(
             self.plausibilityOrder.getOrder(), self.plausibilityOrder.getWorldsRelation(), self.plausibilityOrder.getMostPlausibleWorlds())
         newPlSpace = EpistemicSpace(
-            states=newStates, observbles=newObservables)
+            states=epistemicSpace.states, observbles=realObs)
         return newPlSpace
 
     def framingBiasedLexRevision(self, epistemicSpace: EpistemicSpace, proposition: string):
@@ -713,7 +712,7 @@ class Agent():
         # New worldsRelation
         for positiveState in positiveOrder.keys():      # Create new worlds relation
             for negativeState in negativeOrder.keys():
-                positiveOrder[positiveState].append(negativeState)
+                positiveOrder[positiveState].add(negativeState)
         positiveOrder.update(negativeOrder)
         self.plausibilityOrder.updateWorldsRelation(positiveOrder)
         maxLen = 0
