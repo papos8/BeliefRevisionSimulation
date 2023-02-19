@@ -1,5 +1,5 @@
-Compare unbiased lexicographic and anchoring biased lexicographic revision.
-As anchoring biased lexicographic revision behaves as the unbiased minimal revision, we expect lexicographic revision to behave better than anchoring biased lexicographic revision.
+Compare unbiased lexicographic and anchoring bias lexicographic revision.
+As anchoring biased lexicographic revision behaves as the unbiased minimal revision, we expect lexicographic revision to behave better than anchoring bias lexicographic revision.
 First states and observables are created and then the plausibility orders of the agents.
 The two agents have the same plausibility orders and same stubbornness degrees. 
 

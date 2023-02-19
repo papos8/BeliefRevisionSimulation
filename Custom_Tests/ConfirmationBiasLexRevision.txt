@@ -1,4 +1,4 @@
-Compare unbiased lexicographic and confirmation biased lexicographic revision.
+Compare unbiased lexicographic and confirmation bias lexicographic revision.
 First states and observables are created and then the plausibility orders of the agents.
 The two agents have the same plausibility orders, but different stubbornness degrees. 
 

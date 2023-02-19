@@ -1,4 +1,4 @@
-Compare unbiased conditioning and anchoring biased conditioning.
+Compare unbiased conditioning and anchoring bias conditioning.
 First states and observables are created and then the plausibility orders of the agents.
 The two agents have the same plausibility orders and same stubbornness degrees. 
 

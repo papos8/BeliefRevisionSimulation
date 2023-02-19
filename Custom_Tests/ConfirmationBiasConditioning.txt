@@ -1,4 +1,4 @@
-Compare unbiased conditioning and confirmation biased condition.
+Compare unbiased conditioning and confirmation bias condition.
 First states and observables are created and then the plausibility orders of the agents.
 The two agents have the same plausibility orders, but different stubbornness degrees. 
 

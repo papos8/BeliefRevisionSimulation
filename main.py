@@ -26,9 +26,9 @@ import json
 import copy
 
 '''
-# Custom test for Confirmation Biased Conditioning
+# Custom test for Confirmation Bias Conditioning
 file = open("Custom_Tests/ConfirmationBiasConditioning.txt", "w")
-file.write("Compare unbiased conditioning and confirmation biased condition.\n")
+file.write("Compare unbiased conditioning and confirmation bias condition.\n")
 file.write("""First states and observables are created and then the plausibility orders of the agents.\nThe two agents have the same plausibility orders, but different stubbornness degrees. \n\n""")
 states = States.States("Create")
 newStates = copy.deepcopy(states)
@@ -122,10 +122,10 @@ file.close()
 '''
 
 '''
-# Custom test for Confirmation Biased Lex Revision
+# Custom test for Confirmation Bias Lex Revision
 file = open("Custom_Tests/ConfirmationBiasLexRevision.txt", "w")
 file.write(
-    "Compare unbiased lexicographic and confirmation biased lexicographic revision.\n")
+    "Compare unbiased lexicographic and confirmation bias lexicographic revision.\n")
 file.write("""First states and observables are created and then the plausibility orders of the agents.\nThe two agents have the same plausibility orders, but different stubbornness degrees. \n\n""")
 states = States.States("Create")
 newStates = copy.deepcopy(states)
@@ -216,10 +216,10 @@ else:
 file.close()
 '''
 '''
-# Custom test for Confirmation Biased Min Revision
+# Custom test for Confirmation Bias Min Revision
 file = open("Custom_Tests/ConfirmationBiasMinRevision.txt", "w")
 file.write(
-    "Compare unbiased minimal and confirmation biased minimal revision.\n")
+    "Compare unbiased minimal and confirmation bias minimal revision.\n")
 file.write("""First states and observables are created and then the plausibility orders of the agents.\nThe two agents have the same plausibility orders, but different stubbornness degrees. \n\n""")
 states = States.States("Create")
 newStates = copy.deepcopy(states)
@@ -311,10 +311,10 @@ else:
 file.close()
 '''
 '''
-# Custom test for Framing Biased Conditioning
+# Custom test for Framing Bias Conditioning
 file = open("Custom_Tests/FramingBiasConditioning.txt", "w")
 file.write(
-    "Compare unbiased conditioning and framing biased conditioning.\n")
+    "Compare unbiased conditioning and framing bias conditioning.\n")
 file.write("""First states and observables are created and then the plausibility orders of the agents.\nThe two agents have the same plausibility orders and same stubbornness degrees. \n\n""")
 states = States.States("Create")
 newStates = copy.deepcopy(states)
@@ -406,10 +406,10 @@ else:
 file.close()
 '''
 '''
-# Custom test for Framing Biased Lex Revision
+# Custom test for Framing Bias Lex Revision
 file = open("Custom_Tests/FramingBiasLexRevision.txt", "w")
 file.write(
-    "Compare unbiased lexicographic and framing biased lexicographic revision.\n")
+    "Compare unbiased lexicographic and framing bias lexicographic revision.\n")
 file.write("""First states and observables are created and then the plausibility orders of the agents.\nThe two agents have the same plausibility orders and same stubbornness degrees. \n\n""")
 states = States.States("Create")
 newStates = copy.deepcopy(states)
@@ -501,10 +501,10 @@ else:
 file.close()
 '''
 '''
-# Custom test for Framing Biased Min Revision
+# Custom test for Framing Bias Min Revision
 file = open("Custom_Tests/FramingBiasMinRevision.txt", "w")
 file.write(
-    "Compare unbiased minimal and framing biased minimal revision.\n")
+    "Compare unbiased minimal and framing bias minimal revision.\n")
 file.write("""First states and observables are created and then the plausibility orders of the agents.\nThe two agents have the same plausibility orders and same stubbornness degrees. \n\n""")
 states = States.States("Create")
 newStates = copy.deepcopy(states)
@@ -596,10 +596,10 @@ else:
 file.close()
 '''
 '''
-# Custom test for Anchoring Biased Conditioning
+# Custom test for Anchoring Bias Conditioning
 file = open("Custom_Tests/AnchoringBiasConditioning.txt", "w")
 file.write(
-    "Compare unbiased conditioning and anchoring biased conditioning.\n")
+    "Compare unbiased conditioning and anchoring bias conditioning.\n")
 file.write("""First states and observables are created and then the plausibility orders of the agents.\nThe two agents have the same plausibility orders and same stubbornness degrees. \n\n""")
 states = States.States("Create")
 newStates = copy.deepcopy(states)
@@ -691,10 +691,10 @@ else:
 file.close()
 '''
 '''
-# Custom test for Anchoring Biased Lex Revision
+# Custom test for Anchoring Bias Lex Revision
 file = open("Custom_Tests/AnchoringBiasLexRevision.txt", "w")
 file.write(
-    "Compare unbiased lexicographic and anchoring biased lexicographic revision.\nAs anchoring biased lexicographic revision behaves as the unbiased minimal revision, we expect lexicographic revision to behave better than anchoring biased lexicographic revision.\n")
+    "Compare unbiased lexicographic and anchoring bias lexicographic revision.\nAs anchoring bias lexicographic revision behaves as the unbiased minimal revision, we expect lexicographic revision to behave better than anchoring biased lexicographic revision.\n")
 file.write("""First states and observables are created and then the plausibility orders of the agents.\nThe two agents have the same plausibility orders and same stubbornness degrees. \n\n""")
 states = States.States("Create")
 newStates = copy.deepcopy(states)
@@ -787,10 +787,10 @@ file.close()
 '''
 
 '''
-# Custom test for Anchoring Biased Min Revision
+# Custom test for Anchoring Bias Min Revision
 file = open("Custom_Tests/AnchoringBiasMinRevision.txt", "w")
 file.write(
-    "Compare unbiased minimal and anchoring biased minimal revision.\nAs they behave the same, this example is included for the sake of completeness.\n")
+    "Compare unbiased minimal and anchoring bias minimal revision.\nAs they behave the same, this example is included for the sake of completeness.\n")
 file.write("""First states and observables are created and then the plausibility orders of the agents.\nThe two agents have the same plausibility orders and same stubbornness degrees. \n\n""")
 states = States.States("Create")
 newStates = copy.deepcopy(states)

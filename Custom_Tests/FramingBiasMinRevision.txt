@@ -1,4 +1,4 @@
-Compare unbiased minimal and framing biased minimal revision.
+Compare unbiased minimal and framing bias minimal revision.
 First states and observables are created and then the plausibility orders of the agents.
 The two agents have the same plausibility orders and same stubbornness degrees. 
 
