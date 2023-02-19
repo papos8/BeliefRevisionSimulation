@@ -11,7 +11,7 @@ from random import randint
 import kivy.lang.builder as kbui
 import Agent
 import Ball
-from BiasedModel import EpistemicSpace
+from EpistemicSpace import EpistemicSpace
 from DataSequence import DataSequence
 from Formula import Conjuction, Letter, Negation
 from Obsevables import Observables
@@ -315,7 +315,7 @@ file.close()
 file = open("Custom_Tests/FramingBiasConditioning.txt", "w")
 file.write(
     "Compare unbiased conditioning and framing biased conditioning.\n")
-file.write("""First states and observables are created and then the plausibility orders of the agents.\nThe two agents have the same plausibility orders, but different stubbornness degrees. \n\n""")
+file.write("""First states and observables are created and then the plausibility orders of the agents.\nThe two agents have the same plausibility orders and same stubbornness degrees. \n\n""")
 states = States.States("Create")
 newStates = copy.deepcopy(states)
 obs = Observables("Create")
@@ -410,7 +410,7 @@ file.close()
 file = open("Custom_Tests/FramingBiasLexRevision.txt", "w")
 file.write(
     "Compare unbiased lexicographic and framing biased lexicographic revision.\n")
-file.write("""First states and observables are created and then the plausibility orders of the agents.\nThe two agents have the same plausibility orders, but different stubbornness degrees. \n\n""")
+file.write("""First states and observables are created and then the plausibility orders of the agents.\nThe two agents have the same plausibility orders and same stubbornness degrees. \n\n""")
 states = States.States("Create")
 newStates = copy.deepcopy(states)
 obs = Observables("Create")
@@ -505,7 +505,7 @@ file.close()
 file = open("Custom_Tests/FramingBiasMinRevision.txt", "w")
 file.write(
     "Compare unbiased minimal and framing biased minimal revision.\n")
-file.write("""First states and observables are created and then the plausibility orders of the agents.\nThe two agents have the same plausibility orders, but different stubbornness degrees. \n\n""")
+file.write("""First states and observables are created and then the plausibility orders of the agents.\nThe two agents have the same plausibility orders and same stubbornness degrees. \n\n""")
 states = States.States("Create")
 newStates = copy.deepcopy(states)
 obs = Observables("Create")
@@ -600,7 +600,7 @@ file.close()
 file = open("Custom_Tests/AnchoringBiasConditioning.txt", "w")
 file.write(
     "Compare unbiased conditioning and anchoring biased conditioning.\n")
-file.write("""First states and observables are created and then the plausibility orders of the agents.\nThe two agents have the same plausibility orders, but different stubbornness degrees. \n\n""")
+file.write("""First states and observables are created and then the plausibility orders of the agents.\nThe two agents have the same plausibility orders and same stubbornness degrees. \n\n""")
 states = States.States("Create")
 newStates = copy.deepcopy(states)
 obs = Observables("Create")
@@ -690,12 +690,12 @@ else:
     file.write("Biased agent failed to identifiy the actual world!\n\n")
 file.close()
 '''
-
+'''
 # Custom test for Anchoring Biased Lex Revision
 file = open("Custom_Tests/AnchoringBiasLexRevision.txt", "w")
 file.write(
-    "Compare unbiased lexicographic and anchoring biased lexicographic revision.\n")
-file.write("""First states and observables are created and then the plausibility orders of the agents.\nThe two agents have the same plausibility orders, but different stubbornness degrees. \n\n""")
+    "Compare unbiased lexicographic and anchoring biased lexicographic revision.\nAs anchoring biased lexicographic revision behaves as the unbiased minimal revision, we expect lexicographic revision to behave better than anchoring biased lexicographic revision.\n")
+file.write("""First states and observables are created and then the plausibility orders of the agents.\nThe two agents have the same plausibility orders and same stubbornness degrees. \n\n""")
 states = States.States("Create")
 newStates = copy.deepcopy(states)
 obs = Observables("Create")
@@ -784,14 +784,14 @@ else:
                for world in biasedAgent.plausibilityOrder.getMostPlausibleWorlds()) + "\n")
     file.write("Biased agent failed to identifiy the actual world!\n\n")
 file.close()
-
+'''
 
 '''
 # Custom test for Anchoring Biased Min Revision
 file = open("Custom_Tests/AnchoringBiasMinRevision.txt", "w")
 file.write(
     "Compare unbiased minimal and anchoring biased minimal revision.\nAs they behave the same, this example is included for the sake of completeness.\n")
-file.write("""First states and observables are created and then the plausibility orders of the agents.\nThe two agents have the same plausibility orders, but different stubbornness degrees. \n\n""")
+file.write("""First states and observables are created and then the plausibility orders of the agents.\nThe two agents have the same plausibility orders and same stubbornness degrees. \n\n""")
 states = States.States("Create")
 newStates = copy.deepcopy(states)
 obs = Observables("Create")

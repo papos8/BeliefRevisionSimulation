@@ -1,6 +1,6 @@
 Compare unbiased lexicographic and framing biased lexicographic revision.
 First states and observables are created and then the plausibility orders of the agents.
-The two agents have the same plausibility orders, but different stubbornness degrees. 
+The two agents have the same plausibility orders and same stubbornness degrees. 
 
 The given states are: w, t, r, s
 The actual world is: r

@@ -1,9 +1,6 @@
-from os import stat
-import States
-import Obsevables
-import Valuation
 import Agent
-from BiasedModel import EpistemicSpace
+import Valuation
+import EpistemicSpace
 
 
 class BiasedModel():
@@ -16,9 +13,3 @@ class PlausibilitySpace():
     def __init__(self, epistemicSpace: EpistemicSpace, agent: Agent) -> None:
         self.epistemicSpace = epistemicSpace
         self.agent = agent
-
-
-class EpistemicSpace():
-    def __init__(self, states: States, observbles: Obsevables) -> None:
-        self.states = states
-        self.observables = observbles

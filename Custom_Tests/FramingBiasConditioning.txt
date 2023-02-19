@@ -1,6 +1,6 @@
 Compare unbiased conditioning and framing biased conditioning.
 First states and observables are created and then the plausibility orders of the agents.
-The two agents have the same plausibility orders, but different stubbornness degrees. 
+The two agents have the same plausibility orders and same stubbornness degrees. 
 
 The given states are: r, t, w, s
 The actual world is: r
