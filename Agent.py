@@ -291,9 +291,6 @@ class Agent():
         return EpistemicSpace(epistemicSpace.states, newObservables)
 
     def confirmationBiasedConditioning(self, epistemicSpace: EpistemicSpace, proposition: string):
-        # Update the observables
-        # Framing function is applied, but there should return
-        # observables intact (For the sake of completeness)
         newObservables = Observables(
             epistemicSpace.observables.getObservables())
         self.timesOfIncomingInfo[proposition] += 1
@@ -364,10 +361,6 @@ class Agent():
                 return epistemicSpace
 
     def confirmationBiasedLexRevision(self, epistemicSpace: EpistemicSpace, proposition: string):
-        # Update the observables
-        # Framing function is applied, but there should return
-        # observables intact (For the sake of completeness)
-
         newObservables = Observables(
             epistemicSpace.observables.getObservables())
         self.timesOfIncomingInfo[proposition] += 1
@@ -814,9 +807,6 @@ class Agent():
         return EpistemicSpace(epistemicSpace.states, newObservables)
 
     def anchoringBiasedConditioning(self, epistemicSpace: EpistemicSpace, proposition: string):
-        # Update the observables
-        # Framing function is applied, but there should return
-        # observables intact (For the sake of completeness)
         helperStates = epistemicSpace.states.getStates()
         newObservables = Observables(
             epistemicSpace.observables.getObservables())
@@ -862,16 +852,13 @@ class Agent():
         return newPlSpace
 
     def anchoringBiasedLexRevision(self, epistemicSpace: EpistemicSpace, proposition: string):
-        # Update the observables
-        # Framing function is applied, but there should return
-        # observables intact (For the sake of completeness)
         helperOrder = dict()
         helperOrder = copy.deepcopy(self.plausibilityOrder.getWorldsRelation())
 
         helperStates = epistemicSpace.states.getStates()
-        framedObservables = self.framingFunction(
+
+        newObservables = Observables(
             epistemicSpace.observables.getObservables())
-        newObservables = Observables(framedObservables)
         positiveOrder = dict()
         positiveOrderHelper = dict()
         negativeOrder = dict()
@@ -942,11 +929,11 @@ class Agent():
         # Add the missing states to the order
         for positiveState in positiveOrderHelper.keys():
             for positiveStateHelper in positiveOrder.keys():
-                positiveOrderHelper[positiveState].append(positiveStateHelper)
+                positiveOrderHelper[positiveState].add(positiveStateHelper)
             for negativeStateHelper in negativeOrderHelper.keys():
-                positiveOrderHelper[positiveState].append(negativeStateHelper)
+                positiveOrderHelper[positiveState].add(negativeStateHelper)
             for negativeState in negativeOrder.keys():
-                positiveOrderHelper[positiveState].append(negativeState)
+                positiveOrderHelper[positiveState].add(negativeState)
 
         for element in posPlausibleInProp:
             helperOrder.pop(element)

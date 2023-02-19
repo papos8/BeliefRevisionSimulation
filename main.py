@@ -691,6 +691,101 @@ else:
 file.close()
 '''
 
+# Custom test for Anchoring Biased Lex Revision
+file = open("Custom_Tests/AnchoringBiasLexRevision.txt", "w")
+file.write(
+    "Compare unbiased lexicographic and anchoring biased lexicographic revision.\n")
+file.write("""First states and observables are created and then the plausibility orders of the agents.\nThe two agents have the same plausibility orders, but different stubbornness degrees. \n\n""")
+states = States.States("Create")
+newStates = copy.deepcopy(states)
+obs = Observables("Create")
+file.write("The given states are: " + (', '.join(str(state)
+           for state in states.getStates())) + "\n")
+file.write("The actual world is: " + states.getActualWorld() + "\n")
+file.write("The given observables are: ")
+for prop in obs.getObservables():
+    file.write(prop + ":" + str(obs.getObservables()[prop]) + ", ")
+file.write("\n\n")
+epistemicSpaceForUnbiased = EpistemicSpace(
+    states, obs)
+epistemicSpaceForBiased = EpistemicSpace(newStates, obs)
+# Create unbiased agent
+print("Create unbiased agent")
+unbiasedAgent = Agent.Agent(epistemicSpaceForUnbiased, "Unbiased", "Custom")
+# Create biased agent
+print("Create biased agent")
+biasedAgent = Agent.Agent(epistemicSpaceForBiased, "Anchoring", "Custom")
+data = DataSequence.DataSequence(states, obs)
+
+file.write("The data sequence the agents received is: ")
+for prop in data.getDataSequence():
+    file.write(prop + ", ")
+file.write("\n\n")
+
+file.write("Unbiased agent's initial plausibility order: ")
+for key in unbiasedAgent.plausibilityOrder.getWorldsRelation():
+    file.write(
+        key + ":" + str(unbiasedAgent.plausibilityOrder.getWorldsRelation()[key]) + ", ")
+file.write("\n")
+file.write("Unbiased agent's stubbornness degrees: ")
+for key in unbiasedAgent.stubbornnessDegrees:
+    file.write(key + ":" + str(unbiasedAgent.stubbornnessDegrees[key]) + ", ")
+file.write("\n")
+for i in range(len(data.getDataSequence())):
+    epistemicSpaceForUnbiased = unbiasedAgent.lexRevision(
+        epistemicSpaceForUnbiased, data.getDataSequence()[i])
+    file.write("Unbiased agent's plausibility order after receiving " +
+               data.getDataSequence()[i] + ": ")
+    for key in unbiasedAgent.plausibilityOrder.getWorldsRelation():
+        file.write(
+            key + ":" + str(unbiasedAgent.plausibilityOrder.getWorldsRelation()[key]) + ", ")
+    file.write("\n")
+if len(unbiasedAgent.plausibilityOrder.getMostPlausibleWorlds()) == 1:
+    file.write("Unbiased agent's most plausible world: " +
+               list(unbiasedAgent.plausibilityOrder.getMostPlausibleWorlds())[0] + "\n")
+    if len(unbiasedAgent.plausibilityOrder.getMostPlausibleWorlds()) == 1 and list(unbiasedAgent.plausibilityOrder.getMostPlausibleWorlds())[0] == states.getActualWorld():
+        file.write("Unbiased agent identified the actual world!\n\n")
+    else:
+        file.write("Unbiased agent failed to identify the actual world!\n\n")
+else:
+    file.write("Unbiased agent's most plausible worlds: " + ('-').join(str(world)
+               for world in unbiasedAgent.plausibilityOrder.getMostPlausibleWorlds()) + "\n")
+    file.write("Unbiased agent failed to identify the actual world!\n\n")
+
+
+file.write("Biased agent's initial plausibility order: ")
+for key in biasedAgent.plausibilityOrder.getWorldsRelation():
+    file.write(
+        key + ":" + str(biasedAgent.plausibilityOrder.getWorldsRelation()[key]) + ", ")
+file.write("\n")
+file.write("Biased agent's stubbornness degrees: ")
+for key in biasedAgent.stubbornnessDegrees:
+    file.write(key + ":" + str(biasedAgent.stubbornnessDegrees[key]) + ", ")
+file.write("\n")
+for i in range(len(data.getDataSequence())):
+    epistemicSpaceForBiased = biasedAgent.anchoringBiasedLexRevision(
+        epistemicSpaceForBiased, data.getDataSequence()[i])
+    file.write("Biased agent's plausibility order after receiving " +
+               data.getDataSequence()[i] + ": ")
+    for key in biasedAgent.plausibilityOrder.getWorldsRelation():
+        file.write(
+            key + ":" + str(biasedAgent.plausibilityOrder.getWorldsRelation()[key]) + ", ")
+    file.write("\n")
+file.write("\n")
+if len(biasedAgent.plausibilityOrder.getMostPlausibleWorlds()) == 1:
+    file.write("Biased agent's most plausible world: " +
+               list(biasedAgent.plausibilityOrder.getMostPlausibleWorlds())[0] + "\n")
+    if len(biasedAgent.plausibilityOrder.getMostPlausibleWorlds()) == 1 and list(biasedAgent.plausibilityOrder.getMostPlausibleWorlds())[0] == states.getActualWorld():
+        file.write("Biased agent identified the actual world!\n\n")
+    else:
+        file.write("Biased agent failed to identifiy the actual world!\n\n")
+else:
+    file.write("Biased agent's most plausible worlds: " + ('-').join(str(world)
+               for world in biasedAgent.plausibilityOrder.getMostPlausibleWorlds()) + "\n")
+    file.write("Biased agent failed to identifiy the actual world!\n\n")
+file.close()
+
+
 '''
 # Custom test for Anchoring Biased Min Revision
 file = open("Custom_Tests/AnchoringBiasMinRevision.txt", "w")
@@ -785,149 +880,4 @@ else:
                for world in biasedAgent.plausibilityOrder.getMostPlausibleWorlds()) + "\n")
     file.write("Biased agent failed to identifiy the actual world!\n\n")
 file.close()
-'''
-
-
-'''
-
-# Example for revising using lex revision
-newSpace = agent1.lexRevision(plSpace, input(
-    "What is the incoming information? "))
-print("Agent's plausibility order:")
-print(agent1.plausibilityOrder.getOrder())
-print("New worlds relation")
-print(agent1.plausibilityOrder.getWorldsRelation())
-print("New most plausible worlds")
-print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-anotherSpace = agent1.lexRevision(newSpace, input(
-    "What is the incoming information? "))
-print("Agent's plausibility order:")
-print(agent1.plausibilityOrder.getOrder())
-print("New worlds relation")
-print(agent1.plausibilityOrder.getWorldsRelation())
-print("New most plausible worlds")
-print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-
-# Example for minimal revision
-newSpace = agent1.minRevision(plSpace, input(
-    "What is the incoming information? "))
-print("Agent's plausibility order:")
-print(agent1.plausibilityOrder.getOrder())
-print("New worlds relation")
-print(agent1.plausibilityOrder.getWorldsRelation())
-print("New most plausible worlds")
-print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-anotherSpace = agent1.minRevision(newSpace, input(
-    "What is the incoming information? "))
-print("Agent's plausibility order:")
-print(agent1.plausibilityOrder.getOrder())
-print("New worlds relation")
-print(agent1.plausibilityOrder.getWorldsRelation())
-print("New most plausible worlds")
-print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-
-# Example for CB conditioning - create an example for
-newSpace = agent1.confirmationBiasedConditioning(plSpace, input(
-    "What is the incoming information? "))
-print(agent1.stubbornnessDegree(obs.getObservables()))
-print("Agent's plausibility order:")
-print(agent1.plausibilityOrder.getOrder())
-print("New worlds relation")
-print(agent1.plausibilityOrder.getWorldsRelation())
-print("New most plausible worlds")
-print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-
-# Example for CB lex revision - create an example for
-print("Randomness is to strict to have results! Have to create custom examples")
-newSpace = agent1.confirmationBiasedLexRevision(plSpace, input(
-    "What is the incoming information? "))
-print(agent1.stubbornnessDegree(obs.getObservables()))
-print("Agent's plausibility order:")
-print(agent1.plausibilityOrder.getOrder())
-print("New worlds relation")
-print(agent1.plausibilityOrder.getWorldsRelation())
-print("New most plausible worlds")
-print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-
-# Example for CB min revision - create an example for
-print("Randomness is to strict to have results! Have to create custom examples")
-newSpace = agent1.confirmationBiasedMinRevision(plSpace, input(
-    "What is the incoming information? "))
-print(agent1.stubbornnessDegree(obs.getObservables()))
-print("Agent's plausibility order:")
-print(agent1.plausibilityOrder.getOrder())
-print("New worlds relation")
-print(agent1.plausibilityOrder.getWorldsRelation())
-print("New most plausible worlds")
-print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-
-# Example for FR conditioning- create an example for
-print("Randomness is to strict to have results! Have to create custom examples")
-newSpace = agent1.framingBiasedConditioning(plSpace, input(
-    "What is the incoming information? "))
-print("Agent's plausibility order:")
-print(agent1.plausibilityOrder.getOrder())
-print("New worlds relation")
-print(agent1.plausibilityOrder.getWorldsRelation())
-print("New most plausible worlds")
-print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-
-# Example for FR lex revision- create an example for
-print("Randomness is to strict to have results! Have to create custom examples")
-newSpace = agent1.framingBiasedLexRevision(plSpace, input(
-    "What is the incoming information? "))
-print("Agent's plausibility order:")
-print(agent1.plausibilityOrder.getOrder())
-print("New worlds relation")
-print(agent1.plausibilityOrder.getWorldsRelation())
-print("New most plausible worlds")
-print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-
-# Example for FR min revision- create an example for
-print("Randomness is to strict to have results! Have to create custom examples")
-newSpace = agent1.framingBiasedMinRevision(plSpace, input(
-    "What is the incoming information? "))
-print("Agent's plausibility order:")
-print(agent1.plausibilityOrder.getOrder())
-print("New worlds relation")
-print(agent1.plausibilityOrder.getWorldsRelation())
-print("New most plausible worlds")
-print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-
-# Example for AN conditioning - create an example for
-print("Randomness is to strict to have results! Have to create custom examples")
-newSpace = agent1.anchoringBiasedConditioning(plSpace, input(
-    "What is the incoming information? "))
-print("Agent's plausibility order:")
-print(agent1.plausibilityOrder.getOrder())
-print("New worlds relation")
-print(agent1.plausibilityOrder.getWorldsRelation())
-print("New most plausible worlds")
-print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-
-# Example for AN lex revision - create an example for
-print("Randomness is to strict to have results! Have to create custom examples")
-newSpace = agent1.anchoringBiasedLexRevision(plSpace, input(
-    "What is the incoming information? "))
-print("Agent's plausibility order:")
-print(agent1.plausibilityOrder.getOrder())
-print("New worlds relation")
-print(agent1.plausibilityOrder.getWorldsRelation())
-print("New most plausible worlds")
-print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-
-group = Group.Group(setOfAgents, 2)
-print(agent1.stubbornnessDegree(obs.getObservables()))
-agent1.addedToGroup(group)
-agent1.confirmationBiasedLexRevision(
-    plSpace, input("What is the incoming info"))
-agent1.inGroupFavoritismMinRevision(
-    plSpace, input("What is the incoming information?"))
-print(agent1.stubbornnessDegree(obs.getObservables()))
-print("Agent's new plausibility order:")
-print(agent1.plausibilityOrder.getOrder())
-print("New most plausible worlds")
-print(agent1.plausibilityOrder.getMostPlausibleWorlds())
-print("Agent's new worlds relation")
-print(agent1.plausibilityOrder.getWorldsRelation())
 '''

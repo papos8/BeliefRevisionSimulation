@@ -1,0 +1,21 @@
+Compare unbiased lexicographic and anchoring biased lexicographic revision.
+First states and observables are created and then the plausibility orders of the agents.
+The two agents have the same plausibility orders, but different stubbornness degrees. 
+
+The given states are: r, t, s, w
+The actual world is: r
+The given observables are: P:{'r', 'w'}, Q:{'s', 'r'}, ~P:{'t', 's'}, ~Q:{'t', 'w'}, 
+
+The data sequence the agents received is: ~P, ~P, ~Q, ~Q, 
+
+Unbiased agent's initial plausibility order: r:set(), t:{'s', 'r'}, s:{'r'}, w:{'t', 's', 'r'}, 
+Unbiased agent's stubbornness degrees: Q:1, ~Q:1, ~P:1, P:1, 
+Unbiased agent's plausibility order after receiving ~P: t:{'r', 'w', 's'}, s:{'r', 'w'}, r:set(), w:{'r'}, 
+Unbiased agent's plausibility order after receiving ~P: t:{'s', 'r', 'w'}, s:{'r', 'w'}, r:set(), w:{'r'}, 
+Unbiased agent's plausibility order after receiving ~Q: t:{'r', 'w', 's'}, w:{'s', 'r'}, r:set(), s:{'r'}, 
+Unbiased agent's plausibility order after receiving ~Q: t:{'r', 'w', 's'}, w:{'r', 's'}, r:set(), s:{'r'}, 
+Unbiased agent's most plausible world: t
+Unbiased agent failed to identify the actual world!
+
+Biased agent's initial plausibility order: w:{'t', 's', 'r'}, t:{'s', 'r'}, s:{'r'}, r:set(), 
+Biased agent's stubbornness degrees: Q:1, ~Q:1, ~P:1, P:1, 
