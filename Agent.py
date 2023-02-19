@@ -294,15 +294,10 @@ class Agent():
         # Update the observables
         # Framing function is applied, but there should return
         # observables intact (For the sake of completeness)
-        framedObservables = self.framingFunction(
-            self.observables.getObservables())
-        for observable in framedObservables:
-            if self.stubbornnessDegrees[observable] == 1:
-                continue
-        newObservables = Observables(framedObservables)
+        newObservables = Observables(
+            epistemicSpace.observables.getObservables())
         self.timesOfIncomingInfo[proposition] += 1
         if self.timesOfIncomingInfo[proposition] >= self.stubbornnessDegrees[self.getNegation(proposition)]:
-            print(1)
             self.calledByCBConditioning = True
             return self.conditioning(epistemicSpace, proposition)
         else:
@@ -311,7 +306,6 @@ class Agent():
                 if self.stubbornnessDegrees[prop] > 1:
                     stubbornProp.add(prop)
             if proposition in stubbornProp:
-                print(2)
                 helperStates = set(epistemicSpace.states.getStates())
                 newStates = set()
                 newStates = epistemicSpace.states.getStates()
@@ -327,11 +321,10 @@ class Agent():
                     epistemicSpace.states.getStates().intersection(newStates))
                 newStates = States.States(newStates)
                 newObservables = dict()
-                framedObservables = self.framingFunction(
-                    epistemicSpace.observables.getObservables())
-                for observable in framedObservables:
-                    newValue = framedObservables[observable].intersection(
-                        framedObservables[proposition])
+
+                for observable in epistemicSpace.observables.getObservables():
+                    newValue = epistemicSpace.observables.getObservables()[observable].intersection(
+                        epistemicSpace.observables.getObservables()[proposition])
                     if len(newValue) > 0:
                         newObservables.update({observable: newValue})
                     else:
@@ -350,8 +343,8 @@ class Agent():
                     self.plausibilityOrder.getWorldsRelation().pop(state)
                     if state in self.plausibilityOrder.getMostPlausibleWorlds():
                         self.plausibilityOrder.getMostPlausibleWorlds().remove(state)
-                self.plausibilityOrder = PlausibilityOrder(
-                    self.plausibilityOrder.getOrder(), self.plausibilityOrder.getWorldsRelation(), self.plausibilityOrder.getMostPlausibleWorlds())
+                self.plausibilityOrder.updateWorldsRelation(
+                    self.plausibilityOrder.getWorldsRelation())
                 newPlSpace = EpistemicSpace(
                     states=newStates, observbles=newObservables)
                 # Update stubbornness degree
@@ -362,7 +355,6 @@ class Agent():
                             proposition)] = 1
                 return newPlSpace
             else:
-                print(3)
                 # Update stubbornness degree
                 if self.stubbornnessDegrees[proposition] == 1:
                     if self.timesOfIncomingInfo[proposition] == self.stubbornnessDegrees[self.getNegation(proposition)]:
@@ -375,12 +367,9 @@ class Agent():
         # Update the observables
         # Framing function is applied, but there should return
         # observables intact (For the sake of completeness)
-        framedObservables = self.framingFunction(
+
+        newObservables = Observables(
             epistemicSpace.observables.getObservables())
-        for observable in framedObservables:
-            if self.stubbornnessDegrees[observable] == 1:
-                continue
-        newObservables = Observables(framedObservables)
         self.timesOfIncomingInfo[proposition] += 1
         if self.timesOfIncomingInfo[proposition] >= self.stubbornnessDegrees[self.getNegation(proposition)]:
             self.calledByCBCLexRevision = True
@@ -505,12 +494,8 @@ class Agent():
                 return EpistemicSpace(epistemicSpace.states, newObservables)
 
     def confirmationBiasedMinRevision(self, epistemicSpace: EpistemicSpace, proposition: string):
-        # Update the observables
-        # Framing function is applied, but there should return
-        # observables intact (For the sake of completeness)
-        framedObservables = self.framingFunction(
+        newObservables = Observables(
             epistemicSpace.observables.getObservables())
-        newObservables = Observables(framedObservables)
 
         self.timesOfIncomingInfo[proposition] += 1
         if self.timesOfIncomingInfo[proposition] >= self.stubbornnessDegrees[self.getNegation(proposition)]:
@@ -528,7 +513,6 @@ class Agent():
                 postiveHelperOrder = dict()
                 for key in epistemicSpace.states.getStates():            # Initialize orders
                     positiveOrder.update({key: []})
-                    negativeOrder.update({key: []})
                     postiveHelperOrder.update({key: []})
                 for state in epistemicSpace.states.getStates():          # Create keys for orders
                     # For the sake of completeness,
@@ -551,11 +535,15 @@ class Agent():
                 for key in epistemicSpace.states.getStates():
                     if key not in posPlausibleInProp:
                         postiveHelperOrder.pop(key)
+
+                for state in epistemicSpace.states.getStates():
+                    if state not in posPlausibleInProp:
+                        negativeOrder.update({state: []})
                 for key in negativeOrder.keys():                            # Create neg order
                     negativeOrder[key] = self.plausibilityOrder.getWorldsRelation()[
                         key]
                     for state in epistemicSpace.states.getStates():
-                        if state in self.getIntersection(stubbornProp).intersection(self.observables.getObservables()[proposition]) and state in negativeOrder[key]:
+                        if state in self.getIntersection(stubbornProp).intersection(posPlausibleInProp) and state in negativeOrder[key]:
                             negativeOrder[key].remove(state)
 
                 for key in postiveHelperOrder.keys():                      # Create posHelper order
@@ -588,7 +576,6 @@ class Agent():
                 postiveHelperOrder = dict()
                 for key in epistemicSpace.states.getStates():            # Initialize orders
                     positiveOrder.update({key: []})
-                    negativeOrder.update({key: []})
                     postiveHelperOrder.update({key: []})
                 for state in epistemicSpace.states.getStates():          # Create keys for orders
                     if state not in self.getIntersection(stubbornProp):
@@ -609,11 +596,16 @@ class Agent():
                 for key in epistemicSpace.states.getStates():
                     if key not in posPlausibleInProp:
                         postiveHelperOrder.pop(key)
+
+                for state in epistemicSpace.states.getStates():
+                    if state not in posPlausibleInProp:
+                        negativeOrder.update({state: []})
+
                 for key in negativeOrder.keys():                            # Create neg order
                     negativeOrder[key] = self.plausibilityOrder.getWorldsRelation()[
                         key]
                     for state in epistemicSpace.states.getStates():
-                        if state in self.getIntersection(stubbornProp) and state in negativeOrder[key]:
+                        if (state in self.getIntersection(stubbornProp) or state in posPlausibleInProp) and state in negativeOrder[key]:
                             negativeOrder[key].remove(state)
 
                 for key in postiveHelperOrder.keys():                      # Create posHelper order

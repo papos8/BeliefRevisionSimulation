@@ -1,0 +1,30 @@
+Compare unbiased minimal and anchoring biased minimal revision.
+As they behave the same, this example is included for the sake of completeness.
+First states and observables are created and then the plausibility orders of the agents.
+The two agents have the same plausibility orders, but different stubbornness degrees. 
+
+The given states are: r, w, t, s
+The actual world is: r
+The given observables are: P:{'r', 'w'}, ~P:{'t', 's'}, Q:{'r', 's'}, ~Q:{'w', 't'}, 
+
+The data sequence the agents received is: P, P, Q, Q, 
+
+Unbiased agent's initial plausibility order: r:{'s'}, w:{'r', 't', 's'}, t:{'r', 's'}, s:set(), 
+Unbiased agent's stubbornness degrees: P:1, Q:1, ~Q:1, ~P:1, 
+Unbiased agent's plausibility order after receiving P: w:{'r', 't', 's'}, r:{'s'}, t:{'r', 's'}, s:set(), 
+Unbiased agent's plausibility order after receiving P: w:{'r', 's', 't'}, r:{'s'}, t:{'r', 's'}, s:set(), 
+Unbiased agent's plausibility order after receiving Q: r:{'w', 's', 't'}, w:{'t', 's'}, t:{'s'}, s:set(), 
+Unbiased agent's plausibility order after receiving Q: r:{'w', 't', 's'}, w:{'t', 's'}, t:{'s'}, s:set(), 
+Unbiased agent's most plausible world: r
+Unbiased agent identified the actual world!
+
+Biased agent's initial plausibility order: r:{'s'}, w:{'r', 't', 's'}, t:{'r', 's'}, s:set(), 
+Biased agent's stubbornness degrees: P:1, Q:1, ~Q:1, ~P:1, 
+Biased agent's plausibility order after receiving P: w:{'r', 't', 's'}, r:{'s'}, t:{'r', 's'}, s:set(), 
+Biased agent's plausibility order after receiving P: w:{'r', 's', 't'}, r:{'s'}, t:{'r', 's'}, s:set(), 
+Biased agent's plausibility order after receiving Q: r:{'w', 's', 't'}, w:{'t', 's'}, t:{'s'}, s:set(), 
+Biased agent's plausibility order after receiving Q: r:{'w', 't', 's'}, w:{'t', 's'}, t:{'s'}, s:set(), 
+
+Biased agent's most plausible world: r
+Biased agent identified the actual world!
+
