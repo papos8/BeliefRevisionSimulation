@@ -826,9 +826,8 @@ class Agent():
         # Framing function is applied, but there should return
         # observables intact (For the sake of completeness)
         helperStates = epistemicSpace.states.getStates()
-        framedObservables = self.framingFunction(
+        newObservables = Observables(
             epistemicSpace.observables.getObservables())
-        newObservables = Observables(framedObservables)
         positiveOrder = dict()
         for key in epistemicSpace.states.getStates():            # Initialize orders
             positiveOrder.update({key: []})
