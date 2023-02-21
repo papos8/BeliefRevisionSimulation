@@ -43,10 +43,10 @@ class Observables():
                         {str(proposition): set(setOfWorlds)})
                     self.observables.update(
                         {str("~" + proposition): arg.getStates()-set(setOfWorlds)})
-                    counter += 2
-                    if counter > 10:
+                    counter += 1
+                    if counter > 9:
                         break
-                if counter > 10:
+                if counter > 5:
                     break
             # Exchange keys, values to make values of dict a set
             helper = {tuple(v): k for k, v in self.observables.items()}

@@ -46,10 +46,12 @@ class DataSequence():
             for key in self.observables.getObservables().keys():
                 if self.states.getActualWorld() in self.observables.getObservables()[key]:
                     positiveProps.append(key)
-            lengthOfSequence = int(
-                input("Provide the length of the data sequence. It should be greater or equal than " +
-                      str(len(positiveProps)) + ": "))
 
+            # lengthOfSequence = int(
+            #        input("Provide the length of the data sequence. It should be greater or equal than " +
+            #             str(len(positiveProps)) + ": "))
+
+            lengthOfSequence = len(positiveProps) + 2
             if lengthOfSequence == len(positiveProps):
                 permutations = list(itertools.permutations(
                     positiveProps, lengthOfSequence))
@@ -59,7 +61,7 @@ class DataSequence():
                 permutations = list(itertools.permutations(
                     positiveProps, len(positiveProps)))
                 index = random.randint(1, len(permutations))
-                helperData = permutations[index]
+                helperData = permutations[index-1]
                 for element in helperData:
                     self.dataSequence.append(element)
                 for i in range(len(helperData), lengthOfSequence):

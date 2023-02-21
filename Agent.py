@@ -36,12 +36,13 @@ class Agent():
         self.timesOfIncomingInfo = dict()
         for obs in self.observables.getObservables().keys():
             self.timesOfIncomingInfo.update({obs: 0})
+        self.isInGroup = False
         self.stubbornnessDegrees = self.stubbornnessDegree(
             epistemicSpace.observables.getObservables())
         self.calledByCBConditioning = False
         self.calledByCBCLexRevision = False
         self.calledByCBMinRevision = False
-        self.isInGroup = False
+
     # Framing function to return a subset of
     # a proposition
 
@@ -180,8 +181,8 @@ class Agent():
         positiveOrder = dict()
         negativeOrder = dict()
         for key in epistemicSpace.states.getStates():  # Initialize orders
-            positiveOrder.update({key: []})
-            negativeOrder.update({key: []})
+            positiveOrder.update({key: set()})
+            negativeOrder.update({key: set()})
         for state in epistemicSpace.states.getStates():  # Create orders' keys
             if state not in epistemicSpace.observables.getObservables()[proposition]:
                 positiveOrder.pop(state)
@@ -202,7 +203,7 @@ class Agent():
         # New worldsRelation
         for positiveState in positiveOrder.keys():      # Create new worlds relation
             for negativeState in negativeOrder.keys():
-                positiveOrder[positiveState].add(negativeState)
+                positiveOrder[positiveState].append(negativeState)
         positiveOrder.update(negativeOrder)
         self.plausibilityOrder.updateWorldsRelation(positiveOrder)
         maxLen = 0
@@ -275,19 +276,19 @@ class Agent():
                     positiveOrderHelper[key].remove(state)
         for positiveState in positiveOrderHelper.keys():            # Add the 'negative' worlds to positive
             for negativeState in negativeOrder.keys():
-                positiveOrderHelper[positiveState].add(negativeState)
+                positiveOrderHelper[positiveState].append(negativeState)
             for anotherState in set(positiveOrder.keys()).difference(positiveOrderHelper.keys()):
-                positiveOrderHelper[positiveState].add(anotherState)
+                positiveOrderHelper[positiveState].append(anotherState)
         positiveOrderHelper.update(negativeOrder)
         self.plausibilityOrder.updateWorldsRelation(positiveOrderHelper)
         self.plausibilityOrder.updateMostPlausibleWorlds(           # The most plausible worlds are the most plaus in p
             posPlausibleInProp)
-
-        if self.stubbornnessDegrees[proposition] == 1:
-            if self.timesOfIncomingInfo[proposition] == self.stubbornnessDegrees[self.getNegation(proposition)]:
-                self.stubbornnessDegrees[proposition] = self.timesOfIncomingInfo[proposition]
-                self.stubbornnessDegrees[self.getNegation(
-                    proposition)] = 1
+        if self.calledByCBMinRevision == True:
+            if self.stubbornnessDegrees[proposition] == 1:
+                if self.timesOfIncomingInfo[proposition] == self.stubbornnessDegrees[self.getNegation(proposition)]:
+                    self.stubbornnessDegrees[proposition] = self.timesOfIncomingInfo[proposition]
+                    self.stubbornnessDegrees[self.getNegation(
+                        proposition)] = 1
         return EpistemicSpace(epistemicSpace.states, newObservables)
 
     def confirmationBiasedConditioning(self, epistemicSpace: EpistemicSpace, proposition: string):
@@ -406,7 +407,7 @@ class Agent():
                 # New worldsRelation
                 for positiveState in positiveOrder.keys():      # Create new worlds relation
                     for negativeState in negativeOrder.keys():
-                        positiveOrder[positiveState].append(negativeState)
+                        positiveOrder[positiveState].add(negativeState)
                 positiveOrder.update(negativeOrder)
                 self.plausibilityOrder.updateWorldsRelation(positiveOrder)
                 maxLen = 0
@@ -701,7 +702,7 @@ class Agent():
         # New worldsRelation
         for positiveState in positiveOrder.keys():      # Create new worlds relation
             for negativeState in negativeOrder.keys():
-                positiveOrder[positiveState].add(negativeState)
+                positiveOrder[positiveState].append(negativeState)
         positiveOrder.update(negativeOrder)
         self.plausibilityOrder.updateWorldsRelation(positiveOrder)
         maxLen = 0
@@ -774,9 +775,9 @@ class Agent():
                     positiveOrderHelper[key].remove(state)
         for positiveState in positiveOrderHelper.keys():            # Add the 'negative' worlds to positive
             for negativeState in negativeOrder.keys():
-                positiveOrderHelper[positiveState].add(negativeState)
+                positiveOrderHelper[positiveState].append(negativeState)
             for anotherState in set(positiveOrder.keys()).difference(positiveOrderHelper.keys()):
-                positiveOrderHelper[positiveState].add(anotherState)
+                positiveOrderHelper[positiveState].append(anotherState)
         positiveOrderHelper.update(negativeOrder)
         self.plausibilityOrder.updateWorldsRelation(positiveOrderHelper)
         if len(posPlausibleInProp) > 0:
@@ -844,7 +845,12 @@ class Agent():
                     self.plausibilityOrder.getWorldsRelation()[
                         anotherState].remove(state)
             self.plausibilityOrder.getWorldsRelation().pop(state)
-        self.plausibilityOrder.updateMostPlausibleWorlds(posPlausibleInProp)
+        if len(posPlausibleInProp) > 1:
+            anchWorld = choice(tuple(posPlausibleInProp))
+            self.plausibilityOrder.updateMostPlausibleWorlds(anchWorld)
+        else:
+            self.plausibilityOrder.updateMostPlausibleWorlds(
+                posPlausibleInProp)
         self.plausibilityOrder = PlausibilityOrder(
             self.plausibilityOrder.getOrder(), self.plausibilityOrder.getWorldsRelation(), self.plausibilityOrder.getMostPlausibleWorlds())
         newPlSpace = EpistemicSpace(
@@ -852,10 +858,130 @@ class Agent():
         return newPlSpace
 
     def anchoringBiasedLexRevision(self, epistemicSpace: EpistemicSpace, proposition: string):
-        return self.minRevision(epistemicSpace, proposition)
+        newObservables = Observables(
+            epistemicSpace.observables.getObservables())
+        worldsRelationHelper = copy.deepcopy(
+            self.plausibilityOrder.getWorldsRelation())
+        positiveOrder = dict()
+        positiveOrderHelper = dict()
+        negativeOrder = dict()
+        for key in epistemicSpace.states.getStates():            # Initialize orders
+            positiveOrder.update({key: []})
+            positiveOrderHelper.update({key: []})
+        for state in epistemicSpace.states.getStates():          # Create keys for orders
+            if state not in epistemicSpace.observables.getObservables()[proposition]:
+                positiveOrder.pop(state)
+        for key in positiveOrder.keys():                             # Create pos order
+            positiveOrder[key] = self.plausibilityOrder.getWorldsRelation()[
+                key]
+            for state in epistemicSpace.states.getStates():
+                if state not in epistemicSpace.observables.getObservables()[proposition] and state in positiveOrder[key]:
+                    positiveOrder[key].remove(state)
+        posPlausibleInProp = set()  # Set to store the most plausible worlds in a proposition
+        maxLen = 0
+        for key in positiveOrder.keys():
+            maxLen = max(maxLen, len(positiveOrder[key]))
+        for key in positiveOrder.keys():
+            if len(positiveOrder[key]) == maxLen and key in epistemicSpace.observables.getObservables()[proposition]:
+                posPlausibleInProp.add(key)
+
+        for key in epistemicSpace.states.getStates():
+            if key not in posPlausibleInProp:
+                negativeOrder.update({key: []})
+        for key in negativeOrder.keys():                            # Create neg order
+            negativeOrder[key] = worldsRelationHelper[
+                key]
+            for state in epistemicSpace.states.getStates():
+                if state in posPlausibleInProp and state in negativeOrder[key]:
+                    negativeOrder[key].remove(state)
+
+        for key in epistemicSpace.states.getStates():
+            if key not in posPlausibleInProp:
+                positiveOrderHelper.pop(key)
+
+        for key in positiveOrderHelper.keys():                      # Create posHelper order
+            positiveOrderHelper[key] = self.plausibilityOrder.getWorldsRelation()[
+                key]
+            for state in epistemicSpace.states.getStates():
+                if state in epistemicSpace.observables.getObservables()[proposition] and state in positiveOrderHelper[key] and state not in posPlausibleInProp:
+                    positiveOrderHelper[key].remove(state)
+        for positiveState in positiveOrderHelper.keys():            # Add the 'negative' worlds to positive
+            for negativeState in negativeOrder.keys():
+                positiveOrderHelper[positiveState].append(negativeState)
+            for anotherState in set(positiveOrder.keys()).difference(positiveOrderHelper.keys()):
+                positiveOrderHelper[positiveState].append(anotherState)
+        positiveOrderHelper.update(negativeOrder)
+        self.plausibilityOrder.updateWorldsRelation(positiveOrderHelper)
+        if len(posPlausibleInProp) > 1:
+            anchWorld = choice(tuple(posPlausibleInProp))
+            self.plausibilityOrder.updateMostPlausibleWorlds(anchWorld)
+        else:
+            self.plausibilityOrder.updateMostPlausibleWorlds(           # The most plausible worlds are the most plaus in p
+                posPlausibleInProp)
+        return EpistemicSpace(epistemicSpace.states, newObservables)
 
     def anchoringBiasedMinRevision(self, epistemicSpace: EpistemicSpace, proposition: string):
-        return self.minRevision(epistemicSpace, proposition)
+        newObservables = Observables(
+            epistemicSpace.observables.getObservables())
+        worldsRelationHelper = copy.deepcopy(
+            self.plausibilityOrder.getWorldsRelation())
+        positiveOrder = dict()
+        positiveOrderHelper = dict()
+        negativeOrder = dict()
+        for key in epistemicSpace.states.getStates():            # Initialize orders
+            positiveOrder.update({key: []})
+            positiveOrderHelper.update({key: []})
+        for state in epistemicSpace.states.getStates():          # Create keys for orders
+            if state not in epistemicSpace.observables.getObservables()[proposition]:
+                positiveOrder.pop(state)
+        for key in positiveOrder.keys():                             # Create pos order
+            positiveOrder[key] = self.plausibilityOrder.getWorldsRelation()[
+                key]
+            for state in epistemicSpace.states.getStates():
+                if state not in epistemicSpace.observables.getObservables()[proposition] and state in positiveOrder[key]:
+                    positiveOrder[key].remove(state)
+        posPlausibleInProp = set()  # Set to store the most plausible worlds in a proposition
+        maxLen = 0
+        for key in positiveOrder.keys():
+            maxLen = max(maxLen, len(positiveOrder[key]))
+        for key in positiveOrder.keys():
+            if len(positiveOrder[key]) == maxLen and key in epistemicSpace.observables.getObservables()[proposition]:
+                posPlausibleInProp.add(key)
+
+        for key in epistemicSpace.states.getStates():
+            if key not in posPlausibleInProp:
+                negativeOrder.update({key: []})
+        for key in negativeOrder.keys():                            # Create neg order
+            negativeOrder[key] = worldsRelationHelper[
+                key]
+            for state in epistemicSpace.states.getStates():
+                if state in posPlausibleInProp and state in negativeOrder[key]:
+                    negativeOrder[key].remove(state)
+
+        for key in epistemicSpace.states.getStates():
+            if key not in posPlausibleInProp:
+                positiveOrderHelper.pop(key)
+
+        for key in positiveOrderHelper.keys():                      # Create posHelper order
+            positiveOrderHelper[key] = self.plausibilityOrder.getWorldsRelation()[
+                key]
+            for state in epistemicSpace.states.getStates():
+                if state in epistemicSpace.observables.getObservables()[proposition] and state in positiveOrderHelper[key] and state not in posPlausibleInProp:
+                    positiveOrderHelper[key].remove(state)
+        for positiveState in positiveOrderHelper.keys():            # Add the 'negative' worlds to positive
+            for negativeState in negativeOrder.keys():
+                positiveOrderHelper[positiveState].append(negativeState)
+            for anotherState in set(positiveOrder.keys()).difference(positiveOrderHelper.keys()):
+                positiveOrderHelper[positiveState].append(anotherState)
+        positiveOrderHelper.update(negativeOrder)
+        self.plausibilityOrder.updateWorldsRelation(positiveOrderHelper)
+        if len(posPlausibleInProp) > 1:
+            anchWorld = choice(tuple(posPlausibleInProp))
+            self.plausibilityOrder.updateMostPlausibleWorlds(anchWorld)
+        else:
+            self.plausibilityOrder.updateMostPlausibleWorlds(           # The most plausible worlds are the most plaus in p
+                posPlausibleInProp)
+        return EpistemicSpace(epistemicSpace.states, newObservables)
 
     def inGroupFavoritismConditioning(self, epistemicSpace: EpistemicSpace, proposition: string):
         self.isInGroup = True
