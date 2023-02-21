@@ -43,7 +43,7 @@ class Observables():
                         {str(proposition): set(setOfWorlds)})
                     self.observables.update(
                         {str("~" + proposition): arg.getStates()-set(setOfWorlds)})
-                    counter += 1
+                    counter += 2
                     if counter > 9:
                         break
                 if counter > 5:
@@ -78,7 +78,7 @@ class Observables():
     def powerset(self, states: States):
         s = list(states.getStates())
         powerset = set(chain.from_iterable(combinations(s, r)
-                       for r in range(len(s)+1)))
+                                           for r in range(len(s)+1)))
 
         newPowerSet = set()
         finalPowerSet = set()

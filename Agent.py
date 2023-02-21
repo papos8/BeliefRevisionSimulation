@@ -102,7 +102,7 @@ class Agent():
                     for proposition in observables:
                         dictOfDegress.update({proposition: 0})
                     for proposition in observables:
-                        if self.getNegation(proposition) in observables and dictOfDegress[self.getNegation(proposition)] > 0:
+                        if self.getNegation(proposition) in observables and dictOfDegress[self.getNegation(proposition)] > 1:
                             continue
                         else:
                             dictOfDegress[proposition] = math.ceil(
