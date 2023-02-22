@@ -6004,7 +6004,6 @@ Biased agent identified the actual world!
 
 Unbiased agent identified the actual world 64.0% of the cases.
 Biased agent identified the actual world 67.5% of the cases.
-Biased agent identified 105.47% of the identifiable cases (actual worlds).
 
 0.0% of the identified worlds, biased agent identified the world faster than the unbiased.
 18.75% of the identified worlds, unbiased agent identified the world faster than the biased.

@@ -1031,3 +1031,6 @@ class Agent():
                 newSet.add(element)
 
         return newSet
+
+    def updateResources(self, resources):
+        self.resources = resources
