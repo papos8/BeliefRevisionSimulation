@@ -10,10 +10,8 @@ import kivy.clock as kclo
 from random import randint
 import kivy.lang.builder as kbui
 import Agent
-import Ball
 from EpistemicSpace import EpistemicSpace
 from DataSequence import DataSequence
-from Formula import Conjuction, Letter, Negation
 from Obsevables import Observables
 from PlausibilityOrder import PlausibilityOrder
 import States

@@ -1,6 +1,3 @@
-from asyncio.proactor_events import _ProactorBasePipeTransport
-from re import S
-from site import enablerlcompleter
 import string
 from tkinter import Widget
 from tkinter.tix import DirTree
