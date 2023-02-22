@@ -1,3 +1,4 @@
+from operator import truth
 from re import I
 from typing import Tuple, final
 import States
@@ -6,8 +7,20 @@ from itertools import chain, combinations
 
 
 class Valuation():
-    def __init__(self, observables: Obsevables) -> None:
+    def __init__(self, observables: Obsevables, state) -> None:
         self.valuation = observables
+        self.state = state
 
-    def getTruthValue(self, formula):
-        return self.valuation.getObservables()[formula.getString()]
+    def getTruthValues(self, observables, state):
+        truthValues = dict()
+        for obs in observables.keys():
+            truthValues.update({obs: False})
+        for obs in observables.keys():
+            if state in observables[obs]:
+                observables[obs] = True
+        return truthValues
+
+    def getTruthValue(self, formula, state):
+        # Function to evaluate a complex formula on
+        # a given state.
+        pass

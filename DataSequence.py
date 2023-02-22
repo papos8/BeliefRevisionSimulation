@@ -9,7 +9,7 @@ import random
 
 class DataSequence():
     def __init__(self, *arg) -> None:
-        if len(arg) == 1 and arg == "Create":
+        if len(arg) == 1 and arg == "Custom":
             worlds = set()
             numberOfWorlds = int(input("How many possible worlds are there? "))
             for i in range(numberOfWorlds):

@@ -17,7 +17,7 @@ class Observables():
     def __init__(self, arg) -> None:
         if isinstance(arg, dict):
             self.observables = arg
-        elif arg == "Create":
+        elif arg == "Custom":
             numberOfObservables = int(
                 input("What is the number of observables? "))
             observables = dict()
