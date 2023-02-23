@@ -2,13 +2,7 @@ from asyncore import file_dispatcher
 from audioop import bias
 from os import stat
 from re import A
-from kivy.app import App
-import kivy.uix.widget as kuix
-import kivy.properties as kpro
-import kivy.vector as kvec
-import kivy.clock as kclo
 from random import randint
-import kivy.lang.builder as kbui
 import Agent
 from EpistemicSpace import EpistemicSpace
 from DataSequence import DataSequence

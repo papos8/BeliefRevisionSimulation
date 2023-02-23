@@ -5,11 +5,6 @@ from tokenize import String
 from turtle import pos
 from typing import Dict
 from xmlrpc.client import ProtocolError
-from kivy.app import App
-import kivy.uix.widget as kuix
-import kivy.properties as kpro
-import kivy.vector as kvec
-import kivy.clock as kclo
 from Obsevables import Observables
 from EpistemicSpace import EpistemicSpace
 from PlausibilityOrder import PlausibilityOrder
