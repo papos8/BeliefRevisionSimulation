@@ -20,13 +20,13 @@ import Group
 import json
 import copy
 import sys
-from Tests import RandomInGroupFavoritismMinRevision, RandomInGroupFavoritismLexRevision, RandomInGroupFavoritismConditioning, RandomAnchoringBiasMinRevisionWithResources, RandomAnchoringBiasMinRevision, RandomAnchoringBiasLexRevisionWithResources, RandomAnchoringBiasLexRevision, RandomAnchoringBiasConditioningWithResources, RandomAnchoringBiasConditioning, RandomFramingBiasMinRevision, RandomFramingBiasLexRevision, RandomFramingBiasConditioning, RandomConfirmationBiasMinRevision, RandomConfirmationBiasLexRevision, RandomConfirmationBiasConditioning, CustomAnchoringBiasMinRevision, CustomAnchoringBiasLexRevision, CustomAnchoringBiasConditioning, CustomFramingBiasMinRevision, CustomFramingBiasLexRevision, CustomConfirmationBiasConditioning, CustomConfirmationBiasConditioning, CustomConfirmationBiasMinRevision, CustomFramingBiasConditioning
+from Tests import CustomConfirmationBiasLexRevision, RandomInGroupFavoritismMinRevision, RandomInGroupFavoritismLexRevision, RandomInGroupFavoritismConditioning, RandomAnchoringBiasMinRevisionWithResources, RandomAnchoringBiasMinRevision, RandomAnchoringBiasLexRevisionWithResources, RandomAnchoringBiasLexRevision, RandomAnchoringBiasConditioningWithResources, RandomAnchoringBiasConditioning, RandomFramingBiasMinRevision, RandomFramingBiasLexRevision, RandomFramingBiasConditioning, RandomConfirmationBiasMinRevision, RandomConfirmationBiasLexRevision, RandomConfirmationBiasConditioning, CustomAnchoringBiasMinRevision, CustomAnchoringBiasLexRevision, CustomAnchoringBiasConditioning, CustomFramingBiasMinRevision, CustomFramingBiasLexRevision, CustomConfirmationBiasConditioning, CustomConfirmationBiasConditioning, CustomConfirmationBiasMinRevision, CustomFramingBiasConditioning
 
 
 
 if len(sys.argv) == 1:
     print("""Enter 1 to choose CustomConfirmationBiasConditioning
-Enter 2 to choose CustomConfirmationBiasConditioning
+Enter 2 to choose CustomConfirmationBiasLexRevision
 Enter 3 to choose CustomConfirmationBiasMinRevision
 Enter 4 to choose CustomFramingBiasConditioning
 Enter 5 to choose CustomFramingBiasLexRevision
@@ -53,7 +53,7 @@ Enter 24 to choose RandomInGroupFavoritismMinRevision""")
     if testIndex == 1:
         CustomConfirmationBiasConditioning.callTest()  
     elif testIndex == 2:
-        CustomConfirmationBiasConditioning.callTest()
+        CustomConfirmationBiasLexRevision.callTest()
     elif testIndex == 3:
         CustomConfirmationBiasMinRevision.callTest()
     elif testIndex == 4:
@@ -101,7 +101,7 @@ Enter 24 to choose RandomInGroupFavoritismMinRevision""")
 elif int(sys.argv[1]) == 1:
     CustomConfirmationBiasConditioning.callTest()
 elif int(sys.argv[1]) == 2:
-    CustomConfirmationBiasConditioning.callTest()
+    CustomConfirmationBiasLexRevision.callTest()
 elif int(sys.argv[1]) == 3:
     CustomConfirmationBiasMinRevision.callTest()
 elif int(sys.argv[1]) == 4:

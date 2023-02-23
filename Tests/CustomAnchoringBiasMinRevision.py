@@ -34,12 +34,14 @@ def callTest():
         states, obs)
     epistemicSpaceForBiased = EpistemicSpace(newStates, obs)
     # Create unbiased agent
+    
+    data = DataSequence.DataSequence("Custom",obs.getObservables())
     print("Create unbiased agent")
     unbiasedAgent = Agent.Agent(epistemicSpaceForUnbiased, "Unbiased", "Custom")
     # Create biased agent
     print("Create biased agent")
     biasedAgent = Agent.Agent(epistemicSpaceForBiased, "Anchoring", "Custom")
-    data = DataSequence.DataSequence(states, obs)
+    
 
     file.write("The data sequence the agents received is: ")
     for prop in data.getDataSequence():
