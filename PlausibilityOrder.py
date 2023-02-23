@@ -37,7 +37,7 @@ class PlausibilityOrder():
             for key in self.worldsRelation.keys():
                 if len(self.worldsRelation[key]) == maxLen:
                     self.mostPlausibleWorlds.add(key)
-        elif len(arg) == 2 and arg[0] == "Create":
+        elif len(arg) == 2 and arg[0] == "Custom":
             print("Create plausibility order for worlds: " +
                   (', ').join(str(s) for s in arg[1].getStates()))
             self.worldsRelation = dict()

@@ -21,7 +21,7 @@ class Agent():
         self.typeOfAgent = typeOfAgent
         if typeOfAgent == "Custom":
             self.plausibilityOrder = PlausibilityOrder(
-                "Create", epistemicSpace.states)
+                "Custom", epistemicSpace.states)
         else:
             self.plausibilityOrder = PlausibilityOrder(epistemicSpace.states)
         self.observables = epistemicSpace.observables
