@@ -33,3 +33,5 @@ The file **main.py** includes the tests cases we ran to compare the methods. The
 
 ![Alt](https://github.com/papos8/BeliefRevisionSimulation/blob/main/Images/TerminalMessage.png)
 
+The second way is to pass the number directly as an argument on the command line. For example, **python main.py 4** will run prompt the user to create step by step a custom test to compare framing bias conditioning and unbiased conditioning. 
+Note that if the user selects randomly created tests then the 200 test cases run and the results are stored under the folder **Randomly_Created_Tests** on the same repository.
