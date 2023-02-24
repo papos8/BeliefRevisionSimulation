@@ -8,16 +8,16 @@ import random
 from tokenize import single_quoted
 import States
 import Valuation
-from itertools import chain, combinations
+from itertools import chain, combinations, count
 
 
 class Observables():
     # Initiate observables based on the states
     # Randomly create propositions and their negation
-    def __init__(self, arg) -> None:
-        if isinstance(arg, dict):
-            self.observables = arg
-        elif arg == "Custom":
+    def __init__(self, *arg) -> None:
+        if len(arg)==1 and isinstance(arg[0], dict):
+            self.observables = arg[0]
+        elif len(arg)==1 and arg[0] == "Custom":
             numberOfObservables = int(
                 input("What is the number of observables? "))
             observables = dict()
@@ -31,22 +31,42 @@ class Observables():
                     world = input("Enter the world: ")
                     observables[key].add(world)
             self.observables = observables
-        elif not (isinstance(arg, dict)):
+        elif len(arg)==1 and not (isinstance(arg[0], dict)):
             self.observables = dict()
             worldSet = set()
             counter = 0
-
             while True:
                 for proposition in string.ascii_uppercase:
-                    setOfWorlds = random.choice(tuple(self.powerset(arg)))
+                    setOfWorlds = random.choice(tuple(self.powerset(arg[0])))
                     self.observables.update(
                         {str(proposition): set(setOfWorlds)})
                     self.observables.update(
-                        {str("~" + proposition): arg.getStates()-set(setOfWorlds)})
+                        {str("~" + proposition): arg[0].getStates()-set(setOfWorlds)})
                     counter += 2
+                    
                     if counter > 9:
                         break
                 if counter > 5:
+                    break
+            # Exchange keys, values to make values of dict a set
+            helper = {tuple(v): k for k, v in self.observables.items()}
+            self.observables = {v: set(k) for k, v in helper.items()}
+        elif len(arg) == 2 and isinstance(arg[0],int):
+            self.observables = dict()
+            worldSet = set()
+            counter = 0
+            while True:
+                for proposition in string.ascii_uppercase:
+                    setOfWorlds = random.choice(tuple(self.powerset(arg[1])))
+                    self.observables.update(
+                            {str(proposition): set(setOfWorlds)})
+                    self.observables.update(
+                            {str("~" + proposition): arg[1].getStates()-set(setOfWorlds)})    
+                    counter += 2
+                        
+                    if counter > arg[0]:
+                        break
+                if counter > arg[0]:
                     break
             # Exchange keys, values to make values of dict a set
             helper = {tuple(v): k for k, v in self.observables.items()}

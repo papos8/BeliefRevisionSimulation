@@ -1,5 +1,5 @@
 from random import randint
-import Agent
+from Agent import Agent
 from EpistemicSpace import EpistemicSpace
 from DataSequence import DataSequence
 from Obsevables import Observables

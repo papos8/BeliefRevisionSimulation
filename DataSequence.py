@@ -21,7 +21,6 @@ class DataSequence():
             
         else:
             # Pass states as first argument and obs as second
-            print(arg)
             self.states = arg[0]
             self.observables = arg[1]
             self.dataSequence = []
@@ -48,8 +47,9 @@ class DataSequence():
                 for element in helperData:
                     self.dataSequence.append(element)
                 for i in range(len(helperData), lengthOfSequence):
-                    randomElement = random.choice(positiveProps)
-                    self.dataSequence.append(randomElement)
+                    if len(positiveProps) != 0:
+                        randomElement = random.choice(positiveProps)
+                        self.dataSequence.append(randomElement)
             else:
                 raise Exception(
                     "The length of the data sequence should be greater or equal than the number of observables true in the actual world!")

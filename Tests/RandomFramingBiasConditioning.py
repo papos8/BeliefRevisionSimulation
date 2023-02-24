@@ -127,8 +127,6 @@ def callTest():
             file.write("Biased agent's most plausible worlds: " + ('-').join(str(world)
                                                                             for world in biasedAgent.plausibilityOrder.getMostPlausibleWorlds()) + "\n")
             file.write("Biased agent failed to identifiy the actual world!\n\n")
-    print(unbiasedSuccess)
-    print(biasedSuccess)
     file.write("Unbiased agent identified the actual world " +
             str((float(unbiasedSuccess/numberOfTests)*100)) + "% of the cases.\n")
     file.write("Biased agent identified the actual world " +
