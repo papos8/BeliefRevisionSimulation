@@ -22,7 +22,7 @@ import copy
 import sys
 from Tests import LengthAgainstPerformanceTest, CustomConfirmationBiasLexRevision, RandomInGroupFavoritismMinRevision, RandomInGroupFavoritismLexRevision, RandomInGroupFavoritismConditioning, RandomAnchoringBiasMinRevisionWithResources, RandomAnchoringBiasMinRevision, RandomAnchoringBiasLexRevisionWithResources, RandomAnchoringBiasLexRevision, RandomAnchoringBiasConditioningWithResources, RandomAnchoringBiasConditioning, RandomFramingBiasMinRevision, RandomFramingBiasLexRevision, RandomFramingBiasConditioning, RandomConfirmationBiasMinRevision, RandomConfirmationBiasLexRevision, RandomConfirmationBiasConditioning, CustomAnchoringBiasMinRevision, CustomAnchoringBiasLexRevision, CustomAnchoringBiasConditioning, CustomFramingBiasMinRevision, CustomFramingBiasLexRevision, CustomConfirmationBiasConditioning, CustomConfirmationBiasConditioning, CustomConfirmationBiasMinRevision, CustomFramingBiasConditioning
 
-'''
+
 
 if len(sys.argv) == 1:
     print("""Enter 1 to choose CustomConfirmationBiasConditioning
@@ -147,6 +147,4 @@ elif int(sys.argv[1]) == 23:
 elif int(sys.argv[1]) == 24:
     RandomInGroupFavoritismMinRevision.callTest()
 
-'''
-
-LengthAgainstPerformanceTest.callTest()
+#LengthAgainstPerformanceTest.callTest()

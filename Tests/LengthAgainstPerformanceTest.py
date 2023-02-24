@@ -21,10 +21,10 @@ import numpy as np
 def callTest():
     
     percentages = []
-    for i in range(1,4):
+    for i in range(1,52):
         unbiasedCounter = 0
         for j in range(200):
-            states = States.States(5)
+            states = States.States(10)
             obs = Observables(10,states)
             epistemicSpaceForUnbiased = EpistemicSpace(
                 states, obs)
@@ -32,12 +32,12 @@ def callTest():
             print(states.getActualWorld())
             print(obs.getObservables())
             
-            unbiasedAgent = Agent(epistemicSpaceForUnbiased, "Unbiased", "Random")
+            unbiasedAgent = Agent(epistemicSpaceForUnbiased, "Framing", "Random")
             data = DataSequence.DataSequence(states,obs)
             print(unbiasedAgent.plausibilityOrder.getWorldsRelation())
             print(data.getDataSequence())
             for i in range(len(data.getDataSequence())):
-                epistemicSpaceForUnbiased = unbiasedAgent.confirmationBiasedConditioning(
+                epistemicSpaceForUnbiased = unbiasedAgent.anchoringBiasedLexRevision(
                     epistemicSpaceForUnbiased, data.getDataSequence()[i])
                 
             if len(unbiasedAgent.plausibilityOrder.getMostPlausibleWorlds()) == 1 and list(unbiasedAgent.plausibilityOrder.getMostPlausibleWorlds())[0] == states.getActualWorld():
@@ -54,12 +54,13 @@ def callTest():
     newPercentages = [(item/200)*100 for item in percentages]
     
     print(newPercentages)
-    xAxis = np.array(range(1,4))
+    xAxis = np.array(range(1,52))
     yAxis = np.array(newPercentages)
 
     plt.plot(xAxis,yAxis)
     plt.ylim([0,110])
-    plt.xticks(range(1,4))
+    plt.xticks(range(1,52))
+
     plt.xlabel("Number of observables")
     plt.ylabel("Success Percentage")
     plt.title("Success percentage of anchoring bias lexicographic revision for 5 states")

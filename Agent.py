@@ -344,7 +344,7 @@ class Agent():
                         self.stubbornnessDegrees[self.getNegation(
                             proposition)] = 1
                 return newPlSpace
-            else:
+            else:    
                 # Update stubbornness degree
                 if self.stubbornnessDegrees[proposition] == 1:
                     if self.timesOfIncomingInfo[proposition] == self.stubbornnessDegrees[self.getNegation(proposition)]:
@@ -356,7 +356,6 @@ class Agent():
     def confirmationBiasedLexRevision(self, epistemicSpace: EpistemicSpace, proposition: string):
         newObservables = Observables(
             epistemicSpace.observables.getObservables())
-        print(self.timesOfIncomingInfo)
         self.timesOfIncomingInfo[proposition] += 1
         if self.timesOfIncomingInfo[proposition] >= self.stubbornnessDegrees[self.getNegation(proposition)]:
             self.calledByCBCLexRevision = True
@@ -454,7 +453,7 @@ class Agent():
                 # New worldsRelation
                 for positiveState in positiveOrder.keys():      # Create new worlds relation
                     for negativeState in negativeOrder.keys():
-                        positiveOrder[positiveState].add(negativeState)
+                        positiveOrder[positiveState].append(negativeState)
                 positiveOrder.update(negativeOrder)
 
                 self.plausibilityOrder.updateWorldsRelation(positiveOrder)
