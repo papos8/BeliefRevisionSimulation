@@ -31,5 +31,5 @@ The class **Agent** is the brain of the artificial intelligence agents. All the 
 # main.py
 The file **main.py** includes the tests cases we ran to compare the methods. The user can run the file in two ways. The first way is to run the file without an additional argument. The user will receive a prompt from the terminal to enter a number and select a test case. The prompt looks like the image below. 
 
-![Alt]([BeliefRevisionSimulation/Images/TerminalMessage.png](https://github.com/papos8/BeliefRevisionSimulation/blob/main/Images/TerminalMessage.png))
+![Alt]((https://github.com/papos8/BeliefRevisionSimulation/blob/main/Images/TerminalMessage.png))
 
