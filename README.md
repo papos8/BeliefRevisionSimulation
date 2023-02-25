@@ -1,5 +1,5 @@
 # BeliefRevisionSimulation
-Repository to store the code for the Thesis
+Repository to store the code for Master Thesis
 
 This repository stores the code for simulation of belief revision and truth tracking.
 This simulation is a part of the Master Thesis - Formal Models of Cognitive Bias in Artificial Intelligence and Multi-agent Systems.
@@ -31,3 +31,7 @@ The class **Agent** is the brain of the artificial intelligence agents. All the 
 # main.py
 The file **main.py** includes the tests cases we ran to compare the methods. The user can run the file in two ways. The first way is to run the file without an additional argument. The user will receive a prompt from the terminal to enter a number and select a test case. The prompt looks like the image below. 
 
+![Alt](https://github.com/papos8/BeliefRevisionSimulation/blob/main/Images/TerminalMessage.png)
+
+The second way is to pass the number directly as an argument on the command line. For example, **python main.py 4** will run prompt the user to create step by step a custom test to compare framing bias conditioning and unbiased conditioning. 
+Note that if the user selects randomly created tests then the 200 test cases run and the results are stored under the folder **Randomly_Created_Tests** on the same repository.
