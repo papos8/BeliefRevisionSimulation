@@ -212,10 +212,12 @@ class Agent():
         self.plausibilityOrder.updateOrder(self.wordlsRelationToOrder(
             self.plausibilityOrder.getWorldsRelation()))
         if self.calledByCBCLexRevision == True:
+            # Update stubbornness degree
             if self.stubbornnessDegrees[proposition] == 1:
-                if self.timesOfIncomingInfo[proposition] > self.stubbornnessDegrees[self.getNegation(proposition)]:
+                if self.timesOfIncomingInfo[proposition] == self.stubbornnessDegrees[self.getNegation(proposition)]:
                     self.stubbornnessDegrees[proposition] = self.timesOfIncomingInfo[proposition]
-                    self.stubbornnessDegrees[self.getNegation(proposition)] = 1
+                    self.stubbornnessDegrees[self.getNegation(
+                        proposition)] = 1
         return EpistemicSpace(epistemicSpace.states, newObservables)
 
     def minRevision(self, epistemicSpace: EpistemicSpace, proposition: string):
@@ -356,8 +358,9 @@ class Agent():
     def confirmationBiasedLexRevision(self, epistemicSpace: EpistemicSpace, proposition: string):
         newObservables = Observables(
             epistemicSpace.observables.getObservables())
+        
         self.timesOfIncomingInfo[proposition] += 1
-        if self.timesOfIncomingInfo[proposition] >= self.stubbornnessDegrees[self.getNegation(proposition)]:
+        if self.timesOfIncomingInfo[proposition] >= self.stubbornnessDegrees[str(self.getNegation(proposition))]:
             self.calledByCBCLexRevision = True
             return self.lexRevision(epistemicSpace, proposition)
         else:
