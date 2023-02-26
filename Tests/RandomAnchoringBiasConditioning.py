@@ -49,11 +49,11 @@ def callTest():
 
         # Create unbiased agent
         print("Create unbiased agent")
-        unbiasedAgent = Agent.Agent(
+        unbiasedAgent = Agent(
             epistemicSpaceForUnbiased, "Unbiased", "Random")
         # Create biased agent
         print("Create biased agent")
-        biasedAgent = Agent.Agent(epistemicSpaceForBiased,
+        biasedAgent = Agent(epistemicSpaceForBiased,
                                 "Anchoring", "Random")
 
         biasedAgent.plausibilityOrder.updateWorldsRelation(copy.deepcopy(

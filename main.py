@@ -49,7 +49,9 @@ Enter 20 to choose RandomAnchoringBiasMinRevision
 Enter 21 to choose RandomAnchoringBiasMinRevisionWithResources
 Enter 22 to choose RandomInGroupFavoritismConditioning
 Enter 23 to choose RandomInGroupFavoritismLexRevision
-Enter 24 to choose RandomInGroupFavoritismMinRevision""")
+Enter 24 to choose RandomInGroupFavoritismMinRevision
+Enter 25 to choose LengthAgainstPerformanceTest
+Enter 26 to choose FootballExample""")
     testIndex = int(input("Give a number between 1 and 24 to choose a test case: "))
     if testIndex == 1:
         CustomConfirmationBiasConditioning.callTest()  

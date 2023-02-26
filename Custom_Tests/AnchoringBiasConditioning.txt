@@ -2,25 +2,25 @@ Compare unbiased conditioning and anchoring bias conditioning.
 First states and observables are created and then the plausibility orders of the agents.
 The two agents have the same plausibility orders and same stubbornness degrees. 
 
-The given states are: r, s, t, w
+The given states are: w, t, r, s
 The actual world is: s
-The given observables are: P:{'w'}, Q:{'r', 't', 'w'}, ~P:{'r', 's', 't'}, ~Q:{'s'}, 
+The given observables are: P:{'w'}, Q:{'r', 't', 'w'}, ~P:{'r', 't', 's'}, ~Q:{'s'}, 
 
-The data sequence the agents received is: ~P, ~Q, ~Q, ~Q, 
+The data sequence the agents received is: ~P, ~P, ~Q, ~Q, 
 
-Unbiased agent's initial plausibility order: r:{'s', 't'}, s:{'t'}, t:set(), w:{'r', 's', 't'}, 
-Unbiased agent's stubbornness degrees: ~Q:1, P:1, ~P:1, Q:1, 
-Unbiased agent's plausibility order after receiving ~P: r:{'s', 't'}, s:{'t'}, t:set(), 
-Unbiased agent's plausibility order after receiving ~Q: s:set(), 
+Unbiased agent's initial plausibility order: w:{'r', 't', 's'}, t:set(), r:{'t', 's'}, s:{'t'}, 
+Unbiased agent's stubbornness degrees: P:1, Q:1, ~P:1, ~Q:1, 
+Unbiased agent's plausibility order after receiving ~P: t:set(), r:{'t', 's'}, s:{'t'}, 
+Unbiased agent's plausibility order after receiving ~P: t:set(), r:{'t', 's'}, s:{'t'}, 
 Unbiased agent's plausibility order after receiving ~Q: s:set(), 
 Unbiased agent's plausibility order after receiving ~Q: s:set(), 
 Unbiased agent's most plausible world: s
 Unbiased agent identified the actual world!
 
-Biased agent's initial plausibility order: r:{'s', 't'}, s:{'t'}, t:set(), w:{'r', 's', 't'}, 
-Biased agent's stubbornness degrees: ~Q:1, P:1, ~P:1, Q:1, 
+Biased agent's initial plausibility order: w:{'r', 't', 's'}, t:set(), r:{'t', 's'}, s:{'t'}, 
+Biased agent's stubbornness degrees: P:1, Q:1, ~P:1, ~Q:1, 
 Biased agent's plausibility order after receiving ~P: r:set(), 
-Biased agent's plausibility order after receiving ~Q: 
+Biased agent's plausibility order after receiving ~P: r:set(), 
 Biased agent's plausibility order after receiving ~Q: 
 Biased agent's plausibility order after receiving ~Q: 
 

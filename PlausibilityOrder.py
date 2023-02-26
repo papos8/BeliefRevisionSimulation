@@ -29,6 +29,8 @@ class PlausibilityOrder():
                     helperList = self.worldsRelation[state]
                     self.worldsRelation[state] = [
                         element for anotherList in helperList for element in anotherList]
+            for key in self.worldsRelation.keys():
+                self.worldsRelation[key] = set(self.worldsRelation[key])
             # Create set of most plausible worlds
             maxLen = 0
             self.mostPlausibleWorlds = set()

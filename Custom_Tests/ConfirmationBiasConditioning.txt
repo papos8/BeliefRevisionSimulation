@@ -2,27 +2,25 @@ Compare unbiased conditioning and confirmation bias condition.
 First states and observables are created and then the plausibility orders of the agents.
 The two agents have the same plausibility orders, but different stubbornness degrees. 
 
-The given states are: t, r, s, w
+The given states are: w, s, r, t
 The actual world is: r
-The given observables are: P:{'t', 'w'}, Q:{'s', 'w'}, ~P:{'r', 's'}, ~Q:{'t', 'r'}, 
+The given observables are: P:{'w', 't'}, Q:{'w', 's'}, ~P:{'s', 'r'}, ~Q:{'r', 't'}, 
 
-The data sequence the agents received is: ~P, ~P, ~Q, ~Q, 
+The data sequence the agents received is: ~P, ~P, ~Q, 
 
-Unbiased agent's initial plausibility order: t:{'r', 's'}, r:set(), s:{'r'}, w:{'t', 'r', 's'}, 
-Unbiased agent's stubbornness degrees: P:1, ~Q:1, Q:1, ~P:1, 
-Unbiased agent's plausibility order after receiving ~P: r:set(), s:{'r'}, 
-Unbiased agent's plausibility order after receiving ~P: r:set(), s:{'r'}, 
-Unbiased agent's plausibility order after receiving ~Q: r:set(), 
+Unbiased agent's initial plausibility order: w:{'s', 'r', 't'}, s:{'r'}, r:set(), t:{'s', 'r'}, 
+Unbiased agent's stubbornness degrees: ~Q:1, ~P:1, P:1, Q:1, 
+Unbiased agent's plausibility order after receiving ~P: s:{'r'}, r:set(), 
+Unbiased agent's plausibility order after receiving ~P: s:{'r'}, r:set(), 
 Unbiased agent's plausibility order after receiving ~Q: r:set(), 
 Unbiased agent's most plausible world: r
 Unbiased agent identified the actual world!
 
-Biased agent's initial plausibility order: t:{'r', 's'}, r:set(), s:{'r'}, w:{'t', 'r', 's'}, 
-Biased agent's stubbornness degrees: P:3, ~Q:1, Q:1, ~P:1, 
-Biased agent's plausibility order after receiving ~P: t:{'r', 's'}, r:set(), s:{'r'}, w:{'t', 'r', 's'}, 
-Biased agent's plausibility order after receiving ~P: t:{'r', 's'}, r:set(), s:{'r'}, w:{'t', 'r', 's'}, 
-Biased agent's plausibility order after receiving ~Q: t:{'r'}, r:set(), 
-Biased agent's plausibility order after receiving ~Q: t:{'r'}, r:set(), 
+Biased agent's initial plausibility order: w:{'s', 'r', 't'}, s:{'r'}, r:set(), t:{'s', 'r'}, 
+Biased agent's stubbornness degrees: ~Q:1, ~P:1, P:3, Q:1, 
+Biased agent's plausibility order after receiving ~P: w:{'s', 'r', 't'}, s:{'r'}, r:set(), t:{'s', 'r'}, 
+Biased agent's plausibility order after receiving ~P: w:{'s', 'r', 't'}, s:{'r'}, r:set(), t:{'s', 'r'}, 
+Biased agent's plausibility order after receiving ~Q: r:set(), t:{'r'}, 
 
 Biased agent's most plausible world: t
 Biased agent failed to identifiy the actual world!

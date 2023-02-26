@@ -173,8 +173,8 @@ class Agent():
         positiveOrder = dict()
         negativeOrder = dict()
         for key in epistemicSpace.states.getStates():  # Initialize orders
-            positiveOrder.update({key: set()})
-            negativeOrder.update({key: set()})
+            positiveOrder.update({key: {}})
+            negativeOrder.update({key: {}})
         for state in epistemicSpace.states.getStates():  # Create orders' keys
             if state not in epistemicSpace.observables.getObservables()[proposition]:
                 positiveOrder.pop(state)
@@ -195,7 +195,7 @@ class Agent():
         # New worldsRelation
         for positiveState in positiveOrder.keys():      # Create new worlds relation
             for negativeState in negativeOrder.keys():
-                positiveOrder[positiveState].append(negativeState)
+                positiveOrder[positiveState].add(negativeState)
         positiveOrder.update(negativeOrder)
         self.plausibilityOrder.updateWorldsRelation(positiveOrder)
         maxLen = 0
@@ -270,9 +270,9 @@ class Agent():
                     positiveOrderHelper[key].remove(state)
         for positiveState in positiveOrderHelper.keys():            # Add the 'negative' worlds to positive
             for negativeState in negativeOrder.keys():
-                positiveOrderHelper[positiveState].append(negativeState)
+                positiveOrderHelper[positiveState].add(negativeState)
             for anotherState in set(positiveOrder.keys()).difference(positiveOrderHelper.keys()):
-                positiveOrderHelper[positiveState].append(anotherState)
+                positiveOrderHelper[positiveState].add(anotherState)
         positiveOrderHelper.update(negativeOrder)
         self.plausibilityOrder.updateWorldsRelation(positiveOrderHelper)
         self.plausibilityOrder.updateMostPlausibleWorlds(           # The most plausible worlds are the most plaus in p
@@ -456,7 +456,7 @@ class Agent():
                 # New worldsRelation
                 for positiveState in positiveOrder.keys():      # Create new worlds relation
                     for negativeState in negativeOrder.keys():
-                        positiveOrder[positiveState].append(negativeState)
+                        positiveOrder[positiveState].add(negativeState)
                 positiveOrder.update(negativeOrder)
 
                 self.plausibilityOrder.updateWorldsRelation(positiveOrder)
@@ -606,9 +606,9 @@ class Agent():
 
                 for positiveState in postiveHelperOrder.keys():            # Add the 'negative' worlds to positive
                     for negativeState in negativeOrder.keys():
-                        postiveHelperOrder[positiveState].append(negativeState)
+                        postiveHelperOrder[positiveState].add(negativeState)
                     for anotherState in set(positiveOrder.keys()).difference(postiveHelperOrder.keys()):
-                        postiveHelperOrder[positiveState].append(anotherState)
+                        postiveHelperOrder[positiveState].add(anotherState)
                 postiveHelperOrder.update(negativeOrder)
                 self.plausibilityOrder.updateMostPlausibleWorlds(           # The most plausible worlds are the most plaus in p
                     posPlausibleInProp)
@@ -697,7 +697,7 @@ class Agent():
         # New worldsRelation
         for positiveState in positiveOrder.keys():      # Create new worlds relation
             for negativeState in negativeOrder.keys():
-                positiveOrder[positiveState].append(negativeState)
+                positiveOrder[positiveState].add(negativeState)
         positiveOrder.update(negativeOrder)
         self.plausibilityOrder.updateWorldsRelation(positiveOrder)
         maxLen = 0
@@ -770,9 +770,9 @@ class Agent():
                     positiveOrderHelper[key].remove(state)
         for positiveState in positiveOrderHelper.keys():            # Add the 'negative' worlds to positive
             for negativeState in negativeOrder.keys():
-                positiveOrderHelper[positiveState].append(negativeState)
+                positiveOrderHelper[positiveState].add(negativeState)
             for anotherState in set(positiveOrder.keys()).difference(positiveOrderHelper.keys()):
-                positiveOrderHelper[positiveState].append(anotherState)
+                positiveOrderHelper[positiveState].add(anotherState)
         positiveOrderHelper.update(negativeOrder)
         self.plausibilityOrder.updateWorldsRelation(positiveOrderHelper)
         if len(posPlausibleInProp) > 0:
@@ -902,9 +902,9 @@ class Agent():
                     positiveOrderHelper[key].remove(state)
         for positiveState in positiveOrderHelper.keys():            # Add the 'negative' worlds to positive
             for negativeState in negativeOrder.keys():
-                positiveOrderHelper[positiveState].append(negativeState)
+                positiveOrderHelper[positiveState].add(negativeState)
             for anotherState in set(positiveOrder.keys()).difference(positiveOrderHelper.keys()):
-                positiveOrderHelper[positiveState].append(anotherState)
+                positiveOrderHelper[positiveState].add(anotherState)
         positiveOrderHelper.update(negativeOrder)
         self.plausibilityOrder.updateWorldsRelation(positiveOrderHelper)
         if len(posPlausibleInProp) > 1:
@@ -965,9 +965,9 @@ class Agent():
                     positiveOrderHelper[key].remove(state)
         for positiveState in positiveOrderHelper.keys():            # Add the 'negative' worlds to positive
             for negativeState in negativeOrder.keys():
-                positiveOrderHelper[positiveState].append(negativeState)
+                positiveOrderHelper[positiveState].add(negativeState)
             for anotherState in set(positiveOrder.keys()).difference(positiveOrderHelper.keys()):
-                positiveOrderHelper[positiveState].append(anotherState)
+                positiveOrderHelper[positiveState].add(anotherState)
         positiveOrderHelper.update(negativeOrder)
         self.plausibilityOrder.updateWorldsRelation(positiveOrderHelper)
         if len(posPlausibleInProp) > 1:
