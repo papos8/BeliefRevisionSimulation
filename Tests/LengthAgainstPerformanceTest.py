@@ -22,32 +22,35 @@ import numpy as np
 def callTest():
     
     percentages = []
-    
-    for i in range(1,20):
+    for i in range(1,26):
         unbiasedCounter = 0
-        for j in range(10):
+        for j in range(200):
             print("Test: " + str(j) )
-            states = States.States(3)
-            print(states.getActualWorld())
+            states = States.States(10)
+            print("Actual world: " + str(states.getActualWorld()))
             
-            obs = Observables(7,states)
+            obs = Observables(i,states)
             epistemicSpaceForUnbiased = EpistemicSpace(
                 states, obs)
-            unbiasedAgent = Agent(epistemicSpaceForUnbiased, "Confirmation", "Random")
+            agent = Agent(epistemicSpaceForUnbiased, "Unbiased", "Random")
+            print("Observables: ")
             print(obs.getObservables())
-            print(unbiasedAgent.plausibilityOrder.getWorldsRelation())
+            print("Initial plausibility order: ")
+            print(agent.plausibilityOrder.getWorldsRelation())
             data = DataSequence.DataSequence(states,obs)
+            print("Data sequence: ")
             print(data.getDataSequence())
             for i in range(len(data.getDataSequence())):
-                epistemicSpaceForUnbiased = unbiasedAgent.anchoringBiasedLexRevision(
+                epistemicSpaceForUnbiased = agent.minRevision(
                     epistemicSpaceForUnbiased, data.getDataSequence()[i])
-                
-            if len(unbiasedAgent.plausibilityOrder.getMostPlausibleWorlds()) == 1 and list(unbiasedAgent.plausibilityOrder.getMostPlausibleWorlds())[0] == states.getActualWorld():
+            print("Final plausibility order: ")
+            print(agent.plausibilityOrder.getWorldsRelation())
+            if len(agent.plausibilityOrder.getMostPlausibleWorlds()) == 1 and list(agent.plausibilityOrder.getMostPlausibleWorlds())[0] == states.getActualWorld():
                 unbiasedCounter += 1
-                print(unbiasedAgent.plausibilityOrder.getMostPlausibleWorlds())
+                print(agent.plausibilityOrder.getMostPlausibleWorlds())
                 print("Identified")
             else:
-                print(unbiasedAgent.plausibilityOrder.getMostPlausibleWorlds())
+                print(agent.plausibilityOrder.getMostPlausibleWorlds())
                 print("Not")
         
         percentages.append(unbiasedCounter)
@@ -56,15 +59,15 @@ def callTest():
     newPercentages = [(item/200)*100 for item in percentages]
     
     print(newPercentages)
-    xAxis = np.array(range(1,20))
+    xAxis = np.array(range(1,26))
     yAxis = np.array(newPercentages)
 
     plt.plot(xAxis,yAxis)
     plt.ylim([0,110])
-    plt.xticks(range(1,20))
+    plt.xticks(range(1,26))
 
     plt.xlabel("Number of observables")
     plt.ylabel("Success Percentage")
-    plt.title("Success percentage of anchoring bias lexicographic revision for 5 states")
+    plt.title("Success percentage of unbiased lexicographic revision for 10 states")
     plt.show()
-    exit()
+    
