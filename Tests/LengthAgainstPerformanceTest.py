@@ -30,7 +30,7 @@ def callTest():
             states = States.States(3)
             print(states.getActualWorld())
             
-            obs = Observables(i,states)
+            obs = Observables(7,states)
             epistemicSpaceForUnbiased = EpistemicSpace(
                 states, obs)
             unbiasedAgent = Agent(epistemicSpaceForUnbiased, "Confirmation", "Random")
