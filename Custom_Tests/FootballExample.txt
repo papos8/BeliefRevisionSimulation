@@ -1,0 +1,413 @@
+Simple example to demonstrate the in-group communication.
+In this example we create 4 players, the captain, two midfielders and an attacking midfielder, 
+which is considered to have the ball and need to turn left. Here we will only demonstrate how could weights affect
+the decision, without taking into consideration the revision method used by the agent. However, we assign weights
+to the agents to demonstrate how they affect decision-making. We use both fair unanimity and different weights.
+In the latter case, the captain is assigned a higher weight than the rest, which are assigned equal weights. The given states are: s, w, t, r
+The actual world is: w
+The given observables are: P:{'s', 'w'}, Q:{'w', 'r'}, ~P:{'r', 't'}, ~Q:{'s', 't'}, 
+
+Player weights using fair unanimity are :
+attackingMidfielder: 0.25, captain: 0.25, midfielder1: 0.25, midfielder2: 0.25, Attacking midfielder's stubbornness degrees: P:5, Q:4, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:1, Q:1, ~P:5, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:3, Q:2, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:5, Q:3, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:5, Q:4, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:4, Q:3, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:2, Q:5, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:2, Q:5, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:3, Q:4, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:3, Q:3, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:3, Q:4, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:4, Q:4, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:4, Q:1, ~P:1, ~Q:5, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:2, Q:5, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:2, Q:5, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:3, Q:4, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:1, Q:4, ~P:2, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:4, Q:4, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:3, Q:3, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:3, Q:2, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:4, Q:4, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:4, Q:2, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:3, Q:2, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:5, Q:2, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:5, Q:4, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:2, Q:2, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:3, Q:3, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:2, Q:2, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:2, Q:2, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:3, Q:1, ~P:1, ~Q:4, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:3, Q:3, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:3, Q:2, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:3, Q:1, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:5, Q:2, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:4, Q:4, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:4, Q:4, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:4, Q:3, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:2, Q:2, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:5, Q:2, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:5, Q:3, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:1, Q:3, ~P:3, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:2, Q:1, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:1, Q:2, ~P:5, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:5, Q:3, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:4, Q:4, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:5, Q:1, ~P:1, ~Q:3, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:4, Q:2, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:1, Q:1, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:2, Q:1, ~P:1, ~Q:3, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:5, Q:2, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:5, Q:5, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:2, Q:1, ~P:1, ~Q:2, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:5, Q:4, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:1, Q:4, ~P:2, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:3, Q:4, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:1, Q:2, ~P:5, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:3, Q:4, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:5, Q:3, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:2, Q:1, ~P:1, ~Q:2, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:5, Q:2, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:3, Q:2, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:3, Q:2, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:2, Q:1, ~P:1, ~Q:4, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:4, Q:4, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:4, Q:2, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:4, Q:3, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:3, Q:4, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:2, Q:4, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:2, Q:5, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:2, Q:1, ~P:1, ~Q:3, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:2, Q:1, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:2, Q:1, ~P:1, ~Q:3, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:5, Q:4, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:2, Q:1, ~P:1, ~Q:4, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:1, Q:5, ~P:4, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:1, Q:2, ~P:2, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:5, Q:1, ~P:1, ~Q:5, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:3, Q:3, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:4, Q:3, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:5, Q:3, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:4, Q:4, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:2, Q:2, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:3, Q:2, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:5, Q:2, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:3, Q:2, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:4, Q:1, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:1, Q:5, ~P:4, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:5, Q:1, ~P:1, ~Q:2, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:5, Q:5, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:4, Q:3, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:5, Q:5, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:5, Q:3, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:5, Q:2, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:5, Q:1, ~P:1, ~Q:4, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:2, Q:2, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:2, Q:1, ~P:1, ~Q:2, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:5, Q:3, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:5, Q:4, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:5, Q:2, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:2, Q:2, ~P:1, ~Q:1, 
+Player turned left.
+The agent turned left 38 times and passed back 62 times.
+Player weights using fair unanimity are :
+attackingMidfielder: 0.1111111111111111, captain: 0.6666666666666666, midfielder1: 0.1111111111111111, midfielder2: 0.1111111111111111, Attacking midfielder's stubbornness degrees: P:2, Q:3, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:5, Q:4, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:2, Q:5, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:3, Q:3, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:1, Q:3, ~P:4, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:4, Q:3, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:1, Q:1, ~P:3, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:2, Q:2, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:5, Q:5, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:3, Q:3, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:1, Q:4, ~P:3, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:4, Q:2, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:1, Q:3, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:2, Q:5, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:1, Q:4, ~P:5, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:3, Q:2, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:4, Q:3, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:1, Q:4, ~P:2, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:3, Q:4, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:3, Q:1, ~P:1, ~Q:5, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:3, Q:1, ~P:1, ~Q:4, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:1, Q:5, ~P:4, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:1, Q:2, ~P:3, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:1, Q:3, ~P:5, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:2, Q:4, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:4, Q:1, ~P:1, ~Q:3, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:5, Q:1, ~P:1, ~Q:3, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:2, Q:2, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:3, Q:2, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:5, Q:4, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:2, Q:5, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:2, Q:5, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:4, Q:5, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:5, Q:3, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:2, Q:4, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:1, Q:1, ~P:1, ~Q:4, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:5, Q:4, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:2, Q:1, ~P:1, ~Q:5, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:1, Q:4, ~P:3, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:1, Q:3, ~P:5, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:2, Q:4, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:1, Q:3, ~P:5, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:2, Q:5, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:3, Q:3, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:2, Q:1, ~P:1, ~Q:5, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:3, Q:1, ~P:1, ~Q:5, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:4, Q:1, ~P:1, ~Q:3, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:5, Q:1, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:3, Q:5, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:4, Q:3, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:5, Q:1, ~P:1, ~Q:5, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:4, Q:5, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:4, Q:3, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:1, Q:3, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:3, Q:5, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:3, Q:2, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:3, Q:3, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:5, Q:1, ~P:1, ~Q:3, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:4, Q:4, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:4, Q:1, ~P:1, ~Q:3, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:5, Q:1, ~P:1, ~Q:3, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:1, Q:3, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:1, Q:3, ~P:3, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:1, Q:1, ~P:2, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:3, Q:2, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:2, Q:2, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:2, Q:4, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:4, Q:5, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:1, Q:4, ~P:5, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:1, Q:4, ~P:4, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:2, Q:4, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:5, Q:1, ~P:1, ~Q:5, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:4, Q:1, ~P:1, ~Q:4, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:3, Q:2, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:1, Q:1, ~P:4, ~Q:5, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:4, Q:3, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:1, Q:3, ~P:4, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:3, Q:3, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:4, Q:1, ~P:1, ~Q:4, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:2, Q:3, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:4, Q:2, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:2, Q:1, ~P:1, ~Q:4, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:2, Q:2, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:4, Q:4, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:5, Q:5, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:4, Q:4, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:2, Q:3, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:2, Q:3, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:3, Q:5, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:2, Q:3, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:1, Q:3, ~P:2, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:5, Q:1, ~P:1, ~Q:2, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:1, Q:1, ~P:2, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:1, Q:1, ~P:5, ~Q:5, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:1, Q:5, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:3, Q:5, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:4, Q:2, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:5, Q:3, ~P:1, ~Q:1, 
+The player has to pass back.
+Attacking midfielder's stubbornness degrees: P:2, Q:2, ~P:1, ~Q:1, 
+Player turned left.
+Attacking midfielder's stubbornness degrees: P:4, Q:3, ~P:1, ~Q:1, 
+The player has to pass back.
+The agent turned left 53 times and passed back 47 times.

@@ -20,7 +20,7 @@ import Group
 import json
 import copy
 import sys
-from Tests import LengthAgainstPerformanceTest, CustomConfirmationBiasLexRevision, RandomInGroupFavoritismMinRevision, RandomInGroupFavoritismLexRevision, RandomInGroupFavoritismConditioning, RandomAnchoringBiasMinRevisionWithResources, RandomAnchoringBiasMinRevision, RandomAnchoringBiasLexRevisionWithResources, RandomAnchoringBiasLexRevision, RandomAnchoringBiasConditioningWithResources, RandomAnchoringBiasConditioning, RandomFramingBiasMinRevision, RandomFramingBiasLexRevision, RandomFramingBiasConditioning, RandomConfirmationBiasMinRevision, RandomConfirmationBiasLexRevision, RandomConfirmationBiasConditioning, CustomAnchoringBiasMinRevision, CustomAnchoringBiasLexRevision, CustomAnchoringBiasConditioning, CustomFramingBiasMinRevision, CustomFramingBiasLexRevision, CustomConfirmationBiasConditioning, CustomConfirmationBiasConditioning, CustomConfirmationBiasMinRevision, CustomFramingBiasConditioning
+from Tests import FootballExample, LengthAgainstPerformanceTest, CustomConfirmationBiasLexRevision, RandomInGroupFavoritismMinRevision, RandomInGroupFavoritismLexRevision, RandomInGroupFavoritismConditioning, RandomAnchoringBiasMinRevisionWithResources, RandomAnchoringBiasMinRevision, RandomAnchoringBiasLexRevisionWithResources, RandomAnchoringBiasLexRevision, RandomAnchoringBiasConditioningWithResources, RandomAnchoringBiasConditioning, RandomFramingBiasMinRevision, RandomFramingBiasLexRevision, RandomFramingBiasConditioning, RandomConfirmationBiasMinRevision, RandomConfirmationBiasLexRevision, RandomConfirmationBiasConditioning, CustomAnchoringBiasMinRevision, CustomAnchoringBiasLexRevision, CustomAnchoringBiasConditioning, CustomFramingBiasMinRevision, CustomFramingBiasLexRevision, CustomConfirmationBiasConditioning, CustomConfirmationBiasConditioning, CustomConfirmationBiasMinRevision, CustomFramingBiasConditioning
 
 
 '''
@@ -146,5 +146,8 @@ elif int(sys.argv[1]) == 23:
     RandomInGroupFavoritismLexRevision.callTest()
 elif int(sys.argv[1]) == 24:
     RandomInGroupFavoritismMinRevision.callTest()
-'''
+
 LengthAgainstPerformanceTest.callTest()
+'''
+
+FootballExample.callTest()
