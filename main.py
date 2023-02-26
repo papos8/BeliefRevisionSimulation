@@ -1,5 +1,6 @@
 from asyncore import file_dispatcher
 from audioop import bias
+from cgi import test
 from operator import imod
 from os import stat
 from re import A
@@ -23,7 +24,7 @@ import sys
 from Tests import FootballExample, LengthAgainstPerformanceTest, CustomConfirmationBiasLexRevision, RandomInGroupFavoritismMinRevision, RandomInGroupFavoritismLexRevision, RandomInGroupFavoritismConditioning, RandomAnchoringBiasMinRevisionWithResources, RandomAnchoringBiasMinRevision, RandomAnchoringBiasLexRevisionWithResources, RandomAnchoringBiasLexRevision, RandomAnchoringBiasConditioningWithResources, RandomAnchoringBiasConditioning, RandomFramingBiasMinRevision, RandomFramingBiasLexRevision, RandomFramingBiasConditioning, RandomConfirmationBiasMinRevision, RandomConfirmationBiasLexRevision, RandomConfirmationBiasConditioning, CustomAnchoringBiasMinRevision, CustomAnchoringBiasLexRevision, CustomAnchoringBiasConditioning, CustomFramingBiasMinRevision, CustomFramingBiasLexRevision, CustomConfirmationBiasConditioning, CustomConfirmationBiasConditioning, CustomConfirmationBiasMinRevision, CustomFramingBiasConditioning
 
 
-'''
+
 if len(sys.argv) == 1:
     print("""Enter 1 to choose CustomConfirmationBiasConditioning
 Enter 2 to choose CustomConfirmationBiasLexRevision
@@ -98,6 +99,10 @@ Enter 24 to choose RandomInGroupFavoritismMinRevision""")
         RandomInGroupFavoritismLexRevision.callTest()
     elif testIndex == 24:
         RandomInGroupFavoritismMinRevision.callTest() 
+    elif testIndex == 25:
+        LengthAgainstPerformanceTest.callTest()
+    elif testIndex == 26:
+        FootballExample.callTest()
 elif int(sys.argv[1]) == 1:
     CustomConfirmationBiasConditioning.callTest()
 elif int(sys.argv[1]) == 2:
@@ -146,8 +151,7 @@ elif int(sys.argv[1]) == 23:
     RandomInGroupFavoritismLexRevision.callTest()
 elif int(sys.argv[1]) == 24:
     RandomInGroupFavoritismMinRevision.callTest()
-
-LengthAgainstPerformanceTest.callTest()
-'''
-
-FootballExample.callTest()
+elif int(sys.argv[1] == 25):
+    LengthAgainstPerformanceTest.callTest()
+elif int(sys.argv[1] == 26):
+    FootballExample.callTest()
