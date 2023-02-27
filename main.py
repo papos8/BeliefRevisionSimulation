@@ -53,7 +53,7 @@ Enter 24 to choose RandomInGroupFavoritismMinRevision
 Enter 25 to choose ObsrvablesLengthAgainstPerformance
 Enter 26 to choose FootballExample
 Enter 27 to choose SequenceLengthAgainstPerformance""")
-    testIndex = int(input("Give a number between 1 and 26 to choose a test case: "))
+    testIndex = int(input("Give a number between 1 and 27 to choose a test case: "))
     if testIndex == 1:
         CustomConfirmationBiasConditioning.callTest()  
     elif testIndex == 2:
