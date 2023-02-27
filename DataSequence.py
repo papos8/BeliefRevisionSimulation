@@ -18,7 +18,18 @@ class DataSequence():
                 key = input("Provide the name of the observable proposition: ")
                 self.dataSequence.append(key)
                 self.dataSequenceDict.update({key: arg[1][key]})
-            
+        elif len(arg) == 3 and isinstance(arg[0],int):
+            self.states = arg[1]
+            self.observables = arg[2]
+            self.dataSequence = []
+            positiveProps = []
+            for key in self.observables.getObservables().keys():
+                if self.states.getActualWorld() in self.observables.getObservables()[key]:
+                    positiveProps.append(key)
+            lengthOfSequence = arg[0]
+            self.dataSequence = positiveProps
+            for i in range(len(self.dataSequence),lengthOfSequence):
+                self.dataSequence.append(random.choice(positiveProps))
         else:
             # Pass states as first argument and obs as second
             self.states = arg[0]
@@ -28,11 +39,26 @@ class DataSequence():
             for key in self.observables.getObservables().keys():
                 if self.states.getActualWorld() in self.observables.getObservables()[key]:
                     positiveProps.append(key)
-
-            # lengthOfSequence = int(
-            #        input("Provide the length of the data sequence. It should be greater or equal than " +
-            #             str(len(positiveProps)) + ": "))
-
+            if lengthOfSequence == len(positiveProps):
+                permutations = list(itertools.permutations(
+                    positiveProps, lengthOfSequence))
+                index = random.randint(1, len(permutations))
+                self.dataSequence = permutations[index]
+            elif lengthOfSequence > len(positiveProps):
+                permutations = list(itertools.permutations(
+                    positiveProps, len(positiveProps)))
+                index = random.randint(1, len(permutations))
+                helperData = permutations[index-1]
+                for element in helperData:
+                    self.dataSequence.append(element)
+                for i in range(len(helperData), lengthOfSequence):
+                    if len(positiveProps) != 0:
+                        randomElement = random.choice(positiveProps)
+                        self.dataSequence.append(randomElement)
+            else:
+                raise Exception(
+                    "The length of the data sequence should be greater or equal than the number of observables true in the actual world!")
+            
             lengthOfSequence = len(positiveProps) + 2
             if lengthOfSequence == len(positiveProps):
                 permutations = list(itertools.permutations(

@@ -21,7 +21,7 @@ import Group
 import json
 import copy
 import sys
-from Tests import FootballExample, LengthAgainstPerformanceTest, CustomConfirmationBiasLexRevision, RandomInGroupFavoritismMinRevision, RandomInGroupFavoritismLexRevision, RandomInGroupFavoritismConditioning, RandomAnchoringBiasMinRevisionWithResources, RandomAnchoringBiasMinRevision, RandomAnchoringBiasLexRevisionWithResources, RandomAnchoringBiasLexRevision, RandomAnchoringBiasConditioningWithResources, RandomAnchoringBiasConditioning, RandomFramingBiasMinRevision, RandomFramingBiasLexRevision, RandomFramingBiasConditioning, RandomConfirmationBiasMinRevision, RandomConfirmationBiasLexRevision, RandomConfirmationBiasConditioning, CustomAnchoringBiasMinRevision, CustomAnchoringBiasLexRevision, CustomAnchoringBiasConditioning, CustomFramingBiasMinRevision, CustomFramingBiasLexRevision, CustomConfirmationBiasConditioning, CustomConfirmationBiasConditioning, CustomConfirmationBiasMinRevision, CustomFramingBiasConditioning
+from Tests import SequenceLengthAgainstPerformance, FootballExample, CustomConfirmationBiasLexRevision, ObsrvablesLengthAgainstPerformanceTest, RandomInGroupFavoritismMinRevision, RandomInGroupFavoritismLexRevision, RandomInGroupFavoritismConditioning, RandomAnchoringBiasMinRevisionWithResources, RandomAnchoringBiasMinRevision, RandomAnchoringBiasLexRevisionWithResources, RandomAnchoringBiasLexRevision, RandomAnchoringBiasConditioningWithResources, RandomAnchoringBiasConditioning, RandomFramingBiasMinRevision, RandomFramingBiasLexRevision, RandomFramingBiasConditioning, RandomConfirmationBiasMinRevision, RandomConfirmationBiasLexRevision, RandomConfirmationBiasConditioning, CustomAnchoringBiasMinRevision, CustomAnchoringBiasLexRevision, CustomAnchoringBiasConditioning, CustomFramingBiasMinRevision, CustomFramingBiasLexRevision, CustomConfirmationBiasConditioning, CustomConfirmationBiasConditioning, CustomConfirmationBiasMinRevision, CustomFramingBiasConditioning
 
 
 
@@ -50,8 +50,9 @@ Enter 21 to choose RandomAnchoringBiasMinRevisionWithResources
 Enter 22 to choose RandomInGroupFavoritismConditioning
 Enter 23 to choose RandomInGroupFavoritismLexRevision
 Enter 24 to choose RandomInGroupFavoritismMinRevision
-Enter 25 to choose LengthAgainstPerformanceTest
-Enter 26 to choose FootballExample""")
+Enter 25 to choose ObsrvablesLengthAgainstPerformance
+Enter 26 to choose FootballExample
+Enter 27 to choose SequenceLengthAgainstPerformance""")
     testIndex = int(input("Give a number between 1 and 26 to choose a test case: "))
     if testIndex == 1:
         CustomConfirmationBiasConditioning.callTest()  
@@ -102,9 +103,11 @@ Enter 26 to choose FootballExample""")
     elif testIndex == 24:
         RandomInGroupFavoritismMinRevision.callTest() 
     elif testIndex == 25:
-        LengthAgainstPerformanceTest.callTest()
+        ObsrvablesLengthAgainstPerformanceTest.callTest()
     elif testIndex == 26:
         FootballExample.callTest()
+    elif testIndex == 27:
+        SequenceLengthAgainstPerformance.callTest()
 elif int(sys.argv[1]) == 1:
     CustomConfirmationBiasConditioning.callTest()
 elif int(sys.argv[1]) == 2:
@@ -154,6 +157,8 @@ elif int(sys.argv[1]) == 23:
 elif int(sys.argv[1]) == 24:
     RandomInGroupFavoritismMinRevision.callTest()
 elif int(sys.argv[1] == 25):
-    LengthAgainstPerformanceTest.callTest()
+    ObsrvablesLengthAgainstPerformanceTest.callTest()
 elif int(sys.argv[1] == 26):
     FootballExample.callTest()
+elif int(sys.argv[1] == 27):
+    SequenceLengthAgainstPerformance.callTest()
