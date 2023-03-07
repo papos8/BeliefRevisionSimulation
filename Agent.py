@@ -24,6 +24,7 @@ class Agent():
                 "Custom", epistemicSpace.states)
         else:
             self.plausibilityOrder = PlausibilityOrder(epistemicSpace.states)
+        self.states = epistemicSpace.states
         self.observables = epistemicSpace.observables
         self.timesOfIncomingInfo = dict()
         for obs in self.observables.getObservables():
@@ -59,7 +60,8 @@ class Agent():
                 newObservables.update({key: set()})
 
             for proposition in observables:
-                value = observables[proposition]
+                # The new value is an element of the powerset of S
+                value = self.states.getStates() #observables[proposition]
                 # Here the subset is taken completely random
                 # This may affect the results
                 newValue = sample(value, randint(

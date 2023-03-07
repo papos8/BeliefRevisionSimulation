@@ -26,7 +26,7 @@ def callTest():
         unbiasedCounter = 0
         for j in range(200):
             print("Test: " + str(j) )
-            states = States.States(10)
+            states = States.States(3)
             print("Actual world: " + str(states.getActualWorld()))
             
             obs = Observables(i,states)
@@ -41,7 +41,7 @@ def callTest():
             print("Data sequence: ")
             print(data.getDataSequence())
             for i in range(len(data.getDataSequence())):
-                epistemicSpaceForUnbiased = agent.minRevision(
+                epistemicSpaceForUnbiased = agent.framingBiasedLexRevision(
                     epistemicSpaceForUnbiased, data.getDataSequence()[i])
             print("Final plausibility order: ")
             print(agent.plausibilityOrder.getWorldsRelation())

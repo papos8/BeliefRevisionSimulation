@@ -3,7 +3,7 @@ import Valuation
 import EpistemicSpace
 
 
-class BiasedModel():
+class BiasModel():
     def __init__(self, plausibilitySpace,  valuation: Valuation) -> None:
         self.plausibilitySpace = plausibilitySpace
         self.valuation = valuation
