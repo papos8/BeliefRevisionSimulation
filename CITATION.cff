@@ -1,0 +1,27 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Cognitive Bias and Belief Revision
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Panagiotis
+    name-particle: Panagiotis
+    family-names: Papadamos
+    email: panagiotispapadamos@gmail.com
+  - given-names: Nina
+    family-names: Gierasimczuk
+    email: nigi@dtu.dk
+repository-code: 'https://github.com/papos8/BeliefRevisionSimulation'
+keywords:
+  - Belief revision
+  - Truth-tracking
+  - Cognitive bias
+  - Confirmation bias
+  - Framing bias
+  - Anchoring bias
+  - Computer simulations
+  - Learning theory
