@@ -2,7 +2,9 @@
 # Visit https://bit.ly/cffinit to generate yours today!
 
 cff-version: 1.2.0
-title: Cognitive Bias and Belief Revision
+title: >-
+  Source Code for Simulations in Cognitive Bias and Belief
+  Revision
 message: >-
   If you use this software, please cite it using the
   metadata from this file.
@@ -25,3 +27,4 @@ keywords:
   - Anchoring bias
   - Computer simulations
   - Learning theory
+date-released: '2023-05-17'
