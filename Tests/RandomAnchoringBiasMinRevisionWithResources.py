@@ -101,7 +101,7 @@ def callTest():
                 else:
                     unbiasedCounter = 0
                 unbiasedAgent.resources = float(
-                    unbiasedAgent.resources)/50
+                    unbiasedAgent.resources)-1.0
                 file.write("Unbiased agent's resources: " +
                         str(unbiasedAgent.resources) + "\n")
                 if unbiasedAgent.resources <= 1:
@@ -151,7 +151,7 @@ def callTest():
                 else:
                     biasedCounter = 0
                 biasedAgent.resources = float(
-                    biasedAgent.resources)/50
+                    biasedAgent.resources)-1.0
                 file.write("Biased agent's resources: " +
                         str(biasedAgent.resources) + "\n")
                 if biasedAgent.resources <= 1:

@@ -102,7 +102,7 @@ def callTest():
                 else:
                     unbiasedCounter = 0
                 unbiasedAgent.resources = float(
-                    unbiasedAgent.resources)/50
+                    unbiasedAgent.resources)-40
                 file.write("Unbiased agent's resources: " +
                         str(unbiasedAgent.resources) + "\n")
                 if unbiasedAgent.resources <= 1:
@@ -152,7 +152,7 @@ def callTest():
                 else:
                     biasedCounter = 0
                 biasedAgent.resources = float(
-                    biasedAgent.resources)/50
+                    biasedAgent.resources)-40
                 file.write("Biased agent's resources: " +
                         str(biasedAgent.resources) + "\n")
                 if biasedAgent.resources <= 1:
@@ -179,7 +179,7 @@ def callTest():
                 counterForTimeUnbiased += 1
             elif biasedCounter > 0 and unbiasedCounter > 0 and biasedCounter == unbiasedCounter:
                 counterForTimeEqual += 1
-    file.write("Unbiased agent identified the actual world " +
+    file.write("Unbiased (Lex) agent identified the actual world " +
             str((float(unbiasedSuccess/numberOfTests)*100)) + "% of the cases.\n")
     file.write("Biased agent identified the actual world " +
             str(float(round((biasedSuccess/numberOfTests)*100, 2))) + "% of the cases.\n")
